@@ -91,6 +91,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "English Hasti — یادگیری انگلیسی با فیلم و سریال" },
+      { name: "description", content: "English Hasti offers daily English learning clips from movies and series via email." },
+      { property: "og:description", content: "English Hasti offers daily English learning clips from movies and series via email." },
+      { name: "twitter:description", content: "English Hasti offers daily English learning clips from movies and series via email." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d33bbc39-d885-49f6-ac48-df137dc008af/id-preview-d74fade6--b91b92b5-0246-438e-a76c-1770c906cd5f.lovable.app-1782464141635.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d33bbc39-d885-49f6-ac48-df137dc008af/id-preview-d74fade6--b91b92b5-0246-438e-a76c-1770c906cd5f.lovable.app-1782464141635.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
