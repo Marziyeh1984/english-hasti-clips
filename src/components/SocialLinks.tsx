@@ -9,18 +9,18 @@ export function SocialLinks({ className = "" }: { className?: string }) {
         target="_blank"
         rel="noreferrer"
         aria-label="کانال تلگرام"
-        className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-green-chip text-gold transition-colors hover:bg-accent"
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-ink text-cream transition-transform hover:scale-110"
       >
-        <Send size={19} />
+        <Send size={18} />
       </a>
       <a
         href={SITE.instagram}
         target="_blank"
         rel="noreferrer"
         aria-label="اینستاگرام"
-        className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-green-chip text-gold transition-colors hover:bg-accent"
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-ink text-cream transition-transform hover:scale-110"
       >
-        <Instagram size={19} />
+        <Instagram size={18} />
       </a>
     </div>
   );
