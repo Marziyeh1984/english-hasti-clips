@@ -292,8 +292,3 @@ function Field({
     </div>
   );
 }
-
-function ThankYouFallback() {
-  return null;
-}
-void ThankYouFallback;
