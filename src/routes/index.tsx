@@ -180,10 +180,10 @@ function Index() {
             {PLAN_FEATURES.map((f) => (
               <div
                 key={f}
-                className="flex items-center justify-end gap-3 rounded-2xl border border-ink/20 px-4 py-3 text-sm text-ink"
+                className="group flex items-center justify-end gap-3 rounded-2xl border border-ink/20 px-4 py-3 text-sm text-ink transition-all duration-300 hover:bg-blush-deep active:scale-[0.98]"
               >
                 <span>{f}</span>
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-cream">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-cream transition-transform duration-300 group-hover:scale-110 group-active:scale-90">
                   <Check size={13} />
                 </span>
               </div>
@@ -191,10 +191,11 @@ function Index() {
           </div>
           <Link
             to="/signup"
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink py-4 text-sm font-bold text-cream transition-opacity hover:opacity-90"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink py-4 text-sm font-bold text-cream transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-95"
           >
             <ArrowLeft size={16} /> شروع اشتراک — {SITE.price}
           </Link>
+
         </Card>
 
         {/* HOW */}
