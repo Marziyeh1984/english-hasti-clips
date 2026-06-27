@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Play, Check, FileText, CheckCircle2, Mail } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { SocialLinks } from "@/components/SocialLinks";
+import { Reveal } from "@/components/Reveal";
 import { SITE } from "@/lib/site";
 import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
 
