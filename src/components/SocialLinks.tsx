@@ -1,4 +1,4 @@
-import { Send, Instagram } from "lucide-react";
+import { Send, Instagram, Globe } from "lucide-react";
 import { SITE } from "@/lib/site";
 
 export function SocialLinks({ className = "" }: { className?: string }) {
@@ -21,6 +21,15 @@ export function SocialLinks({ className = "" }: { className?: string }) {
         className="flex h-11 w-11 items-center justify-center rounded-full bg-ink text-cream transition-transform hover:scale-110"
       >
         <Instagram size={18} />
+      </a>
+      <a
+        href={SITE.website}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="وب‌سایت"
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-ink text-cream transition-transform hover:scale-110"
+      >
+        <Globe size={18} />
       </a>
     </div>
   );
