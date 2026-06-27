@@ -241,7 +241,18 @@ function ClipCard() {
     { en: "I'm trying to build an empire, okay?", fa: "دارم سعی می‌کنم یه کسب‌وکار بزرگ راه بندازم، باشه؟" },
     { en: "So you owe them $10,000.", fa: "پس ۱۰ هزار دلار بهشون بدهکاری؟" },
     { en: "Couldn't get the money anywhere else.", fa: "از هیچ جای دیگه‌ای نتونستم پول جور کنم." },
+    {
+      en: "I didn't know any black folks invest in their house music,",
+      fa: "هیچ آدم سیاه‌پوستی رو نمی‌شناختم که حاضر باشه روی خانه موسیقی سرمایه‌گذاری کنه،",
+    },
+    {
+      en: "so until I pay them back, they're gonna keep coming in.",
+      fa: "برای همین تا وقتی پولشون رو پس ندم، مدام سر و کله‌شون پیدا می‌شه.",
+    },
+    { en: "What a money!", fa: "چه پولی؟! / این همه پول از کجا بیارم؟!" },
+    { en: "No, I just...", fa: "نه، من فقط... / نه، منظورم اینه که..." },
   ];
+
   const vocab = [
     { en: "Loan shark", fa: "رباخوار / قرض‌دهنده غیرقانونی" },
     { en: "Back off", fa: "دست برداشتن، کوتاه آمدن" },
@@ -250,19 +261,29 @@ function ClipCard() {
 
   return (
     <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
-      <div className="relative aspect-video cursor-pointer bg-ink/90">
-        <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-15">
-          🎬
-        </div>
-        <div className="absolute bottom-3 right-4 text-[12px] font-bold tracking-widest text-cream/40">
-          DRAMA
-        </div>
-        <div className="absolute inset-0 flex items-center justify-center">
+      {SITE.clipVideoUrl ? (
+        <video
+          controls
+          playsInline
+          poster={heroAsset.url}
+          className="aspect-video w-full bg-ink object-cover"
+        >
+          <source src={SITE.clipVideoUrl} type="video/mp4" />
+        </video>
+      ) : (
+        <div className="relative flex aspect-video items-center justify-center bg-ink/90">
+          <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-15">
+            🎬
+          </div>
+          <div className="absolute bottom-3 right-4 text-[12px] font-bold tracking-widest text-cream/40">
+            DRAMA
+          </div>
           <span className="flex h-14 w-14 items-center justify-center rounded-full bg-cream text-ink">
             <Play size={20} className="ms-0.5" />
           </span>
         </div>
-      </div>
+      )}
+
 
       <div className="p-5">
         <span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">

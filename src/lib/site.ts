@@ -9,4 +9,6 @@ export const SITE = {
   cardNumber: "6104 3378 1234 5678",
   cardHolder: "هستی لک",
   price: "۱۰۰٬۰۰۰ تومان",
+  // ویدیو نمونه‌ی درس — لینک فایل ویدیو را اینجا قرار دهید
+  clipVideoUrl: "",
 };
