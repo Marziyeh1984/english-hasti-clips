@@ -241,7 +241,18 @@ function ClipCard() {
     { en: "I'm trying to build an empire, okay?", fa: "دارم سعی می‌کنم یه کسب‌وکار بزرگ راه بندازم، باشه؟" },
     { en: "So you owe them $10,000.", fa: "پس ۱۰ هزار دلار بهشون بدهکاری؟" },
     { en: "Couldn't get the money anywhere else.", fa: "از هیچ جای دیگه‌ای نتونستم پول جور کنم." },
+    {
+      en: "I didn't know any black folks invest in their house music,",
+      fa: "هیچ آدم سیاه‌پوستی رو نمی‌شناختم که حاضر باشه روی خانه موسیقی سرمایه‌گذاری کنه،",
+    },
+    {
+      en: "so until I pay them back, they're gonna keep coming in.",
+      fa: "برای همین تا وقتی پولشون رو پس ندم، مدام سر و کله‌شون پیدا می‌شه.",
+    },
+    { en: "What a money!", fa: "چه پولی؟! / این همه پول از کجا بیارم؟!" },
+    { en: "No, I just...", fa: "نه، من فقط... / نه، منظورم اینه که..." },
   ];
+
   const vocab = [
     { en: "Loan shark", fa: "رباخوار / قرض‌دهنده غیرقانونی" },
     { en: "Back off", fa: "دست برداشتن، کوتاه آمدن" },
