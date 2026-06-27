@@ -97,17 +97,18 @@ function Index() {
           <div className="mt-6 flex flex-col gap-3">
             <Link
               to="/signup"
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-ink py-4 text-[15px] font-bold text-cream transition-opacity hover:opacity-90"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-ink py-4 text-[15px] font-bold text-cream transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-95"
             >
               <ArrowLeft size={18} /> دریافت اشتراک ماهانه
             </Link>
             <a
               href="#lessons"
-              className="w-full rounded-full border-2 border-line py-3.5 text-sm font-bold text-ink transition-colors hover:bg-blush-deep"
+              className="w-full rounded-full border-2 border-line py-3.5 text-sm font-bold text-ink transition-all duration-300 hover:bg-blush-deep active:scale-95"
             >
               مشاهده نمونه کلیپ‌ها
             </a>
           </div>
+
 
           <div className="mt-7 grid grid-cols-3 gap-3">
             {STATS.map((s) => (
