@@ -13,7 +13,7 @@ export function Navbar() {
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-label="منو"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink transition-colors hover:bg-blush-deep"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink transition-all duration-300 hover:bg-blush-deep active:scale-90"
         >
           {open ? <X size={18} /> : <Menu size={18} />}
         </button>
@@ -27,10 +27,11 @@ export function Navbar() {
 
         <Link
           to="/signup"
-          className="shrink-0 rounded-full bg-ink px-4 py-1.5 text-[12px] font-bold text-cream transition-opacity hover:opacity-90"
+          className="shrink-0 rounded-full bg-ink px-4 py-1.5 text-[12px] font-bold text-cream transition-all duration-300 hover:opacity-90 hover:scale-105 active:scale-90"
         >
           عضویت
         </Link>
+
       </nav>
 
       {open && (

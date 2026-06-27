@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Play, Check, FileText, CheckCircle2, Mail } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { SocialLinks } from "@/components/SocialLinks";
+import { Reveal } from "@/components/Reveal";
 import { SITE } from "@/lib/site";
 import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
 
@@ -56,14 +57,15 @@ function Card({
   id?: string;
 }) {
   return (
-    <div
+    <Reveal
       id={id}
-      className={`rounded-[28px] border-2 border-line bg-blush p-6 ${className}`}
+      className={`rounded-[28px] border-2 border-line bg-blush p-6 transition-shadow duration-300 hover:shadow-[0_18px_40px_-22px_rgba(0,0,0,0.45)] ${className}`}
     >
       {children}
-    </div>
+    </Reveal>
   );
 }
+
 
 function Index() {
   return (
@@ -95,23 +97,24 @@ function Index() {
           <div className="mt-6 flex flex-col gap-3">
             <Link
               to="/signup"
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-ink py-4 text-[15px] font-bold text-cream transition-opacity hover:opacity-90"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-ink py-4 text-[15px] font-bold text-cream transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-95"
             >
               <ArrowLeft size={18} /> دریافت اشتراک ماهانه
             </Link>
             <a
               href="#lessons"
-              className="w-full rounded-full border-2 border-line py-3.5 text-sm font-bold text-ink transition-colors hover:bg-blush-deep"
+              className="w-full rounded-full border-2 border-line py-3.5 text-sm font-bold text-ink transition-all duration-300 hover:bg-blush-deep active:scale-95"
             >
               مشاهده نمونه کلیپ‌ها
             </a>
           </div>
 
+
           <div className="mt-7 grid grid-cols-3 gap-3">
             {STATS.map((s) => (
               <div
                 key={s.l}
-                className="rounded-2xl border border-ink/25 px-2 py-4"
+                className="rounded-2xl border border-ink/25 px-2 py-4 transition-all duration-300 hover:-translate-y-1 hover:bg-blush-deep active:scale-95"
               >
                 <span className="block text-[22px] font-extrabold text-ink">{s.n}</span>
                 <span className="mt-1 block text-[11px] leading-snug text-muted-foreground">
@@ -120,6 +123,7 @@ function Index() {
               </div>
             ))}
           </div>
+
         </Card>
 
         {/* LESSONS */}
@@ -151,10 +155,11 @@ function Index() {
           </p>
           <Link
             to="/signup"
-            className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-bold text-cream transition-opacity hover:opacity-90"
+            className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-bold text-cream transition-all duration-300 hover:opacity-90 hover:scale-105 active:scale-95"
           >
             <ArrowLeft size={16} /> عضویت ماهانه
           </Link>
+
         </Card>
 
         {/* PLAN */}
@@ -175,10 +180,10 @@ function Index() {
             {PLAN_FEATURES.map((f) => (
               <div
                 key={f}
-                className="flex items-center justify-end gap-3 rounded-2xl border border-ink/20 px-4 py-3 text-sm text-ink"
+                className="group flex items-center justify-end gap-3 rounded-2xl border border-ink/20 px-4 py-3 text-sm text-ink transition-all duration-300 hover:bg-blush-deep active:scale-[0.98]"
               >
                 <span>{f}</span>
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-cream">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-cream transition-transform duration-300 group-hover:scale-110 group-active:scale-90">
                   <Check size={13} />
                 </span>
               </div>
@@ -186,10 +191,11 @@ function Index() {
           </div>
           <Link
             to="/signup"
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink py-4 text-sm font-bold text-cream transition-opacity hover:opacity-90"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink py-4 text-sm font-bold text-cream transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-95"
           >
             <ArrowLeft size={16} /> شروع اشتراک — {SITE.price}
           </Link>
+
         </Card>
 
         {/* HOW */}
@@ -205,9 +211,9 @@ function Index() {
             {STEPS.map((s) => (
               <div
                 key={s.t}
-                className="flex items-center gap-4 rounded-2xl border border-ink/20 p-4"
+                className="group flex items-center gap-4 rounded-2xl border border-ink/20 p-4 transition-all duration-300 hover:bg-blush-deep active:scale-[0.98]"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-ink text-cream">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-ink text-cream transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 group-active:scale-90">
                   <s.icon size={22} />
                 </div>
                 <div className="flex-1 text-right">
@@ -217,6 +223,7 @@ function Index() {
               </div>
             ))}
           </div>
+
         </Card>
 
         {/* FOOTER CARD */}
