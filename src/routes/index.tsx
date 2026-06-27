@@ -57,14 +57,15 @@ function Card({
   id?: string;
 }) {
   return (
-    <div
+    <Reveal
       id={id}
-      className={`rounded-[28px] border-2 border-line bg-blush p-6 ${className}`}
+      className={`rounded-[28px] border-2 border-line bg-blush p-6 transition-shadow duration-300 hover:shadow-[0_18px_40px_-22px_rgba(0,0,0,0.45)] ${className}`}
     >
       {children}
-    </div>
+    </Reveal>
   );
 }
+
 
 function Index() {
   return (
