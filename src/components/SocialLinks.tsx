@@ -1,4 +1,4 @@
-import { Send, Instagram } from "lucide-react";
+import { Send, Instagram, Globe } from "lucide-react";
 import { SITE } from "@/lib/site";
 
 export function SocialLinks({ className = "" }: { className?: string }) {
