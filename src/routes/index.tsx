@@ -261,19 +261,29 @@ function ClipCard() {
 
   return (
     <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
-      <div className="relative aspect-video cursor-pointer bg-ink/90">
-        <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-15">
-          🎬
-        </div>
-        <div className="absolute bottom-3 right-4 text-[12px] font-bold tracking-widest text-cream/40">
-          DRAMA
-        </div>
-        <div className="absolute inset-0 flex items-center justify-center">
+      {SITE.clipVideoUrl ? (
+        <video
+          controls
+          playsInline
+          poster={heroAsset.url}
+          className="aspect-video w-full bg-ink object-cover"
+        >
+          <source src={SITE.clipVideoUrl} type="video/mp4" />
+        </video>
+      ) : (
+        <div className="relative flex aspect-video items-center justify-center bg-ink/90">
+          <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-15">
+            🎬
+          </div>
+          <div className="absolute bottom-3 right-4 text-[12px] font-bold tracking-widest text-cream/40">
+            DRAMA
+          </div>
           <span className="flex h-14 w-14 items-center justify-center rounded-full bg-cream text-ink">
             <Play size={20} className="ms-0.5" />
           </span>
         </div>
-      </div>
+      )}
+
 
       <div className="p-5">
         <span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">
