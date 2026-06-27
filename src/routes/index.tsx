@@ -211,9 +211,9 @@ function Index() {
             {STEPS.map((s) => (
               <div
                 key={s.t}
-                className="flex items-center gap-4 rounded-2xl border border-ink/20 p-4"
+                className="group flex items-center gap-4 rounded-2xl border border-ink/20 p-4 transition-all duration-300 hover:bg-blush-deep active:scale-[0.98]"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-ink text-cream">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-ink text-cream transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 group-active:scale-90">
                   <s.icon size={22} />
                 </div>
                 <div className="flex-1 text-right">
@@ -223,6 +223,7 @@ function Index() {
               </div>
             ))}
           </div>
+
         </Card>
 
         {/* FOOTER CARD */}
