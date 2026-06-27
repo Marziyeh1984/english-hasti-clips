@@ -4,11 +4,13 @@ export function Reveal({
   children,
   className = "",
   delay = 0,
+  id,
   as: Tag = "div",
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
+  id?: string;
   as?: React.ElementType;
 }) {
   const ref = useRef<HTMLElement | null>(null);
