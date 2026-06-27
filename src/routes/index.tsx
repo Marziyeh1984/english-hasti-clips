@@ -155,10 +155,11 @@ function Index() {
           </p>
           <Link
             to="/signup"
-            className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-bold text-cream transition-opacity hover:opacity-90"
+            className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-bold text-cream transition-all duration-300 hover:opacity-90 hover:scale-105 active:scale-95"
           >
             <ArrowLeft size={16} /> عضویت ماهانه
           </Link>
+
         </Card>
 
         {/* PLAN */}
