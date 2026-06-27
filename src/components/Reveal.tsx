@@ -44,6 +44,7 @@ export function Reveal({
   return (
     <Tag
       ref={ref}
+      id={id}
       style={{ transitionDelay: shown ? `${delay}ms` : "0ms" }}
       className={`transition-all duration-700 ease-out ${
         shown
