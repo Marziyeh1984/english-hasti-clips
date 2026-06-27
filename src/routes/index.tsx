@@ -114,7 +114,7 @@ function Index() {
             {STATS.map((s) => (
               <div
                 key={s.l}
-                className="rounded-2xl border border-ink/25 px-2 py-4"
+                className="rounded-2xl border border-ink/25 px-2 py-4 transition-all duration-300 hover:-translate-y-1 hover:bg-blush-deep active:scale-95"
               >
                 <span className="block text-[22px] font-extrabold text-ink">{s.n}</span>
                 <span className="mt-1 block text-[11px] leading-snug text-muted-foreground">
@@ -123,6 +123,7 @@ function Index() {
               </div>
             ))}
           </div>
+
         </Card>
 
         {/* LESSONS */}
