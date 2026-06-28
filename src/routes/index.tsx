@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Play, Check, FileText, CheckCircle2, Mail } from "lucide-react";
+import { ArrowLeft, Check, FileText, CheckCircle2, Mail } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { SocialLinks } from "@/components/SocialLinks";
 import { Reveal } from "@/components/Reveal";
 import { SITE } from "@/lib/site";
 import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
+import clipVideo from "@/assets/clip01.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -268,28 +269,16 @@ function ClipCard() {
 
   return (
     <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
-      {SITE.clipVideoUrl ? (
-        <video
-          controls
-          playsInline
-          poster={heroAsset.url}
-          className="aspect-video w-full bg-ink object-cover"
-        >
-          <source src={SITE.clipVideoUrl} type="video/mp4" />
-        </video>
-      ) : (
-        <div className="relative flex aspect-video items-center justify-center bg-ink/90">
-          <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-15">
-            🎬
-          </div>
-          <div className="absolute bottom-3 right-4 text-[12px] font-bold tracking-widest text-cream/40">
-            DRAMA
-          </div>
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-cream text-ink">
-            <Play size={20} className="ms-0.5" />
-          </span>
-        </div>
-      )}
+      <video
+        controls
+        playsInline
+        preload="metadata"
+        poster={heroAsset.url}
+        className="aspect-video w-full bg-ink object-cover"
+      >
+        <source src={SITE.clipVideoUrl || clipVideo.url} type="video/mp4" />
+      </video>
+
 
 
       <div className="p-5">
