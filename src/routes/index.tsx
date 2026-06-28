@@ -376,3 +376,64 @@ function ClipCard2() {
     </div>
   );
 }
+
+function ClipCard3() {
+  const dialogues = [
+    { en: "What's wrong?", fa: "چی شده؟" },
+    { en: "What's happened?", fa: "چی اتفاق افتاده؟" },
+    { en: "It's Nick.", fa: "درمورد نیکه." },
+    { en: "He's having an affair.", fa: "داره به من خیانت می‌کنه / رابطه‌ی پنهانی داره." },
+    { en: "I saw him with her. They were kissing in the street.", fa: "دیدمش با اون زن. داشتن تو خیابون همدیگه رو می‌بوسیدن." },
+    { en: "It wasn't a friendly kiss.", fa: "اون یه بوسه‌ی دوستانه نبود." },
+    { en: "So, it's okay for you, but not for him.", fa: "پس یعنی برای تو اوکیه، ولی برای اون نه؟" },
+    { en: "I know what Sam's about, but this thing with Nick…", fa: "من می‌دونم سم چه آدمیه و داستانش چیه، ولی این قضیه‌ی نیک…" },
+  ];
+
+  const vocab = [
+    { en: "Have an affair", fa: "رابطه‌ی پنهانی / خیانت داشتن" },
+    { en: "A friendly kiss", fa: "بوسه‌ی دوستانه" },
+    { en: "What someone's about", fa: "اینکه کسی چه‌جور آدمیه" },
+  ];
+
+  return (
+    <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
+      <video
+        controls
+        playsInline
+        preload="metadata"
+        poster={heroAsset.url}
+        className="aspect-video w-full bg-ink object-cover"
+      >
+        <source src={clipVideo3.url} type="video/mp4" />
+      </video>
+
+      <div className="p-5">
+        <span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">
+          Clip 03 · Drama
+        </span>
+        <h3 className="mb-4 mt-3 text-lg font-extrabold text-ink">The Affair</h3>
+
+        <div className="flex flex-col gap-3">
+          {dialogues.map((d, i) => (
+            <div key={i} className="border-r-2 border-ink/25 pr-3.5">
+              <p className="mb-1 text-sm font-medium italic text-ink">{d.en}</p>
+              <p className="text-[13px] text-muted-foreground">{d.fa}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-ink/25 bg-blush p-4">
+          <p className="mb-2.5 text-[11px] font-bold text-ink">💡 اصطلاحات این درس</p>
+          <div className="flex flex-col gap-2">
+            {vocab.map((v) => (
+              <div key={v.en} className="flex items-baseline justify-between gap-2 text-xs">
+                <span className="whitespace-nowrap font-semibold text-ink">{v.en}</span>
+                <span className="text-right text-muted-foreground">{v.fa}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
