@@ -141,8 +141,9 @@ function Index() {
               هر درس شامل دیالوگ انگلیسی، ترجمه دقیق فارسی و توضیح اصطلاحات کاربردی است.
             </p>
           </div>
-          <div className="mt-5">
+          <div className="mt-5 flex flex-col gap-5">
             <ClipCard />
+            <ClipCard2 />
           </div>
         </Card>
 
