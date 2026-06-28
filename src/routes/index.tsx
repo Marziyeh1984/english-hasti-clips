@@ -5,6 +5,7 @@ import { SocialLinks } from "@/components/SocialLinks";
 import { Reveal } from "@/components/Reveal";
 import { SITE } from "@/lib/site";
 import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
+import clipVideo from "@/assets/clip01.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
