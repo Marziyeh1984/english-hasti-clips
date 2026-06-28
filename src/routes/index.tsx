@@ -273,15 +273,20 @@ function ClipCard() {
 
   return (
     <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
-      <video
-        controls
-        playsInline
-        preload="metadata"
-        poster={heroAsset.url}
-        className="aspect-video w-full bg-ink object-cover"
-      >
-        <source src={SITE.clipVideoUrl || clipVideo.url} type="video/mp4" />
-      </video>
+      <div className="relative">
+        <video
+          controls
+          playsInline
+          preload="metadata"
+          poster={heroAsset.url}
+          className="aspect-video w-full bg-ink object-cover"
+        >
+          <source src={SITE.clipVideoUrl || clipVideo.url} type="video/mp4" />
+        </video>
+        <span className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-ink/90 px-3 py-1.5 text-[11px] font-bold text-cream shadow-md">
+          <PlayCircle size={14} /> Watch Free
+        </span>
+      </div>
 
 
 
