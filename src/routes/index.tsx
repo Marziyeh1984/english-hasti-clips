@@ -7,6 +7,7 @@ import { SITE } from "@/lib/site";
 import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
 import clipVideo from "@/assets/clip01.mp4.asset.json";
 import clipVideo2 from "@/assets/clip02.mp4.asset.json";
+import clipVideo3 from "@/assets/clip03.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -144,6 +145,7 @@ function Index() {
           <div className="mt-5 flex flex-col gap-5">
             <ClipCard />
             <ClipCard2 />
+            <ClipCard3 />
           </div>
         </Card>
 
