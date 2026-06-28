@@ -6,6 +6,7 @@ import { Reveal } from "@/components/Reveal";
 import { SITE } from "@/lib/site";
 import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
 import clipVideo from "@/assets/clip01.mp4.asset.json";
+import clipVideo2 from "@/assets/clip02.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -140,8 +141,9 @@ function Index() {
               هر درس شامل دیالوگ انگلیسی، ترجمه دقیق فارسی و توضیح اصطلاحات کاربردی است.
             </p>
           </div>
-          <div className="mt-5">
+          <div className="mt-5 flex flex-col gap-5">
             <ClipCard />
+            <ClipCard2 />
           </div>
         </Card>
 
@@ -286,6 +288,67 @@ function ClipCard() {
           Clip 01 · Drama
         </span>
         <h3 className="mb-4 mt-3 text-lg font-extrabold text-ink">Loan Sharks</h3>
+
+        <div className="flex flex-col gap-3">
+          {dialogues.map((d, i) => (
+            <div key={i} className="border-r-2 border-ink/25 pr-3.5">
+              <p className="mb-1 text-sm font-medium italic text-ink">{d.en}</p>
+              <p className="text-[13px] text-muted-foreground">{d.fa}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-ink/25 bg-blush p-4">
+          <p className="mb-2.5 text-[11px] font-bold text-ink">💡 اصطلاحات این درس</p>
+          <div className="flex flex-col gap-2">
+            {vocab.map((v) => (
+              <div key={v.en} className="flex items-baseline justify-between gap-2 text-xs">
+                <span className="whitespace-nowrap font-semibold text-ink">{v.en}</span>
+                <span className="text-right text-muted-foreground">{v.fa}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ClipCard2() {
+  const dialogues = [
+    { en: "Kelly, it's been a week. I was starting to worry.", fa: "کلی، یه هفته‌ست خبری ازت نبود. داشتم نگران می‌شدم." },
+    { en: "No, I'm okay.", fa: "نه، خوبم." },
+    { en: "My gallbladder was giving me trouble.", fa: "کیسه صفرا‌م اذیتم می‌کرد." },
+    { en: "Oh.", fa: "اوه…" },
+    { en: "How'd the little one like the locket?", fa: "اون کوچولوهه از اون گردنبند (گردنبندِ قاب‌دار) خوشش اومد؟" },
+    { en: "Oh, I'm saving it for her birthday.", fa: "نه، گذاشتم برای تولدش / نگهش داشتم برای تولدش." },
+    { en: "She'll love that. How much?", fa: "خیلی خوشحال میشه. چقدر شد؟" },
+    { en: "Five bucks.", fa: "پنج دلار." },
+  ];
+
+  const vocab = [
+    { en: "Locket", fa: "گردنبند قاب‌دار (جای عکس)" },
+    { en: "The little one", fa: "کوچولو، بچه" },
+    { en: "Five bucks", fa: "پنج دلار (محاوره)" },
+  ];
+
+  return (
+    <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
+      <video
+        controls
+        playsInline
+        preload="metadata"
+        poster={heroAsset.url}
+        className="aspect-video w-full bg-ink object-cover"
+      >
+        <source src={clipVideo2.url} type="video/mp4" />
+      </video>
+
+      <div className="p-5">
+        <span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">
+          Clip 02 · Drama
+        </span>
+        <h3 className="mb-4 mt-3 text-lg font-extrabold text-ink">The Locket</h3>
 
         <div className="flex flex-col gap-3">
           {dialogues.map((d, i) => (
