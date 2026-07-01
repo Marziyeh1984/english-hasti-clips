@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Check, FileText, CheckCircle2, Mail, PlayCircle } from "lucide-react";
+import { ArrowLeft, Check, FileText, CheckCircle2, Mail } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { SocialLinks } from "@/components/SocialLinks";
 import { Reveal } from "@/components/Reveal";
+import { LessonClip, type Dialogue, type Vocab } from "@/components/LessonClip";
 import { SITE } from "@/lib/site";
 import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
 import clipVideo from "@/assets/clip01.mp4.asset.json";
@@ -50,6 +51,66 @@ const PLAN_FEATURES = [
   "بدون نیاز به ورود به سایت",
 ];
 
+const CLIP1_DIALOGUES: Dialogue[] = [
+  { en: "I got mixed up with loan sharks, man.", fa: "داداش، گرفتار رباخوارها شدم.", t: 0 },
+  { en: "They won't back off.", fa: "ول‌کن ماجرا نیستن.", t: 2.12 },
+  { en: "I'm trying to build an empire, okay?", fa: "دارم سعی می‌کنم یه کسب‌وکار بزرگ راه بندازم، باشه؟", t: 3.54 },
+  { en: "So you owe them $10,000.", fa: "پس ۱۰ هزار دلار بهشون بدهکاری؟", t: 5.94 },
+  { en: "Couldn't get the money anywhere else.", fa: "از هیچ جای دیگه‌ای نتونستم پول جور کنم.", t: 10.1 },
+  {
+    en: "I didn't know any black folks invest in their house music,",
+    fa: "هیچ آدم سیاه‌پوستی رو نمی‌شناختم که حاضر باشه روی خانه موسیقی سرمایه‌گذاری کنه،",
+    t: 11.9,
+  },
+  {
+    en: "so until I pay them back, they're gonna keep coming in.",
+    fa: "برای همین تا وقتی پولشون رو پس ندم، مدام سر و کله‌شون پیدا می‌شه.",
+    t: 14.36,
+  },
+  { en: "What a money!", fa: "چه پولی؟! / این همه پول از کجا بیارم؟!", t: 16.3 },
+  { en: "No, I just...", fa: "نه، من فقط... / نه، منظورم اینه که...", t: 17.0 },
+];
+
+const CLIP1_VOCAB: Vocab[] = [
+  { en: "Loan shark", fa: "رباخوار / قرض‌دهنده غیرقانونی" },
+  { en: "Back off", fa: "دست برداشتن، کوتاه آمدن" },
+  { en: "Lay low", fa: "در اختفا ماندن، خود را پنهان کردن" },
+];
+
+const CLIP2_DIALOGUES: Dialogue[] = [
+  { en: "Kelly, it's been a week. I was starting to worry.", fa: "کلی، یه هفته‌ست خبری ازت نبود. داشتم نگران می‌شدم.", t: 1.9 },
+  { en: "No, I'm okay.", fa: "نه، خوبم.", t: 4.76 },
+  { en: "My gallbladder was giving me trouble.", fa: "کیسه صفرا‌م اذیتم می‌کرد.", t: 5.8 },
+  { en: "Oh.", fa: "اوه…", t: 8.88 },
+  { en: "How'd the little one like the locket?", fa: "اون کوچولوهه از اون گردنبند (گردنبندِ قاب‌دار) خوشش اومد؟", t: 9.5 },
+  { en: "Oh, I'm saving it for her birthday.", fa: "نه، گذاشتم برای تولدش / نگهش داشتم برای تولدش.", t: 12.36 },
+  { en: "She'll love that. How much?", fa: "خیلی خوشحال میشه. چقدر شد؟", t: 15.1 },
+  { en: "Five bucks.", fa: "پنج دلار.", t: 20.38 },
+];
+
+const CLIP2_VOCAB: Vocab[] = [
+  { en: "Locket", fa: "گردنبند قاب‌دار (جای عکس)" },
+  { en: "The little one", fa: "کوچولو، بچه" },
+  { en: "Five bucks", fa: "پنج دلار (محاوره)" },
+];
+
+const CLIP3_DIALOGUES: Dialogue[] = [
+  { en: "What's wrong?", fa: "چی شده؟", t: 0 },
+  { en: "What's happened?", fa: "چی اتفاق افتاده؟", t: 1.6 },
+  { en: "It's Nick.", fa: "درمورد نیکه.", t: 3.0 },
+  { en: "He's having an affair.", fa: "داره به من خیانت می‌کنه / رابطه‌ی پنهانی داره.", t: 4.3 },
+  { en: "I saw him with her. They were kissing in the street.", fa: "دیدمش با اون زن. داشتن تو خیابون همدیگه رو می‌بوسیدن.", t: 7.32 },
+  { en: "It wasn't a friendly kiss.", fa: "اون یه بوسه‌ی دوستانه نبود.", t: 10.5 },
+  { en: "So, it's okay for you, but not for him.", fa: "پس یعنی برای تو اوکیه، ولی برای اون نه؟", t: 13.32 },
+  { en: "I know what Sam's about, but this thing with Nick…", fa: "من می‌دونم سم چه آدمیه و داستانش چیه، ولی این قضیه‌ی نیک…", t: 17.24 },
+];
+
+const CLIP3_VOCAB: Vocab[] = [
+  { en: "Have an affair", fa: "رابطه‌ی پنهانی / خیانت داشتن" },
+  { en: "A friendly kiss", fa: "بوسه‌ی دوستانه" },
+  { en: "What someone's about", fa: "اینکه کسی چه‌جور آدمیه" },
+];
+
 function Card({
   children,
   className = "",
@@ -68,7 +129,6 @@ function Card({
     </Reveal>
   );
 }
-
 
 function Index() {
   return (
@@ -112,7 +172,6 @@ function Index() {
             </a>
           </div>
 
-
           <div className="mt-7 grid grid-cols-3 gap-3">
             {STATS.map((s) => (
               <div
@@ -126,7 +185,6 @@ function Index() {
               </div>
             ))}
           </div>
-
         </Card>
 
         {/* LESSONS */}
@@ -140,12 +198,31 @@ function Index() {
             </h2>
             <p className="mx-auto mt-2 max-w-sm text-[13px] leading-7 text-muted-foreground">
               هر درس شامل دیالوگ انگلیسی، ترجمه دقیق فارسی و توضیح اصطلاحات کاربردی است.
+              هنگام پخش، دیالوگِ در حالِ گفته‌شدن هایلایت می‌شود — با کلیک روی هر جمله، ویدیو به همان لحظه می‌رود.
             </p>
           </div>
           <div className="mt-5 flex flex-col gap-5">
-            <ClipCard />
-            <ClipCard2 />
-            <ClipCard3 />
+            <LessonClip
+              videoUrl={SITE.clipVideoUrl || clipVideo.url}
+              badge="Clip 01 · Drama"
+              title="Loan Sharks"
+              dialogues={CLIP1_DIALOGUES}
+              vocab={CLIP1_VOCAB}
+            />
+            <LessonClip
+              videoUrl={clipVideo2.url}
+              badge="Clip 02 · Drama"
+              title="The Locket"
+              dialogues={CLIP2_DIALOGUES}
+              vocab={CLIP2_VOCAB}
+            />
+            <LessonClip
+              videoUrl={clipVideo3.url}
+              badge="Clip 03 · Drama"
+              title="The Affair"
+              dialogues={CLIP3_DIALOGUES}
+              vocab={CLIP3_VOCAB}
+            />
           </div>
         </Card>
 
@@ -164,7 +241,6 @@ function Index() {
           >
             <ArrowLeft size={16} /> عضویت ماهانه
           </Link>
-
         </Card>
 
         {/* PLAN */}
@@ -200,7 +276,6 @@ function Index() {
           >
             <ArrowLeft size={16} /> شروع اشتراک — {SITE.price}
           </Link>
-
         </Card>
 
         {/* HOW */}
@@ -228,7 +303,6 @@ function Index() {
               </div>
             ))}
           </div>
-
         </Card>
 
         {/* FOOTER CARD */}
@@ -242,210 +316,6 @@ function Index() {
           </p>
         </Card>
       </main>
-    </div>
-  );
-}
-
-function ClipCard() {
-  const dialogues = [
-    { en: "I got mixed up with loan sharks, man.", fa: "داداش، گرفتار رباخوارها شدم." },
-    { en: "They won't back off.", fa: "ول‌کن ماجرا نیستن." },
-    { en: "I'm trying to build an empire, okay?", fa: "دارم سعی می‌کنم یه کسب‌وکار بزرگ راه بندازم، باشه؟" },
-    { en: "So you owe them $10,000.", fa: "پس ۱۰ هزار دلار بهشون بدهکاری؟" },
-    { en: "Couldn't get the money anywhere else.", fa: "از هیچ جای دیگه‌ای نتونستم پول جور کنم." },
-    {
-      en: "I didn't know any black folks invest in their house music,",
-      fa: "هیچ آدم سیاه‌پوستی رو نمی‌شناختم که حاضر باشه روی خانه موسیقی سرمایه‌گذاری کنه،",
-    },
-    {
-      en: "so until I pay them back, they're gonna keep coming in.",
-      fa: "برای همین تا وقتی پولشون رو پس ندم، مدام سر و کله‌شون پیدا می‌شه.",
-    },
-    { en: "What a money!", fa: "چه پولی؟! / این همه پول از کجا بیارم؟!" },
-    { en: "No, I just...", fa: "نه، من فقط... / نه، منظورم اینه که..." },
-  ];
-
-  const vocab = [
-    { en: "Loan shark", fa: "رباخوار / قرض‌دهنده غیرقانونی" },
-    { en: "Back off", fa: "دست برداشتن، کوتاه آمدن" },
-    { en: "Lay low", fa: "در اختفا ماندن، خود را پنهان کردن" },
-  ];
-
-  return (
-    <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
-      <div className="relative">
-        <video
-          controls
-          playsInline
-          preload="metadata"
-          className="aspect-video w-full bg-ink object-cover"
-        >
-          <source src={SITE.clipVideoUrl || clipVideo.url} type="video/mp4" />
-        </video>
-        <span className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-ink/90 px-3 py-1.5 text-[11px] font-bold text-cream shadow-md">
-          <PlayCircle size={14} /> Watch Free
-        </span>
-      </div>
-
-
-
-      <div className="p-5">
-        <span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">
-          Clip 01 · Drama
-        </span>
-        <h3 className="mb-4 mt-3 text-lg font-extrabold text-ink">Loan Sharks</h3>
-
-        <div className="flex flex-col gap-3">
-          {dialogues.map((d, i) => (
-            <div key={i} className="border-r-2 border-ink/25 pr-3.5">
-              <p className="mb-1 text-sm font-medium italic text-ink">{d.en}</p>
-              <p className="text-[13px] text-muted-foreground">{d.fa}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-4 rounded-2xl border border-ink/25 bg-blush p-4">
-          <p className="mb-2.5 text-[11px] font-bold text-ink">💡 اصطلاحات این درس</p>
-          <div className="flex flex-col gap-2">
-            {vocab.map((v) => (
-              <div key={v.en} className="flex items-baseline justify-between gap-2 text-xs">
-                <span className="whitespace-nowrap font-semibold text-ink">{v.en}</span>
-                <span className="text-right text-muted-foreground">{v.fa}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ClipCard2() {
-  const dialogues = [
-    { en: "Kelly, it's been a week. I was starting to worry.", fa: "کلی، یه هفته‌ست خبری ازت نبود. داشتم نگران می‌شدم." },
-    { en: "No, I'm okay.", fa: "نه، خوبم." },
-    { en: "My gallbladder was giving me trouble.", fa: "کیسه صفرا‌م اذیتم می‌کرد." },
-    { en: "Oh.", fa: "اوه…" },
-    { en: "How'd the little one like the locket?", fa: "اون کوچولوهه از اون گردنبند (گردنبندِ قاب‌دار) خوشش اومد؟" },
-    { en: "Oh, I'm saving it for her birthday.", fa: "نه، گذاشتم برای تولدش / نگهش داشتم برای تولدش." },
-    { en: "She'll love that. How much?", fa: "خیلی خوشحال میشه. چقدر شد؟" },
-    { en: "Five bucks.", fa: "پنج دلار." },
-  ];
-
-  const vocab = [
-    { en: "Locket", fa: "گردنبند قاب‌دار (جای عکس)" },
-    { en: "The little one", fa: "کوچولو، بچه" },
-    { en: "Five bucks", fa: "پنج دلار (محاوره)" },
-  ];
-
-  return (
-    <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
-      <div className="relative">
-        <video
-          controls
-          playsInline
-          preload="metadata"
-          className="aspect-video w-full bg-ink object-cover"
-        >
-          <source src={clipVideo2.url} type="video/mp4" />
-        </video>
-        <span className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-ink/90 px-3 py-1.5 text-[11px] font-bold text-cream shadow-md">
-          <PlayCircle size={14} /> Watch Free
-        </span>
-      </div>
-
-      <div className="p-5">
-        <span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">
-          Clip 02 · Drama
-        </span>
-        <h3 className="mb-4 mt-3 text-lg font-extrabold text-ink">The Locket</h3>
-
-        <div className="flex flex-col gap-3">
-          {dialogues.map((d, i) => (
-            <div key={i} className="border-r-2 border-ink/25 pr-3.5">
-              <p className="mb-1 text-sm font-medium italic text-ink">{d.en}</p>
-              <p className="text-[13px] text-muted-foreground">{d.fa}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-4 rounded-2xl border border-ink/25 bg-blush p-4">
-          <p className="mb-2.5 text-[11px] font-bold text-ink">💡 اصطلاحات این درس</p>
-          <div className="flex flex-col gap-2">
-            {vocab.map((v) => (
-              <div key={v.en} className="flex items-baseline justify-between gap-2 text-xs">
-                <span className="whitespace-nowrap font-semibold text-ink">{v.en}</span>
-                <span className="text-right text-muted-foreground">{v.fa}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ClipCard3() {
-  const dialogues = [
-    { en: "What's wrong?", fa: "چی شده؟" },
-    { en: "What's happened?", fa: "چی اتفاق افتاده؟" },
-    { en: "It's Nick.", fa: "درمورد نیکه." },
-    { en: "He's having an affair.", fa: "داره به من خیانت می‌کنه / رابطه‌ی پنهانی داره." },
-    { en: "I saw him with her. They were kissing in the street.", fa: "دیدمش با اون زن. داشتن تو خیابون همدیگه رو می‌بوسیدن." },
-    { en: "It wasn't a friendly kiss.", fa: "اون یه بوسه‌ی دوستانه نبود." },
-    { en: "So, it's okay for you, but not for him.", fa: "پس یعنی برای تو اوکیه، ولی برای اون نه؟" },
-    { en: "I know what Sam's about, but this thing with Nick…", fa: "من می‌دونم سم چه آدمیه و داستانش چیه، ولی این قضیه‌ی نیک…" },
-  ];
-
-  const vocab = [
-    { en: "Have an affair", fa: "رابطه‌ی پنهانی / خیانت داشتن" },
-    { en: "A friendly kiss", fa: "بوسه‌ی دوستانه" },
-    { en: "What someone's about", fa: "اینکه کسی چه‌جور آدمیه" },
-  ];
-
-  return (
-    <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
-      <div className="relative">
-        <video
-          controls
-          playsInline
-          preload="metadata"
-          className="aspect-video w-full bg-ink object-cover"
-        >
-          <source src={clipVideo3.url} type="video/mp4" />
-        </video>
-        <span className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-ink/90 px-3 py-1.5 text-[11px] font-bold text-cream shadow-md">
-          <PlayCircle size={14} /> Watch Free
-        </span>
-      </div>
-
-      <div className="p-5">
-        <span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">
-          Clip 03 · Drama
-        </span>
-        <h3 className="mb-4 mt-3 text-lg font-extrabold text-ink">The Affair</h3>
-
-        <div className="flex flex-col gap-3">
-          {dialogues.map((d, i) => (
-            <div key={i} className="border-r-2 border-ink/25 pr-3.5">
-              <p className="mb-1 text-sm font-medium italic text-ink">{d.en}</p>
-              <p className="text-[13px] text-muted-foreground">{d.fa}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-4 rounded-2xl border border-ink/25 bg-blush p-4">
-          <p className="mb-2.5 text-[11px] font-bold text-ink">💡 اصطلاحات این درس</p>
-          <div className="flex flex-col gap-2">
-            {vocab.map((v) => (
-              <div key={v.en} className="flex items-baseline justify-between gap-2 text-xs">
-                <span className="whitespace-nowrap font-semibold text-ink">{v.en}</span>
-                <span className="text-right text-muted-foreground">{v.fa}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
