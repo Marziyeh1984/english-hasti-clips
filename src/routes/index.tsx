@@ -278,7 +278,6 @@ function ClipCard() {
           controls
           playsInline
           preload="metadata"
-          poster={heroAsset.url}
           className="aspect-video w-full bg-ink object-cover"
         >
           <source src={SITE.clipVideoUrl || clipVideo.url} type="video/mp4" />
@@ -346,7 +345,6 @@ function ClipCard2() {
           controls
           playsInline
           preload="metadata"
-          poster={heroAsset.url}
           className="aspect-video w-full bg-ink object-cover"
         >
           <source src={clipVideo2.url} type="video/mp4" />
@@ -412,7 +410,6 @@ function ClipCard3() {
           controls
           playsInline
           preload="metadata"
-          poster={heroAsset.url}
           className="aspect-video w-full bg-ink object-cover"
         >
           <source src={clipVideo3.url} type="video/mp4" />
