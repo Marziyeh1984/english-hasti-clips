@@ -173,16 +173,17 @@ function Index() {
           </div>
 
           <div className="mt-7 grid grid-cols-3 gap-3">
-            {STATS.map((s) => (
-              <div
+            {STATS.map((s, i) => (
+              <Reveal
                 key={s.l}
+                delay={i * 140}
                 className="rounded-2xl border border-ink/25 px-2 py-4 transition-all duration-300 hover:-translate-y-1 hover:bg-blush-deep active:scale-95"
               >
                 <span className="block text-[22px] font-extrabold text-ink">{s.n}</span>
                 <span className="mt-1 block text-[11px] leading-snug text-muted-foreground">
                   {s.l}
                 </span>
-              </div>
+              </Reveal>
             ))}
           </div>
         </Card>
@@ -288,9 +289,10 @@ function Index() {
           </div>
 
           <div className="mt-5 flex flex-col gap-3">
-            {STEPS.map((s) => (
-              <div
+            {STEPS.map((s, i) => (
+              <Reveal
                 key={s.t}
+                delay={i * 160}
                 className="group flex items-center gap-4 rounded-2xl border border-ink/20 p-4 transition-all duration-300 hover:bg-blush-deep active:scale-[0.98]"
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-ink text-cream transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 group-active:scale-90">
@@ -300,7 +302,7 @@ function Index() {
                   <p className="text-sm font-bold text-ink">{s.t}</p>
                   <p className="mt-1 text-xs leading-6 text-muted-foreground">{s.d}</p>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </Card>
