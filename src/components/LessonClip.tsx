@@ -102,14 +102,26 @@ export function LessonClip({
 
         <div className="mt-4 rounded-2xl border border-ink/25 bg-blush p-4">
           <p className="mb-2.5 text-[11px] font-bold text-ink">💡 اصطلاحات این درس</p>
-          <div className="flex flex-col gap-2">
-            {vocab.map((v) => (
-              <div key={v.en} className="flex items-baseline justify-between gap-2 text-xs">
-                <span className="whitespace-nowrap font-semibold text-ink">{v.en}</span>
-                <span className="text-right text-muted-foreground">{v.fa}</span>
-              </div>
+          <ol className="flex flex-col gap-2.5">
+            {vocab.map((v, i) => (
+              <li
+                key={v.en}
+                className="flex items-start gap-2.5 rounded-xl border border-ink/15 bg-cream/60 px-3 py-2"
+              >
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-[10px] font-bold text-cream">
+                  {i + 1}
+                </span>
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <span dir="ltr" className="text-right text-xs font-semibold text-ink">
+                    {v.en}
+                  </span>
+                  <span className="text-right text-[11px] leading-6 text-muted-foreground">
+                    {v.fa}
+                  </span>
+                </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </div>
     </div>
