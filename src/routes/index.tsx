@@ -254,6 +254,13 @@ function Index() {
               dialogues={CLIP3_DIALOGUES}
               vocab={CLIP3_VOCAB}
             />
+            <LessonClip
+              videoUrl={clipVideo4.url}
+              badge="Clip 04 · Family"
+              title="Bye, Sweetie"
+              dialogues={CLIP4_DIALOGUES}
+              vocab={CLIP4_VOCAB}
+            />
           </div>
         </Card>
 
