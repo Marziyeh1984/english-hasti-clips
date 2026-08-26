@@ -9,6 +9,7 @@ import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
 import clipVideo from "@/assets/clip01.mp4.asset.json";
 import clipVideo2 from "@/assets/clip02.mp4.asset.json";
 import clipVideo3 from "@/assets/clip03.mp4.asset.json";
+import clipVideo4 from "@/assets/clip04.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -72,9 +73,15 @@ const CLIP1_DIALOGUES: Dialogue[] = [
 ];
 
 const CLIP1_VOCAB: Vocab[] = [
-  { en: "Loan shark", fa: "رباخوار / قرض‌دهنده غیرقانونی" },
-  { en: "Back off", fa: "دست برداشتن، کوتاه آمدن" },
-  { en: "Lay low", fa: "در اختفا ماندن، خود را پنهان کردن" },
+  { en: "Get mixed up with (someone/something)", fa: "درگیرِ چیزی/کسی شدن، گرفتار شدن" },
+  { en: "Loan sharks", fa: "نزول‌خوارها / رباخوارها (افرادی که با بهره‌های سنگین و غیرقانونی پول قرض می‌دهند)" },
+  { en: "Back off", fa: "کوتاه آمدن، دست برداشتن، عقب کشیدن" },
+  { en: "Build an empire", fa: "یک امپراتوری/کسب‌وکار بزرگ ساختن، موفقیت بزرگی ایجاد کردن" },
+  { en: "Owe (someone) money", fa: "به کسی پول بدهکار بودن" },
+  { en: "Get money / get the money", fa: "پول جور کردن، پول تهیه کردن" },
+  { en: "Pay someone back", fa: "پول کسی را پس دادن، بدهی را پرداخت کردن" },
+  { en: "Keep coming in", fa: "مدام آمدن، مرتب سر و کله پیدا کردن" },
+  { en: "I just...", fa: "من فقط... / نه، منظورم اینه که..." },
 ];
 
 const CLIP2_DIALOGUES: Dialogue[] = [
@@ -89,9 +96,16 @@ const CLIP2_DIALOGUES: Dialogue[] = [
 ];
 
 const CLIP2_VOCAB: Vocab[] = [
-  { en: "Locket", fa: "گردنبند قاب‌دار (جای عکس)" },
-  { en: "The little one", fa: "کوچولو، بچه" },
-  { en: "Five bucks", fa: "پنج دلار (محاوره)" },
+  { en: "It's been a week", fa: "یک هفته گذشته / یک هفته‌ست که..." },
+  { en: "Give someone trouble", fa: "اذیت کردن، دردسر ایجاد کردن، مشکل ایجاد کردن" },
+  { en: "Gallbladder", fa: "کیسه صفرا" },
+  { en: "How'd (How did)", fa: "چطور / چگونه (شکل کوتاه و محاوره‌ای)" },
+  { en: "The little one", fa: "کوچولو / بچه کوچولو — خطاب محبت‌آمیز برای کودک" },
+  { en: "Locket", fa: "گردنبند قاب‌دار (معمولاً برای گذاشتن عکس یا یادگاری داخل آن)" },
+  { en: "Save something for someone/something", fa: "چیزی را برای کسی یا چیزی نگه داشتن" },
+  { en: "She'll love that", fa: "خیلی خوشش میاد / عاشقش میشه — will برای پیش‌بینی یا اطمینان از آینده" },
+  { en: "How much?", fa: "چقدر؟ / قیمتش چنده؟" },
+  { en: "Five bucks", fa: "پنج دلار — buck در محاوره یعنی «دلار» (20 bucks = ۲۰ دلار)" },
 ];
 
 const CLIP3_DIALOGUES: Dialogue[] = [
@@ -106,9 +120,25 @@ const CLIP3_DIALOGUES: Dialogue[] = [
 ];
 
 const CLIP3_VOCAB: Vocab[] = [
-  { en: "Have an affair", fa: "رابطه‌ی پنهانی / خیانت داشتن" },
-  { en: "A friendly kiss", fa: "بوسه‌ی دوستانه" },
-  { en: "What someone's about", fa: "اینکه کسی چه‌جور آدمیه" },
+  { en: "What's wrong?", fa: "چی شده؟ / مشکل چیه؟ — برای پرسیدن دلیل ناراحتی یا مشکل" },
+  { en: "What's happened?", fa: "چی اتفاق افتاده؟ — پرسش درباره‌ی اتفاقی که افتاده" },
+  { en: "It's Nick.", fa: "نیکه / موضوع نیکه — یعنی مشکل مربوط به نیک است" },
+  { en: "Have an affair", fa: "رابطه‌ی پنهانی داشتن / خیانت کردن" },
+  { en: "They were kissing", fa: "داشتند همدیگر را می‌بوسیدند — were + ing یعنی کاری که در گذشته در حال انجام بوده" },
+  { en: "A friendly kiss", fa: "بوسه‌ی دوستانه — بوسه‌ای بدون منظور عاشقانه" },
+  { en: "What someone is about", fa: "شخصیت، هدف یا طرز فکر کسی" },
+  { en: "This thing with Nick", fa: "این قضیه با نیک — thing with someone یعنی «موضوع یا ماجرا با یک نفر»" },
+];
+
+const CLIP4_DIALOGUES: Dialogue[] = [
+  { en: "Thanks. Bye, Dad.", fa: "ممنون. خداحافظ، بابا.", t: 3.04 },
+  { en: "Bye, sweetie.", fa: "خداحافظ، عزیزم.", t: 4.14 },
+  { en: "I love you.", fa: "دوستت دارم.", t: 5.08 },
+  { en: "I love you, too.", fa: "من هم دوستت دارم.", t: 6.0 },
+];
+
+const CLIP4_VOCAB: Vocab[] = [
+  { en: "Sweetie", fa: "عزیزم / جانم / نازنینم — خطاب محبت‌آمیز، مخصوصاً از طرف والدین به فرزند یا بین افراد نزدیک" },
 ];
 
 function Card({
@@ -223,6 +253,13 @@ function Index() {
               title="The Affair"
               dialogues={CLIP3_DIALOGUES}
               vocab={CLIP3_VOCAB}
+            />
+            <LessonClip
+              videoUrl={clipVideo4.url}
+              badge="Clip 04 · Family"
+              title="Bye, Sweetie"
+              dialogues={CLIP4_DIALOGUES}
+              vocab={CLIP4_VOCAB}
             />
           </div>
         </Card>
