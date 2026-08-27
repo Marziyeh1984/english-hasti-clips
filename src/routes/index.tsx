@@ -74,7 +74,7 @@ function Index() {
     <div className="min-h-screen pb-12">
       <Navbar />
 
-      <main className="mx-auto flex max-w-2xl flex-col gap-4 px-3 pt-4">
+      <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-3 pt-4 lg:max-w-5xl lg:px-6">
         {/* HERO */}
         <Card className="text-center">
           <span className="inline-block rounded-full border border-ink/30 px-4 py-1.5 text-xs font-medium text-ink">
