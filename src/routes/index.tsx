@@ -230,36 +230,25 @@ function Index() {
               هنگام پخش، دیالوگِ در حالِ گفته‌شدن هایلایت می‌شود — با کلیک روی هر جمله، ویدیو به همان لحظه می‌رود.
             </p>
           </div>
-          <div className="mt-5 flex flex-col gap-5">
-            <LessonClip
-              videoUrl={SITE.clipVideoUrl || clipVideo.url}
-              badge="Clip 01 · Drama"
-              title="Loan Sharks"
-              dialogues={CLIP1_DIALOGUES}
-              vocab={CLIP1_VOCAB}
-            />
-            <LessonClip
-              videoUrl={clipVideo2.url}
-              badge="Clip 02 · Drama"
-              title="The Locket"
-              dialogues={CLIP2_DIALOGUES}
-              vocab={CLIP2_VOCAB}
-            />
-            <LessonClip
-              videoUrl={clipVideo3.url}
-              badge="Clip 03 · Drama"
-              title="The Affair"
-              dialogues={CLIP3_DIALOGUES}
-              vocab={CLIP3_VOCAB}
-            />
-            <LessonClip
-              videoUrl={clipVideo4.url}
-              badge="Clip 04 · Family"
-              title="Bye, Sweetie"
-              dialogues={CLIP4_DIALOGUES}
-              vocab={CLIP4_VOCAB}
-            />
+          <div className="mt-5 grid gap-5 lg:grid-cols-2">
+            {LESSONS.slice(0, 2).map((l) => (
+              <LessonClip
+                key={l.id}
+                videoUrl={l.id === "clip01" ? SITE.clipVideoUrl || l.videoUrl : l.videoUrl}
+                badge={l.badge}
+                title={l.title}
+                dialogues={l.dialogues}
+                vocab={l.vocab}
+              />
+            ))}
           </div>
+          <Link
+            to="/lessons"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border-2 border-line py-3.5 text-sm font-bold text-ink transition-all duration-300 hover:bg-blush-deep active:scale-95"
+          >
+            <ArrowLeft size={16} /> مشاهده همه‌ی درس‌ها
+          </Link>
+
         </Card>
 
         {/* INVITE */}
