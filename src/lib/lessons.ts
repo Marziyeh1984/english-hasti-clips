@@ -3,6 +3,8 @@ import clipVideo from "@/assets/clip01.mp4.asset.json";
 import clipVideo2 from "@/assets/clip02.mp4.asset.json";
 import clipVideo3 from "@/assets/clip03.mp4.asset.json";
 import clipVideo4 from "@/assets/clip04.mp4.asset.json";
+import clipVideo5 from "@/assets/clip05.mp4.asset.json";
+import clipVideo6 from "@/assets/clip06.mp4.asset.json";
 
 export type Lesson = {
   id: string;
@@ -102,6 +104,50 @@ const CLIP4_VOCAB: Vocab[] = [
   { en: "Sweetie", fa: "عزیزم / جانم / نازنینم — خطاب محبت‌آمیز، مخصوصاً از طرف والدین به فرزند یا بین افراد نزدیک" },
 ];
 
+const CLIP5_DIALOGUES: Dialogue[] = [
+  { en: "Excuse me. Where's the rice pudding?", fa: "ببخشید. پودینگ برنج کجاست؟", t: 0 },
+  { en: "Uh, second aisle on the right next to the vacuum cleaner bags.", fa: "اِم، راهروی دوم سمت راست، کنار کیسه‌های جاروبرقی.", t: 4.4 },
+  { en: "Thanks.", fa: "ممنون.", t: 7.48 },
+  { en: "Sure. That's right.", fa: "خواهش می‌کنم. درست همینه.", t: 8.02 },
+  { en: "Can I use my oil receipt?", fa: "می‌تونم از رسید روغنم استفاده کنم؟", t: 10.18 },
+  { en: "Yes, please.", fa: "بله، لطفاً.", t: 11.78 },
+  { en: "Have a nice day. Bye.", fa: "روز خوبی داشته باشید. خداحافظ.", t: 12.52 },
+  { en: "Hello.", fa: "سلام.", t: 14.24 },
+  { en: "Hello.", fa: "سلام.", t: 14.78 },
+  { en: "Yeah, I think we got everything here.", fa: "آره، فکر کنم همه‌چیز رو گرفتیم.", t: 16.82 },
+  { en: "592, please.", fa: "۵۹۲ لطفاً.", t: 19.26 },
+  { en: "With pleasure.", fa: "با کمال میل. / خوشحال می‌شوم.", t: 21.28 },
+];
+
+const CLIP5_VOCAB: Vocab[] = [
+  { en: "Where's ...?", fa: "... کجاست؟ — برای پرسیدن محل چیزی" },
+  { en: "Aisle", fa: "راهروی فروشگاه (فضای بین قفسه‌ها)" },
+  { en: "Next to", fa: "کنارِ / نزدیکِ" },
+  { en: "Have a nice day", fa: "روز خوبی داشته باشید — احوال‌پرسی پایانی مؤدبانه" },
+  { en: "With pleasure", fa: "با کمال میل — پاسخ مؤدبانه به درخواست" },
+];
+
+const CLIP6_DIALOGUES: Dialogue[] = [
+  { en: "No, I didn't have time.", fa: "نه، وقت نداشتم.", t: 3.78 },
+  { en: "Hey, are you out of your mind? What was that about?", fa: "هی، دیوونه شدی؟ این دیگه چی بود؟", t: 14.36 },
+  { en: "Sorry. I'm... I'm going home.", fa: "ببخشید. من... من دارم می‌رم خونه.", t: 17.68 },
+  { en: "You're going home?", fa: "داری می‌ری خونه؟", t: 20.2 },
+  { en: "I'm just too much work.", fa: "کارم خیلی زیاده. / خیلی تحت فشار کارم.", t: 21.24 },
+  { en: "Yeah, I'm serious. I don't have time for all of it.", fa: "آره، جدی می‌گم. برای همهٔ این‌ها وقت ندارم.", t: 22.84 },
+  { en: "I totally agree. They're monsters. They give us way too much work.", fa: "کاملاً موافقم. آن‌ها هیولا هستند. خیلی بیشتر از حد معمول به ما کار می‌دهند.", t: 25.52 },
+  { en: "Yeah, totally.", fa: "آره، کاملاً.", t: 29.44 },
+  { en: "Yeah. No, I didn't even know we were supposed to do that.", fa: "آره. نه، من حتی نمی‌دونستم قرار بود ما اون کار رو انجام بدیم.", t: 30.48 },
+];
+
+const CLIP6_VOCAB: Vocab[] = [
+  { en: "Not yet", fa: "هنوز نه" },
+  { en: "I didn't have time", fa: "وقت نداشتم" },
+  { en: "Are you out of your mind?", fa: "دیوونه شدی؟ / عقلت رو از دست دادی؟" },
+  { en: "What was that about?", fa: "اون دیگه چی بود؟ / قضیه چی بود؟" },
+  { en: "I don't have time for all of it", fa: "برای همهٔ این‌ها وقت ندارم" },
+  { en: "Way too much", fa: "خیلی بیش از حد" },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
@@ -134,5 +180,21 @@ export const LESSONS: Lesson[] = [
     title: "Bye, Sweetie",
     dialogues: CLIP4_DIALOGUES,
     vocab: CLIP4_VOCAB,
+  },
+  {
+    id: "clip05",
+    videoUrl: clipVideo5.url,
+    badge: "Clip 05 · Daily Life",
+    title: "At the Supermarket",
+    dialogues: CLIP5_DIALOGUES,
+    vocab: CLIP5_VOCAB,
+  },
+  {
+    id: "clip06",
+    videoUrl: clipVideo6.url,
+    badge: "Clip 06 · Drama",
+    title: "Too Much Work",
+    dialogues: CLIP6_DIALOGUES,
+    vocab: CLIP6_VOCAB,
   },
 ];
