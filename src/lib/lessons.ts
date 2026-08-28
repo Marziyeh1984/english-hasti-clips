@@ -5,6 +5,7 @@ import clipVideo3 from "@/assets/clip03.mp4.asset.json";
 import clipVideo4 from "@/assets/clip04.mp4.asset.json";
 import clipVideo5 from "@/assets/clip05.mp4.asset.json";
 import clipVideo6 from "@/assets/clip06.mp4.asset.json";
+import clipVideo7 from "@/assets/clip07.mp4.asset.json";
 
 export type Lesson = {
   id: string;
@@ -148,6 +149,30 @@ const CLIP6_VOCAB: Vocab[] = [
   { en: "Way too much", fa: "خیلی بیش از حد" },
 ];
 
+const CLIP7_DIALOGUES: Dialogue[] = [
+  { en: "Who the hell is Sasha?", fa: "ساشا دیگه کیه؟ / ساشا کیه این وسط؟", t: 1.22 },
+  { en: "You heard me.", fa: "شنیدی چی گفتم. / حرفم رو شنیدی.", t: 5.44 },
+  { en: "Okay. So, you're just going to ignore me?", fa: "باشه. یعنی همین‌طوری می‌خوای منو نادیده بگیری؟", t: 7.44 },
+  { en: "Why are you searching through my phone?", fa: "چرا داری گوشی منو زیر و رو می‌کنی؟", t: 9.34 },
+  { en: "Do not answer my question with another question.", fa: "با سؤال، جواب سؤال منو نده.", t: 10.92 },
+  {
+    en: "No, that's the kind of thing that makes me think I can't trust you.",
+    fa: "نه، این کارا باعث می‌شه شک کنم که می‌شه بهت اعتماد کرد یا نه.",
+    t: 13.26,
+  },
+];
+
+const CLIP7_VOCAB: Vocab[] = [
+  { en: "Who the hell...?", fa: "دیگه کیه...؟ / این ... کیه؟ — برای تعجب یا عصبانیت. مثال: Who the hell are you? «تو دیگه کی هستی؟»" },
+  { en: "You heard me.", fa: "شنیدی چی گفتم. / حرفم رو شنیدی." },
+  { en: "Ignore someone", fa: "کسی را نادیده گرفتن، محل نگذاشتن" },
+  { en: "Search through something", fa: "داخل چیزی را گشتن، زیر و رو کردن" },
+  { en: "Answer a question with a question", fa: "جواب سؤال را با سؤال دادن" },
+  { en: "The kind of thing that...", fa: "از اون چیزهایی که... / همون چیزی که... — مثال: That's the kind of thing I hate. «این همون چیزیه که ازش متنفرم.»" },
+  { en: "Make someone think...", fa: "باعث شدن کسی فکر کند که..." },
+  { en: "Trust someone", fa: "به کسی اعتماد داشتن" },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
@@ -196,5 +221,13 @@ export const LESSONS: Lesson[] = [
     title: "Too Much Work",
     dialogues: CLIP6_DIALOGUES,
     vocab: CLIP6_VOCAB,
+  },
+  {
+    id: "clip07",
+    videoUrl: clipVideo7.url,
+    badge: "Clip 07 · Drama",
+    title: "Who Is Sasha?",
+    dialogues: CLIP7_DIALOGUES,
+    vocab: CLIP7_VOCAB,
   },
 ];
