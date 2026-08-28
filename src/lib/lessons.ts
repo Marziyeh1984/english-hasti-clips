@@ -5,6 +5,7 @@ import clipVideo3 from "@/assets/clip03.mp4.asset.json";
 import clipVideo4 from "@/assets/clip04.mp4.asset.json";
 import clipVideo5 from "@/assets/clip05.mp4.asset.json";
 import clipVideo6 from "@/assets/clip06.mp4.asset.json";
+import clipVideo7 from "@/assets/clip07.mp4.asset.json";
 
 export type Lesson = {
   id: string;
@@ -196,5 +197,13 @@ export const LESSONS: Lesson[] = [
     title: "Too Much Work",
     dialogues: CLIP6_DIALOGUES,
     vocab: CLIP6_VOCAB,
+  },
+  {
+    id: "clip07",
+    videoUrl: clipVideo7.url,
+    badge: "Clip 07 · Drama",
+    title: "Who Is Sasha?",
+    dialogues: CLIP7_DIALOGUES,
+    vocab: CLIP7_VOCAB,
   },
 ];
