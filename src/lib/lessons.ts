@@ -3,6 +3,8 @@ import clipVideo from "@/assets/clip01.mp4.asset.json";
 import clipVideo2 from "@/assets/clip02.mp4.asset.json";
 import clipVideo3 from "@/assets/clip03.mp4.asset.json";
 import clipVideo4 from "@/assets/clip04.mp4.asset.json";
+import clipVideo5 from "@/assets/clip05.mp4.asset.json";
+import clipVideo6 from "@/assets/clip06.mp4.asset.json";
 
 export type Lesson = {
   id: string;
