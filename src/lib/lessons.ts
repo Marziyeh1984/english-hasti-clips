@@ -181,4 +181,20 @@ export const LESSONS: Lesson[] = [
     dialogues: CLIP4_DIALOGUES,
     vocab: CLIP4_VOCAB,
   },
+  {
+    id: "clip05",
+    videoUrl: clipVideo5.url,
+    badge: "Clip 05 · Daily Life",
+    title: "At the Supermarket",
+    dialogues: CLIP5_DIALOGUES,
+    vocab: CLIP5_VOCAB,
+  },
+  {
+    id: "clip06",
+    videoUrl: clipVideo6.url,
+    badge: "Clip 06 · Drama",
+    title: "Too Much Work",
+    dialogues: CLIP6_DIALOGUES,
+    vocab: CLIP6_VOCAB,
+  },
 ];
