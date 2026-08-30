@@ -224,6 +224,28 @@ const CLIP9_VOCAB: Vocab[] = [
   { en: "Get out of here", fa: "از اینجا برو بیرون." },
 ];
 
+const CLIP10_DIALOGUES: Dialogue[] = [
+  { en: "This is the hallway.", fa: "این راهرو است.", t: 0 },
+  { en: "Um, I would suggest that we sit in the living room.", fa: "اِم... پیشنهاد می‌کنم بریم توی اتاق نشیمن بشینیم.", t: 2.32 },
+  { en: "Yeah.", fa: "آره.", t: 6.1 },
+  { en: "May I introduce you to your sister?", fa: "اجازه می‌دی خواهرت رو بهت معرفی کنم؟", t: 7.66 },
+  { en: "So, you're Angelina?", fa: "پس تو آنجلینا هستی؟", t: 12.38 },
+  { en: "Yeah. Um, and you're Meech?", fa: "آره. اِم... و تو میچ هستی؟", t: 14.22 },
+  { en: "Meech.", fa: "میچ.", t: 15.4 },
+  { en: "Michelle?", fa: "میشل؟", t: 16.0 },
+  { en: "Meech.", fa: "میچ.", t: 16.66 },
+];
+
+const CLIP10_VOCAB: Vocab[] = [
+  { en: "Hallway", fa: "راهرو / دالان." },
+  { en: "I would suggest...", fa: "پیشنهاد می‌کنم... — عبارتی مؤدبانه برای دادن پیشنهاد." },
+  { en: "That we sit", fa: "که ما بنشینیم." },
+  { en: "Living room", fa: "اتاق نشیمن / پذیرایی." },
+  { en: "May I introduce you to...?", fa: "اجازه می‌دی معرفی کنم...؟ — عبارت بسیار مؤدبانه برای معرفی کسی." },
+  { en: "Your sister", fa: "خواهرت." },
+  { en: "So, you're...?", fa: "پس تو... هستی؟ — برای تأیید هویت یا آشنایی." },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
