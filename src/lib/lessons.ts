@@ -288,4 +288,12 @@ export const LESSONS: Lesson[] = [
     dialogues: CLIP8_DIALOGUES,
     vocab: CLIP8_VOCAB,
   },
+  {
+    id: "clip09",
+    videoUrl: clipVideo9.url,
+    badge: "Clip 09 · Drama",
+    title: "You Kidnapped My Child",
+    dialogues: CLIP9_DIALOGUES,
+    vocab: CLIP9_VOCAB,
+  },
 ];
