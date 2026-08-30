@@ -319,4 +319,12 @@ export const LESSONS: Lesson[] = [
     dialogues: CLIP9_DIALOGUES,
     vocab: CLIP9_VOCAB,
   },
+  {
+    id: "clip10",
+    videoUrl: clipVideo10.url,
+    badge: "Clip 10 · Family",
+    title: "Meet the Sister",
+    dialogues: CLIP10_DIALOGUES,
+    vocab: CLIP10_VOCAB,
+  },
 ];
