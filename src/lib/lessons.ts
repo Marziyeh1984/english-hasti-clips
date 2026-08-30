@@ -174,6 +174,26 @@ const CLIP7_VOCAB: Vocab[] = [
   { en: "Trust someone", fa: "به کسی اعتماد داشتن" },
 ];
 
+const CLIP8_DIALOGUES: Dialogue[] = [
+  { en: "Can I help you?", fa: "می‌تونم کمکتون کنم؟", t: 1.66 },
+  { en: "Do you recognize me?", fa: "منو می‌شناسی؟", t: 5.1 },
+  { en: "Uh, no.", fa: "اِم، نه.", t: 8.26 },
+  { en: "Can we talk for a minute alone?", fa: "می‌تونیم یه دقیقه تنها حرف بزنیم؟", t: 10.46 },
+  { en: "Do you have a moment?", fa: "یه لحظه وقت داری؟", t: 13.84 },
+  { en: "Totally weird.", fa: "خیلی عجیبه.", t: 14.88 },
+  { en: "Wait a minute, please.", fa: "لطفاً یه لحظه صبر کن.", t: 15.8 },
+  { en: "There's something I want to tell you.", fa: "یه چیزی هست که می‌خوام بهت بگم.", t: 17.44 },
+];
+
+const CLIP8_VOCAB: Vocab[] = [
+  { en: "Do you recognize me?", fa: "منو می‌شناسی؟" },
+  { en: "Talk for a minute", fa: "یه لحظه صحبت کردن" },
+  { en: "Alone", fa: "تنها، دونفره" },
+  { en: "Weird", fa: "عجیب، غیرعادی، ناجور" },
+  { en: "Wait a minute", fa: "یه لحظه صبر کن" },
+  { en: "There's something I want to tell you", fa: "یه چیزی می‌خوام بهت بگم — عبارت بسیار رایج" },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
