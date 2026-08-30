@@ -251,4 +251,12 @@ export const LESSONS: Lesson[] = [
     dialogues: CLIP7_DIALOGUES,
     vocab: CLIP7_VOCAB,
   },
+  {
+    id: "clip08",
+    videoUrl: clipVideo8.url,
+    badge: "Clip 08 · Drama",
+    title: "Do You Recognize Me?",
+    dialogues: CLIP8_DIALOGUES,
+    vocab: CLIP8_VOCAB,
+  },
 ];
