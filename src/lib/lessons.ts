@@ -195,6 +195,34 @@ const CLIP8_VOCAB: Vocab[] = [
   { en: "There's something I want to tell you", fa: "یه چیزی می‌خوام بهت بگم — عبارت بسیار رایج" },
 ];
 
+const CLIP9_DIALOGUES: Dialogue[] = [
+  { en: "There's something I want to tell you.", fa: "یه چیزی هست که می‌خوام بهت بگم.", t: 0 },
+  { en: "It won't take long.", fa: "زیاد طول نمی‌کشه.", t: 3.0 },
+  { en: "Mom, that woman over there, she's kind of strange.", fa: "مامان، اون زنه اونجا یه جورایی عجیبه.", t: 6.24 },
+  { en: "What do you want?", fa: "چی می‌خوای؟", t: 10.74 },
+  { en: "You kidnapped my child.", fa: "تو بچهٔ منو دزدیدی.", t: 12.0 },
+  { en: "WHAT? YOU KIDNAPPED MY CHILD.", fa: "چی؟! تو بچهٔ منو دزدیدی!", t: 14.74 },
+  { en: "What is wrong with you?", fa: "مشکلت چیه؟", t: 16.2 },
+  { en: "She is my daughter.", fa: "اون دختر منه.", t: 17.2 },
+  { en: "Stop it.", fa: "بس کن.", t: 18.0 },
+  { en: "GET OUT OF HERE.", fa: "از اینجا برو بیرون.", t: 18.7 },
+  { en: "STOP IT. GET OUT OF HERE NOW.", fa: "بس کن! همین الان از اینجا برو بیرون!", t: 19.2 },
+  { en: "GO. GO.", fa: "برو! برو!", t: 19.8 },
+  { en: "GET OUT OF HERE.", fa: "از اینجا برو.", t: 20.2 },
+];
+
+const CLIP9_VOCAB: Vocab[] = [
+  { en: "It won't take long", fa: "طول نمی‌کشه / زیاد وقتت رو نمی‌گیرم." },
+  { en: "Over there", fa: "اونجا / آن طرف." },
+  { en: "Kind of", fa: "یه جورایی / تا حدی." },
+  { en: "Strange", fa: "عجیب / غیرعادی." },
+  { en: "What do you want?", fa: "چی می‌خوای؟ / چه کار داری؟" },
+  { en: "Kidnap someone", fa: "کسی را دزدیدن / ربودن." },
+  { en: "What is wrong with you?", fa: "مشکلت چیه؟ / چته؟ (برای عصبانیت یا تعجب)" },
+  { en: "Stop it", fa: "بس کن / دست بردار." },
+  { en: "Get out of here", fa: "از اینجا برو بیرون." },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
