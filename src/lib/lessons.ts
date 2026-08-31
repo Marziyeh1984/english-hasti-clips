@@ -277,6 +277,38 @@ const CLIP11_VOCAB: Vocab[] = [
   { en: "Show someone something", fa: "چیزی را به کسی نشان دادن." },
 ];
 
+const CLIP12_DIALOGUES: Dialogue[] = [
+  {
+    en: "Oh, it looks like there's a nuchal cord.",
+    fa: "اوه، انگار بند ناف دور گردنِ نوزاد پیچیده.",
+    t: 0,
+  },
+  { en: "What does that mean?", fa: "یعنی چی؟", t: 2.04 },
+  {
+    en: "Uh, the umbilical cord is wrapped around your baby.",
+    fa: "اِ... یعنی بند ناف دور بچه‌ات پیچیده.",
+    t: 3.12,
+  },
+  {
+    en: "It's just something to keep an eye on.",
+    fa: "فقط باید زیر نظرش داشته باشیم / باید مراقبش باشیم.",
+    t: 5.92,
+  },
+  {
+    en: "How have you been feeling, Lauren?",
+    fa: "لورِن، این روزها حالت چطوره؟ / چه احساسی داری؟",
+    t: 8.86,
+  },
+];
+
+const CLIP12_VOCAB: Vocab[] = [
+  { en: "Nuchal cord", fa: "پیچیدن بند ناف به دور گردن جنین (اصطلاح پزشکی)." },
+  { en: "Umbilical cord", fa: "بند ناف." },
+  { en: "Wrapped around", fa: "دور چیزی پیچیده شدن." },
+  { en: "Keep an eye on", fa: "زیر نظر داشتن، مراقب بودن." },
+  { en: "How have you been feeling?", fa: "حالت چطور بوده؟ / این مدت چه حسی داشتی؟" },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
