@@ -247,6 +247,34 @@ const CLIP10_VOCAB: Vocab[] = [
   { en: "So, you're...?", fa: "پس تو... هستی؟ — برای تأیید هویت یا آشنایی." },
 ];
 
+const CLIP11_DIALOGUES: Dialogue[] = [
+  { en: "You want something to drink?", fa: "چیزی برای نوشیدن می‌خوای؟", t: 0 },
+  { en: "Yes. Uh, water, please.", fa: "بله. اِم، لطفاً آب.", t: 0.84 },
+  { en: "Coming right up.", fa: "الان میارم.", t: 2.64 },
+  { en: "Thanks.", fa: "ممنون.", t: 3.8 },
+  {
+    en: "Um, so this, um, is our living room as you can see.",
+    fa: "اِم، خب، اینجا همان‌طور که می‌بینی، اتاق نشیمن ماست.",
+    t: 6.76,
+  },
+  { en: "So, um, we have two bedrooms.", fa: "خب، ما دو تا اتاق خواب داریم.", t: 10.72 },
+  {
+    en: "Angie, would you like to show her your room?",
+    fa: "آنجی، دوست داری اتاقت را به او نشان بدهی؟",
+    t: 12.56,
+  },
+];
+
+const CLIP11_VOCAB: Vocab[] = [
+  { en: "Something to drink", fa: "چیزی برای نوشیدن." },
+  { en: "Coming right up", fa: "الان میارم / همین الان آماده می‌کنم — عبارت رایج در رستوران، خانه یا خدمات." },
+  { en: "As you can see", fa: "همان‌طور که می‌بینید." },
+  { en: "Living room", fa: "اتاق نشیمن / پذیرایی." },
+  { en: "Bedroom", fa: "اتاق خواب." },
+  { en: "Would you like to...?", fa: "دوست داری...؟ — روشی مؤدبانه برای پیشنهاد یا درخواست." },
+  { en: "Show someone something", fa: "چیزی را به کسی نشان دادن." },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
