@@ -398,4 +398,12 @@ export const LESSONS: Lesson[] = [
     dialogues: CLIP11_DIALOGUES,
     vocab: CLIP11_VOCAB,
   },
+  {
+    id: "clip12",
+    videoUrl: clipVideo12.url,
+    badge: "Clip 12 · Medical",
+    title: "Nuchal Cord",
+    dialogues: CLIP12_DIALOGUES,
+    vocab: CLIP12_VOCAB,
+  },
 ];
