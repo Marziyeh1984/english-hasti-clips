@@ -356,4 +356,12 @@ export const LESSONS: Lesson[] = [
     dialogues: CLIP10_DIALOGUES,
     vocab: CLIP10_VOCAB,
   },
+  {
+    id: "clip11",
+    videoUrl: clipVideo11.url,
+    badge: "Clip 11 · Family",
+    title: "The House Tour",
+    dialogues: CLIP11_DIALOGUES,
+    vocab: CLIP11_VOCAB,
+  },
 ];
