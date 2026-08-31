@@ -11,6 +11,7 @@ import clipVideo9 from "@/assets/clip09.mp4.asset.json";
 import clipVideo10 from "@/assets/clip10.mp4.asset.json";
 import clipVideo11 from "@/assets/clip11.mp4.asset.json";
 import clipVideo12 from "@/assets/clip12.mp4.asset.json";
+import clipVideo13 from "@/assets/clip13.mp4.asset.json";
 
 
 export type Lesson = {
@@ -309,6 +310,25 @@ const CLIP12_VOCAB: Vocab[] = [
   { en: "How have you been feeling?", fa: "حالت چطور بوده؟ / این مدت چه حسی داشتی؟" },
 ];
 
+const CLIP13_DIALOGUES: Dialogue[] = [
+  { en: "Uh, Julie is your midwife, correct?", fa: "اِ... جولی ماما (قابلگی) شماست، درسته؟", t: 0 },
+  { en: "We have a midwife.", fa: "ما ماما داریم.", t: 3.62 },
+  { en: "With a high-risk pregnancy like this, I do recommend having one available.", fa: "با یه بارداری پرخطر مثل این، من واقعاً توصیه می‌کنم که یک ماما در دسترس داشته باشید.", t: 5.14 },
+  { en: "If you're having trouble, the hospital actually has a program that would be perfect.", fa: "اگه به مشکلی خوردی، بیمارستان اتفاقاً یه برنامه‌ای داره که دقیقاً به دردتون می‌خوره.", t: 9.96 },
+  { en: "Right? Of course.", fa: "درسته. البته.", t: 15.42 },
+];
+
+const CLIP13_VOCAB: Vocab[] = [
+  { en: "Midwife", fa: "ماما / قابله — متخصص مراقبت از مادر و نوزاد در دوران بارداری و زایمان." },
+  { en: "High-risk pregnancy", fa: "بارداری پرخطر — بارداری که نیاز به مراقبت و نظارت بیشتر دارد." },
+  { en: "I do recommend...", fa: "واقعاً توصیه می‌کنم... — تأکید روی توصیه با استفاده از do." },
+  { en: "Available", fa: "در دسترس / آماده." },
+  { en: "Have trouble", fa: "مشکل داشتن / به مشکل خوردن." },
+  { en: "Program", fa: "برنامه / طرح — مثلاً برنامه‌ی حمایتی بیمارستان." },
+  { en: "Would be perfect", fa: "خیلی مناسب خواهد بود / عالی خواهد بود." },
+  { en: "Of course", fa: "البته / قطعاً." },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
@@ -405,5 +425,13 @@ export const LESSONS: Lesson[] = [
     title: "Nuchal Cord",
     dialogues: CLIP12_DIALOGUES,
     vocab: CLIP12_VOCAB,
+  },
+  {
+    id: "clip13",
+    videoUrl: clipVideo13.url,
+    badge: "Clip 13 · Medical",
+    title: "Your Midwife",
+    dialogues: CLIP13_DIALOGUES,
+    vocab: CLIP13_VOCAB,
   },
 ];
