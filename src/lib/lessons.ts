@@ -426,4 +426,12 @@ export const LESSONS: Lesson[] = [
     dialogues: CLIP12_DIALOGUES,
     vocab: CLIP12_VOCAB,
   },
+  {
+    id: "clip13",
+    videoUrl: clipVideo13.url,
+    badge: "Clip 13 · Medical",
+    title: "Your Midwife",
+    dialogues: CLIP13_DIALOGUES,
+    vocab: CLIP13_VOCAB,
+  },
 ];
