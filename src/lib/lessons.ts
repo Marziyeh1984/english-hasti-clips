@@ -12,6 +12,7 @@ import clipVideo10 from "@/assets/clip10.mp4.asset.json";
 import clipVideo11 from "@/assets/clip11.mp4.asset.json";
 import clipVideo12 from "@/assets/clip12.mp4.asset.json";
 import clipVideo13 from "@/assets/clip13.mp4.asset.json";
+import clipVideo14 from "@/assets/clip14.mp4.asset.json";
 
 
 export type Lesson = {
