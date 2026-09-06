@@ -330,6 +330,25 @@ const CLIP13_VOCAB: Vocab[] = [
   { en: "Of course", fa: "البته / قطعاً." },
 ];
 
+const CLIP14_DIALOGUES: Dialogue[] = [
+  { en: "Wow. Oh, look at you two. So cute.", fa: "وای. اوه، شما دو تا رو ببین. چقدر نازید.", t: 0.66 },
+  { en: "Where's Toby?", fa: "توبی کجاست؟", t: 5.3 },
+  { en: "Oh, he's just in the back.", fa: "اوه، اون پشتِه / اون عقبه.", t: 6.48 },
+  { en: "That boy's soaking up some rays.", fa: "اون پسر داره یه کم آفتاب می‌گیره.", t: 8.4 },
+  { en: "He needs them.", fa: "بهش نیاز داره.", t: 10.56 },
+  { en: "Um, I got you a little something.", fa: "اِم... یه چیز کوچیک برات گرفتم.", t: 12.98 },
+  { en: "Oh, wow. So thoughtful.", fa: "اوه، وای. چقدم بافکر و مهربونی.", t: 16.14 },
+];
+
+const CLIP14_VOCAB: Vocab[] = [
+  { en: "Look at you two", fa: "نگاه کن به شما دوتا — معمولاً با لحن محبت‌آمیز." },
+  { en: "Soaking up some rays", fa: "آفتاب گرفتن، از نور خورشید لذت بردن — اصطلاح محاوره‌ای." },
+  { en: "Cute", fa: "ناز، دوست‌داشتنی." },
+  { en: "In the back", fa: "پشت سر / قسمت عقب." },
+  { en: "Thoughtful", fa: "بافکر، کسی که به احساسات و نیازهای دیگران توجه می‌کند." },
+  { en: "I got you a little something", fa: "یه هدیه کوچیک برات گرفتم — معمولاً برای کادوی غیرمنتظره یا کوچک." },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
