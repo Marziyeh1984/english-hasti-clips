@@ -454,4 +454,12 @@ export const LESSONS: Lesson[] = [
     dialogues: CLIP13_DIALOGUES,
     vocab: CLIP13_VOCAB,
   },
+  {
+    id: "clip14",
+    videoUrl: clipVideo14.url,
+    badge: "Clip 14 · Family",
+    title: "So Cute",
+    dialogues: CLIP14_DIALOGUES,
+    vocab: CLIP14_VOCAB,
+  },
 ];
