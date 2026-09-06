@@ -14,16 +14,164 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          note: string | null
+          payment_date: string
+          receipt_path: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["pay_status"]
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          note?: string | null
+          payment_date: string
+          receipt_path: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["pay_status"]
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          note?: string | null
+          payment_date?: string
+          receipt_path?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["pay_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          id: string
+          name?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          id: string
+          payment_verified_at: string | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["sub_status"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          payment_verified_at?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["sub_status"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          payment_verified_at?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["sub_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      videos: {
+        Row: {
+          access_type: Database["public"]["Enums"]["video_access"]
+          created_at: string
+          description: string
+          id: string
+          thumbnail: string | null
+          title: string
+          video_url: string
+        }
+        Insert: {
+          access_type?: Database["public"]["Enums"]["video_access"]
+          created_at?: string
+          description?: string
+          id?: string
+          thumbnail?: string | null
+          title: string
+          video_url: string
+        }
+        Update: {
+          access_type?: Database["public"]["Enums"]["video_access"]
+          created_at?: string
+          description?: string
+          id?: string
+          thumbnail?: string | null
+          title?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      expire_subscriptions: { Args: never; Returns: undefined }
+      has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      pay_status: "pending" | "approved" | "rejected"
+      sub_status: "pending" | "active" | "expired"
+      video_access: "free" | "premium"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +298,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      pay_status: ["pending", "approved", "rejected"],
+      sub_status: ["pending", "active", "expired"],
+      video_access: ["free", "premium"],
+    },
   },
 } as const
