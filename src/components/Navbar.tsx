@@ -53,12 +53,20 @@ export function Navbar() {
           English Hasti
         </Link>
 
-        <Link
-          to="/signup"
-          className="shrink-0 rounded-full bg-ink px-4 py-1.5 text-[12px] font-bold text-cream transition-all duration-300 hover:scale-105 hover:opacity-90 active:scale-90 lg:px-6 lg:py-2.5 lg:text-[13px]"
-        >
-          عضویت
-        </Link>
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            to="/dashboard"
+            className="hidden rounded-full border-2 border-ink/20 px-4 py-1.5 text-[12px] font-bold text-ink transition-all duration-300 hover:bg-blush-deep active:scale-90 lg:inline-block lg:py-2 lg:text-[13px]"
+          >
+            حساب من
+          </Link>
+          <Link
+            to="/auth"
+            className="rounded-full bg-ink px-4 py-1.5 text-[12px] font-bold text-cream transition-all duration-300 hover:scale-105 hover:opacity-90 active:scale-90 lg:px-6 lg:py-2.5 lg:text-[13px]"
+          >
+            ورود / عضویت
+          </Link>
+        </div>
       </nav>
 
       {open && (
@@ -70,6 +78,13 @@ export function Navbar() {
               className="rounded-xl px-3 py-3 text-sm text-ink transition-colors hover:bg-blush-deep"
             >
               کتابخانه درس‌ها
+            </Link>
+            <Link
+              to="/dashboard"
+              onClick={() => setOpen(false)}
+              className="rounded-xl px-3 py-3 text-sm text-ink transition-colors hover:bg-blush-deep"
+            >
+              حساب من
             </Link>
             {[
               { href: "/#plan", label: "پلن اشتراک" },
