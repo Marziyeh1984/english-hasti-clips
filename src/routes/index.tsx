@@ -33,7 +33,7 @@ export const Route = createFileRoute("/")({
 const STATS = [
   { n: "۳۰", l: "کلیپ در ماه" },
   { n: "۱۰۰٪", l: "ترجمه فارسی" },
-  { n: "روزانه", l: "ارسال ایمیل" },
+  { n: "روزانه", l: "ارسال به اکانت" },
 ];
 
 const STEPS = [
@@ -84,7 +84,7 @@ function Index() {
           </h1>
           <p className="mx-auto mt-4 max-w-sm text-sm leading-8 text-muted-foreground">
             هر روز یک کلیپ کوتاه از فیلم‌های واقعی — با دیالوگ انگلیسی، ترجمه دقیق
-            فارسی، و توضیح اصطلاحات کاربردی — مستقیم در ایمیل شما.
+            فارسی، و توضیح اصطلاحات کاربردی — مستقیم در اکانت شما.
           </p>
 
           <div className="relative mt-6 overflow-hidden rounded-[22px] border-2 border-line">
@@ -97,7 +97,7 @@ function Index() {
 
           <div className="mt-6 flex flex-col gap-3">
             <Link
-              to="/signup"
+              to="/auth"
               className="flex w-full items-center justify-center gap-2 rounded-full bg-ink py-4 text-[15px] font-bold text-cream transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-95"
             >
               <ArrowLeft size={18} /> دریافت اشتراک ماهانه
