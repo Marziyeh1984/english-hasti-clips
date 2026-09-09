@@ -168,13 +168,13 @@ function Index() {
             برای دریافت کلیپ‌های روزانه عضو شوید
           </h4>
           <p className="mx-auto mt-2 max-w-xs text-[13px] leading-7 text-muted-foreground">
-            روزانه یک درس جدید مستقیم به ایمیل شما. بدون نیاز به ورود به سایت.
+            روزانه یک الی دو درس جدید مستقیم به اکانت شما.
           </p>
           <Link
-            to="/signup"
+            to="/auth"
             className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-bold text-cream transition-all duration-300 hover:opacity-90 hover:scale-105 active:scale-95"
           >
-            <ArrowLeft size={16} /> عضویت ماهانه
+            <ArrowLeft size={16} /> ورود / عضویت
           </Link>
         </Card>
 
