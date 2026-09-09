@@ -9,7 +9,7 @@ export const SITE = {
   website: "https://reel-english-flow.lovable.app",
   cardNumber: "6037 9974 8890 7297",
   cardHolder: "عمره",
-  price: "۴۹۰٬۰۰۰ تومان",
+  price: "۲۹۰٬۰۰۰ تومان",
   // ویدیو نمونه‌ی درس — لینک فایل ویدیو را اینجا قرار دهید
   clipVideoUrl: "",
 };
