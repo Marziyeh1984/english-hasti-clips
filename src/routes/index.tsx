@@ -206,7 +206,7 @@ function Index() {
             ))}
           </div>
           <Link
-            to="/signup"
+            to="/auth"
             className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink py-4 text-sm font-bold text-cream transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-95"
           >
             <ArrowLeft size={16} /> شروع اشتراک — {SITE.price}
