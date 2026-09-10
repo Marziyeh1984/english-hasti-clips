@@ -4,9 +4,9 @@ import { Menu, X } from "lucide-react";
 import { SITE } from "@/lib/site";
 
 const LINKS = [
-  { href: "/lessons", label: "کتابخانه درس‌ها", internal: true },
+  { href: "/", label: "صفحه اصلی", internal: true },
   { href: "/#plan", label: "پلن اشتراک" },
-  { href: "/#how", label: "چطور کار می‌کنه" },
+  { href: "/lessons", label: "کتابخانه درس‌ها", internal: true },
 ];
 
 export function Navbar() {
@@ -73,22 +73,14 @@ export function Navbar() {
         <div className="mx-auto mt-2 max-w-2xl rounded-3xl border-2 border-line bg-blush p-4 lg:hidden">
           <div className="flex flex-col gap-1 text-center">
             <Link
-              to="/lessons"
+              to="/"
               onClick={() => setOpen(false)}
               className="rounded-xl px-3 py-3 text-sm text-ink transition-colors hover:bg-blush-deep"
             >
-              کتابخانه درس‌ها
-            </Link>
-            <Link
-              to="/dashboard"
-              onClick={() => setOpen(false)}
-              className="rounded-xl px-3 py-3 text-sm text-ink transition-colors hover:bg-blush-deep"
-            >
-              حساب من
+              صفحه اصلی
             </Link>
             {[
               { href: "/#plan", label: "پلن اشتراک" },
-              { href: "/#how", label: "چطور کار می‌کنه" },
             ].map((l) => (
               <a
                 key={l.href}
@@ -99,6 +91,13 @@ export function Navbar() {
                 {l.label}
               </a>
             ))}
+            <Link
+              to="/lessons"
+              onClick={() => setOpen(false)}
+              className="rounded-xl px-3 py-3 text-sm text-ink transition-colors hover:bg-blush-deep"
+            >
+              کتابخانه درس‌ها
+            </Link>
             <a
               href={SITE.telegramChannel}
               target="_blank"
