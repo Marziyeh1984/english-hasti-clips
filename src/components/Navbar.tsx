@@ -98,22 +98,6 @@ export function Navbar() {
             >
               کتابخانه درس‌ها
             </Link>
-            <a
-              href={SITE.telegramChannel}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-xl px-3 py-3 text-sm text-ink transition-colors hover:bg-blush-deep"
-            >
-              کانال تلگرام
-            </a>
-            <a
-              href={SITE.instagram}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-xl px-3 py-3 text-sm text-ink transition-colors hover:bg-blush-deep"
-            >
-              اینستاگرام
-            </a>
           </div>
         </div>
       )}
