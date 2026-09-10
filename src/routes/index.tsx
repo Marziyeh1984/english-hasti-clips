@@ -133,7 +133,7 @@ function Index() {
               نمونه درس‌ها
             </span>
             <h2 className="mt-3 text-[24px] font-extrabold leading-snug text-ink">
-              یک کلیپ از کتابخانه‌ی ما
+              نمونه کلیپ‌ها از کتابخانه درس‌ها
             </h2>
             <p className="mx-auto mt-2 max-w-sm text-[13px] leading-7 text-muted-foreground">
               هر درس شامل دیالوگ انگلیسی، ترجمه دقیق فارسی و توضیح اصطلاحات کاربردی است.
