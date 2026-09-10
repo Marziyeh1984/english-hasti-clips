@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { LogOut, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyAccount, updateMyProfile } from "@/lib/account.functions";
-import { PageShell, Card, Field, PrimaryButton, StatusPill } from "@/components/PageShell";
+import { PageShell, Card, Field, PrimaryButton, StatusPill, BackToHome } from "@/components/PageShell";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -50,6 +50,7 @@ function Dashboard() {
 
   return (
     <PageShell>
+      <BackToHome className="mb-4" />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-script text-5xl text-ink">داشبورد من</h1>
         <div className="flex items-center gap-2">

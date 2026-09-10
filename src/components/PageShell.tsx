@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { SocialLinks } from "@/components/SocialLinks";
 import { SITE } from "@/lib/site";
@@ -74,5 +76,16 @@ export function StatusPill({
     <span className={`inline-block rounded-full px-3 py-1 text-[12px] font-bold ${map[tone]}`}>
       {children}
     </span>
+  );
+}
+
+export function BackToHome({ className = "" }: { className?: string }) {
+  return (
+    <Link
+      to="/"
+      className={`inline-flex items-center gap-1.5 text-[13px] font-semibold text-ink/70 transition-colors hover:text-ink ${className}`}
+    >
+      <ArrowRight size={15} /> برگشت به صفحه اصلی
+    </Link>
   );
 }

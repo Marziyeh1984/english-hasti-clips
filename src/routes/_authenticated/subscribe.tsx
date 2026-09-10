@@ -5,7 +5,7 @@ import { Copy, Check, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { submitPayment } from "@/lib/account.functions";
 import { SITE } from "@/lib/site";
-import { PageShell, Card, Field, PrimaryButton } from "@/components/PageShell";
+import { PageShell, Card, Field, PrimaryButton, BackToHome } from "@/components/PageShell";
 
 export const Route = createFileRoute("/_authenticated/subscribe")({
   head: () => ({
@@ -32,7 +32,7 @@ function SubscribePage() {
   const navigate = useNavigate();
   const send = useServerFn(submitPayment);
   const [copied, setCopied] = useState(false);
-  const [amount, setAmount] = useState("490000");
+  const [amount, setAmount] = useState("290000");
   const [date, setDate] = useState(todayISO());
   const [note, setNote] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -94,6 +94,7 @@ function SubscribePage() {
 
   return (
     <PageShell>
+      <BackToHome className="mb-4" />
       <h1 className="text-center font-script text-5xl text-ink">خرید اشتراک</h1>
       <p className="mt-2 text-center text-sm text-ink/70">
         مبلغ اشتراک ماهانه: <span className="font-bold text-ink">{SITE.price}</span>

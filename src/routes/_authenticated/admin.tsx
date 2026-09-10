@@ -12,7 +12,7 @@ import {
   adminCreateVideo,
   adminDeleteVideo,
 } from "@/lib/admin.functions";
-import { PageShell, Card, Field, PrimaryButton, StatusPill } from "@/components/PageShell";
+import { PageShell, Card, Field, PrimaryButton, StatusPill, BackToHome } from "@/components/PageShell";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -125,6 +125,7 @@ function AdminPage() {
 
   return (
     <PageShell>
+      <BackToHome className="mb-4" />
       <h1 className="font-script text-5xl text-ink">پنل مدیریت</h1>
 
       {error && <p className="mt-3 text-[13px] font-semibold text-red-700">{error}</p>}
