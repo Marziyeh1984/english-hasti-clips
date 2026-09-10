@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { PageShell, Card, Field, PrimaryButton } from "@/components/PageShell";
+import { PageShell, Card, Field, PrimaryButton, BackToHome } from "@/components/PageShell";
 
 export const Route = createFileRoute("/reset-password")({
   ssr: false,
@@ -51,6 +51,7 @@ function ResetPasswordPage() {
   return (
     <PageShell>
       <div className="mx-auto max-w-md">
+        <BackToHome className="mb-4" />
         <h1 className="text-center font-script text-5xl text-ink">رمز تازه</h1>
         <Card className="mt-6">
           {!ready ? (

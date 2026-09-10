@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Lock, Play, X } from "lucide-react";
 import { listAllVideos, getVideoPlaybackUrl } from "@/lib/videos.functions";
 import { getMyAccount } from "@/lib/account.functions";
-import { PageShell, Card, StatusPill } from "@/components/PageShell";
+import { PageShell, Card, StatusPill, BackToHome } from "@/components/PageShell";
 
 export const Route = createFileRoute("/_authenticated/library")({
   head: () => ({
@@ -59,6 +59,7 @@ function LibraryPage() {
 
   return (
     <PageShell>
+      <BackToHome className="mb-4" />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-script text-5xl text-ink">کتابخانه ویدیوها</h1>
         {isActive ? (

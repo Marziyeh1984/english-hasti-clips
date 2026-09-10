@@ -33,6 +33,13 @@ function LessonsPage() {
       <Navbar />
 
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-3 pt-4 lg:max-w-5xl lg:px-6">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 self-start text-[13px] font-semibold text-ink/70 transition-colors hover:text-ink"
+        >
+          <ArrowRight size={15} /> برگشت به صفحه اصلی
+        </Link>
+
         <Reveal className="rounded-[28px] border-2 border-line bg-blush p-6 text-center lg:p-10">
           <span className="inline-block rounded-full border border-ink/30 px-3 py-1 text-[11px] text-ink">
             کتابخانه درس‌ها
@@ -66,10 +73,10 @@ function LessonsPage() {
 
         <Reveal className="rounded-[28px] border-2 border-line bg-blush p-6 text-center lg:p-10">
           <h2 className="text-lg font-extrabold text-ink">
-            هر روز یک درس تازه در ایمیل شما
+            هر روز یک الی دو درس تازه در اکانت شما
           </h2>
           <Link
-            to="/signup"
+            to="/auth"
             className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-bold text-cream transition-all duration-300 hover:scale-105 hover:opacity-90 active:scale-95"
           >
             <ArrowLeft size={16} /> شروع اشتراک — {SITE.price}
