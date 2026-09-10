@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import { SITE } from "@/lib/site";
 
 const LINKS = [
   { href: "/", label: "صفحه اصلی", internal: true },
