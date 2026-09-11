@@ -74,7 +74,8 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
     return { videoId: id };
   })
   .handler(async ({ data, context }) => {
-    const { data: video, error } = await context.supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: video, error } = await supabaseAdmin
       .from("videos")
       .select("id, title, access_type, video_url")
       .eq("id", data.videoId)
