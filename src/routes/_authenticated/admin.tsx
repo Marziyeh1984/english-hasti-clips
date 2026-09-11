@@ -267,6 +267,36 @@ function AdminPage() {
             dir="ltr"
             onChange={(e) => setForm({ ...form, thumbnail: e.target.value })}
           />
+          <label className="flex cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-dashed border-line bg-cream px-4 py-3 text-[13px] font-semibold text-ink transition-all hover:bg-blush-deep/30">
+            <Upload size={16} />
+            {uploading === "video" ? "در حال آپلود ویدیو…" : "آپلود فایل ویدیو از دستگاه"}
+            <input
+              type="file"
+              accept="video/*"
+              className="hidden"
+              disabled={uploading !== null}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void uploadFile("video", f);
+                e.target.value = "";
+              }}
+            />
+          </label>
+          <label className="flex cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-dashed border-line bg-cream px-4 py-3 text-[13px] font-semibold text-ink transition-all hover:bg-blush-deep/30">
+            <Upload size={16} />
+            {uploading === "thumbnail" ? "در حال آپلود کاور…" : "آپلود کاور از دستگاه"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploading !== null}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void uploadFile("thumbnail", f);
+                e.target.value = "";
+              }}
+            />
+          </label>
           <label className="block text-right">
             <span className="mb-1.5 block text-[13px] font-semibold text-ink">نوع دسترسی</span>
             <select
