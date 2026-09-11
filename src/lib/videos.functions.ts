@@ -97,7 +97,6 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
       return { url: video.video_url, expiresIn: 0 };
     }
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: signed, error: signErr } = await supabaseAdmin.storage
       .from("premium-videos")
       .createSignedUrl(video.video_url, 60 * 60);
