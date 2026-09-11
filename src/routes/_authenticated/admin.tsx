@@ -2,7 +2,8 @@ import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Trash2 } from "lucide-react";
+import { Trash2, Upload } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { getMyAccount } from "@/lib/account.functions";
 import {
   listPaymentRequests,
@@ -11,6 +12,7 @@ import {
   adminListVideos,
   adminCreateVideo,
   adminDeleteVideo,
+  adminCreateUploadUrl,
 } from "@/lib/admin.functions";
 import { PageShell, Card, Field, PrimaryButton, StatusPill, BackToHome } from "@/components/PageShell";
 
@@ -40,6 +42,7 @@ function AdminPage() {
   const fetchVideos = useServerFn(adminListVideos);
   const createVideo = useServerFn(adminCreateVideo);
   const removeVideo = useServerFn(adminDeleteVideo);
+  const makeUploadUrl = useServerFn(adminCreateUploadUrl);
 
   const account = useQuery({ queryKey: ["account"], queryFn: () => fetchAccount({}) });
   const isAdmin = account.data?.isAdmin === true;
@@ -64,6 +67,28 @@ function AdminPage() {
     accessType: "premium" as "free" | "premium",
   });
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState<"video" | "thumbnail" | null>(null);
+
+  async function uploadFile(kind: "video" | "thumbnail", file: File) {
+    setError("");
+    setUploading(kind);
+    try {
+      const ticket = await makeUploadUrl({ data: { kind, fileName: file.name } });
+      const { error: upErr } = await supabase.storage
+        .from(ticket.bucket)
+        .uploadToSignedUrl(ticket.path, ticket.token, file, {
+          contentType: file.type || undefined,
+        });
+      if (upErr) throw new Error("آپلود فایل ممکن نشد.");
+      setForm((f) =>
+        kind === "video" ? { ...f, videoUrl: ticket.path } : { ...f, thumbnail: ticket.path },
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "آپلود فایل ممکن نشد.");
+    } finally {
+      setUploading(null);
+    }
+  }
 
   const approveM = useMutation({
     mutationFn: (v: { paymentId: string; days: number }) => approve({ data: v }),
@@ -242,6 +267,36 @@ function AdminPage() {
             dir="ltr"
             onChange={(e) => setForm({ ...form, thumbnail: e.target.value })}
           />
+          <label className="flex cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-dashed border-line bg-cream px-4 py-3 text-[13px] font-semibold text-ink transition-all hover:bg-blush-deep/30">
+            <Upload size={16} />
+            {uploading === "video" ? "در حال آپلود ویدیو…" : "آپلود فایل ویدیو از دستگاه"}
+            <input
+              type="file"
+              accept="video/*"
+              className="hidden"
+              disabled={uploading !== null}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void uploadFile("video", f);
+                e.target.value = "";
+              }}
+            />
+          </label>
+          <label className="flex cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-dashed border-line bg-cream px-4 py-3 text-[13px] font-semibold text-ink transition-all hover:bg-blush-deep/30">
+            <Upload size={16} />
+            {uploading === "thumbnail" ? "در حال آپلود کاور…" : "آپلود کاور از دستگاه"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploading !== null}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void uploadFile("thumbnail", f);
+                e.target.value = "";
+              }}
+            />
+          </label>
           <label className="block text-right">
             <span className="mb-1.5 block text-[13px] font-semibold text-ink">نوع دسترسی</span>
             <select

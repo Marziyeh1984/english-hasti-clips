@@ -164,6 +164,33 @@ export const adminListVideos = createServerFn({ method: "GET" })
     return data ?? [];
   });
 
+/**
+ * Short-lived signed upload ticket so the admin can send a video or cover file
+ * straight from the browser into the private buckets. Only admins get one.
+ */
+export const adminCreateUploadUrl = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { kind: "video" | "thumbnail"; fileName: string }) => {
+    const kind = data?.kind === "thumbnail" ? ("thumbnail" as const) : ("video" as const);
+    const name = str(data?.fileName, 200);
+    const ext = (name.split(".").pop() || (kind === "video" ? "mp4" : "jpg"))
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "")
+      .slice(0, 5);
+    return { kind, ext: ext || (kind === "video" ? "mp4" : "jpg") };
+  })
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const bucket = data.kind === "video" ? "premium-videos" : "thumbnails";
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${data.ext}`;
+    const { data: signed, error } = await supabaseAdmin.storage
+      .from(bucket)
+      .createSignedUploadUrl(path);
+    if (error || !signed) throw new Error("ساخت لینک آپلود ممکن نشد.");
+    return { bucket, path, token: signed.token };
+  });
+
 export const adminCreateVideo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(
