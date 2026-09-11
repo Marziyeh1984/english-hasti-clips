@@ -21,6 +21,25 @@ function publicClient() {
 
 const VIDEO_COLUMNS = "id, title, description, thumbnail, access_type, created_at";
 
+/** Covers live in a private bucket, so turn stored paths into short-lived links. */
+async function signThumbnails(rows: VideoRow[]): Promise<VideoRow[]> {
+  const paths = rows
+    .map((r) => r.thumbnail)
+    .filter((t): t is string => !!t && !t.startsWith("http"));
+  if (paths.length === 0) return rows;
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin.storage
+    .from("thumbnails")
+    .createSignedUrls(paths, 60 * 60);
+  const byPath = new Map((data ?? []).map((d) => [d.path, d.signedUrl]));
+  return rows.map((r) =>
+    r.thumbnail && !r.thumbnail.startsWith("http")
+      ? { ...r, thumbnail: byPath.get(r.thumbnail) ?? null }
+      : r,
+  );
+}
+
 /** Free videos — visible to everyone, no session required. Never returns video_url. */
 export const listFreeVideos = createServerFn({ method: "GET" }).handler(async () => {
   const { data } = await publicClient()
@@ -28,7 +47,7 @@ export const listFreeVideos = createServerFn({ method: "GET" }).handler(async ()
     .select(VIDEO_COLUMNS)
     .eq("access_type", "free")
     .order("created_at", { ascending: false });
-  return (data ?? []) as VideoRow[];
+  return await signThumbnails((data ?? []) as VideoRow[]);
 });
 
 /** Full catalogue for signed-in members. Still never returns the raw file path. */
@@ -39,7 +58,7 @@ export const listAllVideos = createServerFn({ method: "GET" })
       .from("videos")
       .select(VIDEO_COLUMNS)
       .order("created_at", { ascending: false });
-    return (data ?? []) as VideoRow[];
+    return await signThumbnails((data ?? []) as VideoRow[]);
   });
 
 /**
