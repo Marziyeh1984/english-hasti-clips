@@ -67,6 +67,28 @@ function AdminPage() {
     accessType: "premium" as "free" | "premium",
   });
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState<"video" | "thumbnail" | null>(null);
+
+  async function uploadFile(kind: "video" | "thumbnail", file: File) {
+    setError("");
+    setUploading(kind);
+    try {
+      const ticket = await makeUploadUrl({ data: { kind, fileName: file.name } });
+      const { error: upErr } = await supabase.storage
+        .from(ticket.bucket)
+        .uploadToSignedUrl(ticket.path, ticket.token, file, {
+          contentType: file.type || undefined,
+        });
+      if (upErr) throw new Error("آپلود فایل ممکن نشد.");
+      setForm((f) =>
+        kind === "video" ? { ...f, videoUrl: ticket.path } : { ...f, thumbnail: ticket.path },
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "آپلود فایل ممکن نشد.");
+    } finally {
+      setUploading(null);
+    }
+  }
 
   const approveM = useMutation({
     mutationFn: (v: { paymentId: string; days: number }) => approve({ data: v }),
