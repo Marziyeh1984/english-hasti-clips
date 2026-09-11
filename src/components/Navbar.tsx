@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const LINKS = [
   { href: "/", label: "صفحه اصلی", internal: true },
@@ -10,6 +11,17 @@ const LINKS = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setLoggedIn(!!data.session);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setLoggedIn(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 px-3 pt-3">
@@ -53,18 +65,22 @@ export function Navbar() {
         </Link>
 
         <div className="flex shrink-0 items-center gap-2">
-          <Link
-            to="/dashboard"
-            className="hidden rounded-full border-2 border-ink/20 px-4 py-1.5 text-[12px] font-bold text-ink transition-all duration-300 hover:bg-blush-deep active:scale-90 lg:inline-block lg:py-2 lg:text-[13px]"
-          >
-            حساب من
-          </Link>
-          <Link
-            to="/auth"
-            className="rounded-full bg-ink px-4 py-1.5 text-[12px] font-bold text-cream transition-all duration-300 hover:scale-105 hover:opacity-90 active:scale-90 lg:px-6 lg:py-2.5 lg:text-[13px]"
-          >
-            ورود / عضویت
-          </Link>
+          {loggedIn && (
+            <Link
+              to="/dashboard"
+              className="hidden rounded-full border-2 border-ink/20 px-4 py-1.5 text-[12px] font-bold text-ink transition-all duration-300 hover:bg-blush-deep active:scale-90 lg:inline-block lg:py-2 lg:text-[13px]"
+            >
+              حساب من
+            </Link>
+          )}
+          {loggedIn === false && (
+            <Link
+              to="/auth"
+              className="rounded-full bg-ink px-4 py-1.5 text-[12px] font-bold text-cream transition-all duration-300 hover:scale-105 hover:opacity-90 active:scale-90 lg:px-6 lg:py-2.5 lg:text-[13px]"
+            >
+              ورود / عضویت
+            </Link>
+          )}
         </div>
       </nav>
 
