@@ -42,6 +42,7 @@ function AdminPage() {
   const fetchVideos = useServerFn(adminListVideos);
   const createVideo = useServerFn(adminCreateVideo);
   const removeVideo = useServerFn(adminDeleteVideo);
+  const makeUploadUrl = useServerFn(adminCreateUploadUrl);
 
   const account = useQuery({ queryKey: ["account"], queryFn: () => fetchAccount({}) });
   const isAdmin = account.data?.isAdmin === true;
