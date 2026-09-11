@@ -2,7 +2,8 @@ import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Trash2 } from "lucide-react";
+import { Trash2, Upload } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { getMyAccount } from "@/lib/account.functions";
 import {
   listPaymentRequests,
@@ -11,6 +12,7 @@ import {
   adminListVideos,
   adminCreateVideo,
   adminDeleteVideo,
+  adminCreateUploadUrl,
 } from "@/lib/admin.functions";
 import { PageShell, Card, Field, PrimaryButton, StatusPill, BackToHome } from "@/components/PageShell";
 
