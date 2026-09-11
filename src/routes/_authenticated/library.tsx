@@ -102,6 +102,11 @@ function LibraryPage() {
                 <span className="absolute right-2 top-2 rounded-full bg-ink px-2.5 py-1 text-[11px] font-bold text-cream">
                   {v.access_type === "free" ? "رایگان" : "ویژه"}
                 </span>
+                {isNew(v.created_at) && (
+                  <span className="absolute left-2 top-2 rounded-full bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white">
+                    جدید
+                  </span>
+                )}
               </div>
 
               <h2 className="mt-3 text-base font-bold text-ink">{v.title}</h2>
