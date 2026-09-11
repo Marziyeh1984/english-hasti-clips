@@ -21,6 +21,12 @@ export const Route = createFileRoute("/_authenticated/library")({
   component: LibraryPage,
 });
 
+/** A lesson added in the last 48 hours gets a "new" badge. */
+function isNew(createdAt: string) {
+  const t = new Date(createdAt).getTime();
+  return Number.isFinite(t) && Date.now() - t < 48 * 60 * 60 * 1000;
+}
+
 function LibraryPage() {
   const fetchVideos = useServerFn(listAllVideos);
   const fetchAccount = useServerFn(getMyAccount);
