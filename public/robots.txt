@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://reel-english-flow.lovable.app/sitemap.xml

@@ -83,7 +83,6 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
     if (error || !video) throw new Error("ویدیو پیدا نشد.");
 
     if (video.access_type === "premium") {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       await supabaseAdmin.rpc("expire_subscriptions");
       const { data: allowed } = await context.supabase.rpc("has_active_subscription", {
         _user_id: context.userId,
