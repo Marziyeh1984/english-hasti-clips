@@ -1,13 +1,16 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Check, FileText, CheckCircle2, Mail } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { ArrowLeft, Check, FileText, CheckCircle2, Mail, Play, Lock, X } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { SocialLinks } from "@/components/SocialLinks";
 import { Reveal } from "@/components/Reveal";
 import { LessonClip } from "@/components/LessonClip";
 import { LESSONS } from "@/lib/lessons";
 import { SITE } from "@/lib/site";
+import { listPublicVideos, getVideoPlaybackUrl } from "@/lib/videos.functions";
 import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -69,6 +72,36 @@ function Card({
 }
 
 function Index() {
+  const fetchVideos = useServerFn(listPublicVideos);
+  const play = useServerFn(getVideoPlaybackUrl);
+  const [playing, setPlaying] = useState<{ title: string; url: string } | null>(null);
+  const [playError, setPlayError] = useState("");
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+
+  const { data: dbVideos } = useQuery({
+    queryKey: ["videos", "public", "home"],
+    queryFn: () => fetchVideos(),
+  });
+
+  const freePreview = (dbVideos ?? []).filter((v) => v.access_type === "free").slice(0, 2);
+  const hasDb = !!dbVideos && dbVideos.length > 0;
+  const showDbPreview = freePreview.length > 0;
+
+  async function openFree(id: string) {
+    setPlayError("");
+    setLoadingId(id);
+    try {
+      const res = await play({ data: { videoId: id } });
+      const v = dbVideos?.find((x) => x.id === id);
+      setPlaying({ title: v?.title ?? "", url: res.url });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "";
+      setPlayError(/SUBSCRIPTION_REQUIRED/.test(msg) ? "این ویدیو ویژه است — نیاز به اشتراک دارد." : "پخش ویدیو ممکن نشد.");
+    } finally {
+      setLoadingId(null);
+    }
+  }
+
   return (
     <div className="min-h-screen pb-12">
       <Navbar />
@@ -126,47 +159,92 @@ function Index() {
           </div>
         </Card>
 
-        {/* LESSONS */}
+        {/* LESSONS — 2 free from DB, fallback to static 2 */}
         <Card id="lessons">
           <div className="text-center">
             <span className="inline-block rounded-full border border-ink/30 px-3 py-1 text-[11px] text-ink">
               نمونه درس‌ها
             </span>
             <h2 className="mt-3 text-[24px] font-extrabold leading-snug text-ink">
-              نمونه کلیپ‌ها از کتابخانه درس‌ها
+              نمونه کلیپ‌های رایگان
             </h2>
             <p className="mx-auto mt-2 max-w-sm text-[13px] leading-7 text-muted-foreground">
-              هر درس شامل دیالوگ انگلیسی، ترجمه دقیق فارسی و توضیح اصطلاحات کاربردی است.
-              هنگام پخش، دیالوگِ در حالِ گفته‌شدن هایلایت می‌شود — با کلیک روی هر جمله، ویدیو به همان لحظه می‌رود.
+              دو ویدیوی رایگان برای همه قابل پخش است — بقیه‌ی ویدیوها در کتابخانه با برچسب «ویژه» و فقط با اشتراک فعال باز می‌شود.
             </p>
           </div>
+
+          {playError && (
+            <div className="mt-4 rounded-2xl border-2 border-red-700/40 bg-red-50 px-4 py-3 text-[13px] font-semibold text-red-800">
+              {playError}
+            </div>
+          )}
+
           <div className="mt-5 grid gap-5 lg:grid-cols-2">
-            {LESSONS.slice(0, 2).map((l) => (
-              <LessonClip
-                key={l.id}
-                videoUrl={l.id === "clip01" ? SITE.clipVideoUrl || l.videoUrl : l.videoUrl}
-                badge={l.badge}
-                title={l.title}
-                dialogues={l.dialogues}
-                vocab={l.vocab}
-              />
-            ))}
+            {hasDb && showDbPreview ? (
+              freePreview.map((v) => (
+                <div key={v.id} className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
+                  <div className="relative">
+                    {v.thumbnail ? (
+                      <img src={v.thumbnail} alt={v.title} className="aspect-video w-full object-cover" />
+                    ) : (
+                      <div className="flex aspect-video w-full items-center justify-center bg-ink/10 text-ink/40">
+                        <Play size={36} />
+                      </div>
+                    )}
+                    <span className="absolute right-2 top-2 rounded-full bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white">
+                      رایگان
+                    </span>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-base font-extrabold text-ink">{v.title}</h3>
+                    {v.description && (
+                      <p className="mt-1 line-clamp-2 text-[13px] leading-6 text-ink/70">{v.description}</p>
+                    )}
+                    <button
+                      onClick={() => openFree(v.id)}
+                      disabled={loadingId === v.id}
+                      className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-3 text-[13px] font-bold text-cream transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                    >
+                      <Play size={14} /> {loadingId === v.id ? "…" : "تماشا — رایگان"}
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : hasDb && !showDbPreview ? (
+              <div className="col-span-full rounded-2xl border-2 border-amber-600/30 bg-amber-50 px-4 py-6 text-center">
+                <p className="text-[13px] font-semibold text-amber-900">
+                  هنوز ویدیوی رایگانی ثبت نشده — از پنل مدیریت یک ویدیو با دسترسی «رایگان» بساز تا اینجا نمایش داده شود.
+                </p>
+                <Link to="/lessons" className="mt-3 inline-flex text-[13px] font-bold text-ink underline">
+                  رفتن به کتابخانه
+                </Link>
+              </div>
+            ) : (
+              LESSONS.slice(0, 2).map((l) => (
+                <LessonClip
+                  key={l.id}
+                  videoUrl={l.id === "clip01" ? SITE.clipVideoUrl || l.videoUrl : l.videoUrl}
+                  badge={l.badge}
+                  title={l.title}
+                  dialogues={l.dialogues}
+                  vocab={l.vocab}
+                />
+              ))
+            )}
           </div>
+
           <Link
             to="/lessons"
             className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border-2 border-line py-3.5 text-sm font-bold text-ink transition-all duration-300 hover:bg-blush-deep active:scale-95"
           >
-            <ArrowLeft size={16} /> مشاهده همه‌ی درس‌ها
+            <ArrowLeft size={16} /> مشاهده همه‌ی درس‌ها در کتابخانه
           </Link>
-
         </Card>
 
         {/* INVITE */}
         <Card className="text-center">
           <h3 className="font-script text-3xl font-bold text-ink">Join the Lessons</h3>
-          <h4 className="mt-1 text-lg font-extrabold text-ink">
-            برای دریافت کلیپ‌های روزانه عضو شوید
-          </h4>
+          <h4 className="mt-1 text-lg font-extrabold text-ink">برای دریافت کلیپ‌های روزانه عضو شوید</h4>
           <p className="mx-auto mt-2 max-w-xs text-[13px] leading-7 text-muted-foreground">
             روزانه یک الی دو درس جدید مستقیم به اکانت شما.
           </p>
@@ -217,9 +295,7 @@ function Index() {
         <Card id="how">
           <div className="text-center">
             <h2 className="text-[24px] font-extrabold leading-snug text-ink">چطور کار می‌کنه</h2>
-            <p className="mt-2 text-[13px] leading-7 text-muted-foreground">
-              هر روز یک درس در ایمیل شما
-            </p>
+            <p className="mt-2 text-[13px] leading-7 text-muted-foreground">هر روز یک درس در ایمیل شما</p>
           </div>
 
           <div className="mt-5 flex flex-col gap-3">
@@ -252,6 +328,34 @@ function Index() {
           </p>
         </Card>
       </main>
+
+      {playing && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/80 p-4"
+          onClick={() => setPlaying(null)}
+        >
+          <div className="w-full max-w-3xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-sm font-bold text-cream">{playing.title}</span>
+              <button
+                onClick={() => setPlaying(null)}
+                aria-label="بستن"
+                className="rounded-full bg-cream p-1.5 text-ink transition-all active:scale-90"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <video
+              src={playing.url}
+              controls
+              autoPlay
+              controlsList="nodownload"
+              onContextMenu={(e) => e.preventDefault()}
+              className="w-full rounded-2xl border-2 border-line bg-black"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
