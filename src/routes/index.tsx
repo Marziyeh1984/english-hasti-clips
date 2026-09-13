@@ -83,11 +83,12 @@ function Index() {
     queryFn: () => fetchVideos(),
   });
 
-  const freePreview = (dbVideos ?? []).filter((v) => v.access_type === "free").slice(0, 2);
-  const hasDb = !!dbVideos && dbVideos.length > 0;
-  const showDbPreview = freePreview.length > 0;
+  // Keep original promise: Clip 01 & 02 always visible as free samples on home.
+  // DB free videos are shown additionally (so nothing disappears when DB grows).
+  const dbFree = (dbVideos ?? []).filter((v) => v.access_type === "free").slice(0, 2);
+  const hasDbFree = dbFree.length > 0;
 
-  async function openFree(id: string) {
+  async function openDbFree(id: string) {
     setPlayError("");
     setLoadingId(id);
     try {
@@ -159,7 +160,7 @@ function Index() {
           </div>
         </Card>
 
-        {/* LESSONS — 2 free from DB, fallback to static 2 */}
+        {/* LESSONS — always show the original 2 static free samples; DB free shown as extra so nothing disappears */}
         <Card id="lessons">
           <div className="text-center">
             <span className="inline-block rounded-full border border-ink/30 px-3 py-1 text-[11px] text-ink">
@@ -180,58 +181,54 @@ function Index() {
           )}
 
           <div className="mt-5 grid gap-5 lg:grid-cols-2">
-            {hasDb && showDbPreview ? (
-              freePreview.map((v) => (
-                <div key={v.id} className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
-                  <div className="relative">
-                    {v.thumbnail ? (
-                      <img src={v.thumbnail} alt={v.title} className="aspect-video w-full object-cover" />
-                    ) : (
-                      <div className="flex aspect-video w-full items-center justify-center bg-ink/10 text-ink/40">
-                        <Play size={36} />
-                      </div>
-                    )}
-                    <span className="absolute right-2 top-2 rounded-full bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white">
-                      رایگان
-                    </span>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-base font-extrabold text-ink">{v.title}</h3>
-                    {v.description && (
-                      <p className="mt-1 line-clamp-2 text-[13px] leading-6 text-ink/70">{v.description}</p>
-                    )}
-                    <button
-                      onClick={() => openFree(v.id)}
-                      disabled={loadingId === v.id}
-                      className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-3 text-[13px] font-bold text-cream transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
-                    >
-                      <Play size={14} /> {loadingId === v.id ? "…" : "تماشا — رایگان"}
-                    </button>
-                  </div>
-                </div>
-              ))
-            ) : hasDb && !showDbPreview ? (
-              <div className="col-span-full rounded-2xl border-2 border-amber-600/30 bg-amber-50 px-4 py-6 text-center">
-                <p className="text-[13px] font-semibold text-amber-900">
-                  هنوز ویدیوی رایگانی ثبت نشده — از پنل مدیریت یک ویدیو با دسترسی «رایگان» بساز تا اینجا نمایش داده شود.
-                </p>
-                <Link to="/lessons" className="mt-3 inline-flex text-[13px] font-bold text-ink underline">
-                  رفتن به کتابخانه
-                </Link>
-              </div>
-            ) : (
-              LESSONS.slice(0, 2).map((l) => (
-                <LessonClip
-                  key={l.id}
-                  videoUrl={l.id === "clip01" ? SITE.clipVideoUrl || l.videoUrl : l.videoUrl}
-                  badge={l.badge}
-                  title={l.title}
-                  dialogues={l.dialogues}
-                  vocab={l.vocab}
-                />
-              ))
-            )}
+            {LESSONS.slice(0, 2).map((l) => (
+              <LessonClip
+                key={l.id}
+                videoUrl={l.id === "clip01" ? SITE.clipVideoUrl || l.videoUrl : l.videoUrl}
+                badge={l.badge}
+                title={l.title}
+                dialogues={l.dialogues}
+                vocab={l.vocab}
+              />
+            ))}
           </div>
+
+          {hasDbFree && (
+            <>
+              <p className="mt-6 text-center text-[12px] font-bold text-ink/70">ویدیوهای رایگان کتابخانه</p>
+              <div className="mt-3 grid gap-5 lg:grid-cols-2">
+                {dbFree.map((v) => (
+                  <div key={v.id} className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
+                    <div className="relative">
+                      {v.thumbnail ? (
+                        <img src={v.thumbnail} alt={v.title} className="aspect-video w-full object-cover" />
+                      ) : (
+                        <div className="flex aspect-video w-full items-center justify-center bg-ink/10 text-ink/40">
+                          <Play size={36} />
+                        </div>
+                      )}
+                      <span className="absolute right-2 top-2 rounded-full bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white">
+                        رایگان
+                      </span>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="text-base font-extrabold text-ink">{v.title}</h3>
+                      {v.description && (
+                        <p className="mt-1 line-clamp-2 text-[13px] leading-6 text-ink/70">{v.description}</p>
+                      )}
+                      <button
+                        onClick={() => openDbFree(v.id)}
+                        disabled={loadingId === v.id}
+                        className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-3 text-[13px] font-bold text-cream transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                      >
+                        <Play size={14} /> {loadingId === v.id ? "…" : "تماشا — رایگان"}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
           <Link
             to="/lessons"

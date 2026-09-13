@@ -52,7 +52,6 @@ function LessonsPage() {
     queryFn: () => fetchVideos(),
   });
 
-  // Optional auth — anon stays null, logged-in resolves to isActive
   const { data: account } = useQuery({
     queryKey: ["account", "lessons"],
     queryFn: async () => {
@@ -66,7 +65,6 @@ function LessonsPage() {
   });
 
   const isActive = (account as any)?.isActive === true;
-  const hasDbVideos = !!videos && videos.length > 0;
 
   async function open(id: string) {
     setError("");
@@ -86,6 +84,8 @@ function LessonsPage() {
       setLoadingId(null);
     }
   }
+
+  const hasDbVideos = !!videos && videos.length > 0;
 
   return (
     <div className="min-h-screen pb-12">
@@ -135,8 +135,8 @@ function LessonsPage() {
 
         {isLoading && <p className="py-8 text-center text-sm text-ink/60">در حال بارگذاری…</p>}
 
-        {/* DB mode: card grid with free/premium logic */}
-        {hasDbVideos ? (
+        {/* DB uploads first (most recent) */}
+        {hasDbVideos && (
           <div className="grid gap-4 lg:grid-cols-2">
             {videos!.map((v) => {
               const locked = v.access_type === "premium" && !isActive;
@@ -185,26 +185,32 @@ function LessonsPage() {
               );
             })}
           </div>
-        ) : !isLoading ? (
-          /* Fallback: static 14 lessons when DB is empty */
-          <div className="grid gap-4 lg:grid-cols-2">
-            {LESSONS.map((l, i) => (
-              <Reveal
-                key={l.id}
-                delay={i * 100}
-                className="rounded-[28px] border-2 border-line bg-blush p-4 sm:p-6"
-              >
-                <LessonClip
-                  videoUrl={l.videoUrl}
-                  badge={l.badge}
-                  title={l.title}
-                  dialogues={l.dialogues}
-                  vocab={l.vocab}
-                />
-              </Reveal>
-            ))}
-          </div>
-        ) : null}
+        )}
+
+        {/* Original 14 clips always visible — labelled as free samples */}
+        <div className="mt-2 flex items-center gap-2">
+          <div className="h-px flex-1 bg-line" />
+          <span className="rounded-full border border-ink/20 px-3 py-1 text-[11px] font-bold text-ink/70">۱۴ کلیپ اصلی — رایگان</span>
+          <div className="h-px flex-1 bg-line" />
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          {LESSONS.map((l, i) => (
+            <Reveal
+              key={l.id}
+              delay={i * 40}
+              className="rounded-[28px] border-2 border-line bg-blush p-4 sm:p-6"
+            >
+              <LessonClip
+                videoUrl={l.videoUrl}
+                badge={l.badge}
+                title={l.title}
+                dialogues={l.dialogues}
+                vocab={l.vocab}
+              />
+            </Reveal>
+          ))}
+        </div>
 
         {/* Player modal */}
         {playing && (
