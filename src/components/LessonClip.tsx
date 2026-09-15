@@ -1,5 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { PlayCircle } from "lucide-react";
+import { listPublicVideos, getVideoPlaybackUrl } from "@/lib/videos.functions";
 
 export type Dialogue = { en: string; fa: string; t: number };
 export type Vocab = { en: string; fa: string };
@@ -22,6 +25,49 @@ export function LessonClip({
   const videoRef = useRef<HTMLVideoElement>(null);
   const lineRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const [active, setActive] = useState(-1);
+  const [resolvedUrl, setResolvedUrl] = useState("");
+  const [videoError, setVideoError] = useState("");
+
+  const fetchVideos = useServerFn(listPublicVideos);
+  const playVideo = useServerFn(getVideoPlaybackUrl);
+  const { data: videos } = useQuery({
+    queryKey: ["lesson-video-catalog"],
+    queryFn: () => fetchVideos(),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const dbVideo = videos?.find((v) => v.title.trim().toLowerCase() === title.trim().toLowerCase());
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function resolveVideo() {
+      setVideoError("");
+      if (!dbVideo) {
+        setResolvedUrl("");
+        return;
+      }
+
+      try {
+        const result = await playVideo({ data: { videoId: dbVideo.id } });
+        if (!cancelled) setResolvedUrl(result.url);
+      } catch (error) {
+        if (!cancelled) {
+          setResolvedUrl("");
+          setVideoError(
+            error instanceof Error && /SUBSCRIPTION_REQUIRED/.test(error.message)
+              ? "برای پخش این کلیپ اشتراک فعال لازم است."
+              : "پخش ویدیو ممکن نشد.",
+          );
+        }
+      }
+    }
+
+    void resolveVideo();
+    return () => {
+      cancelled = true;
+    };
+  }, [dbVideo?.id, playVideo]);
 
   const handleTime = () => {
     const t = videoRef.current?.currentTime ?? 0;
@@ -47,20 +93,34 @@ export function LessonClip({
   return (
     <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream">
       <div className="relative">
-        <video
-          ref={videoRef}
-          controls
-          playsInline
-          preload="metadata"
-          poster={poster}
-          onTimeUpdate={handleTime}
-          onEnded={() => setActive(-1)}
-          className="aspect-video w-full bg-ink object-cover"
-        >
-          <source src={videoUrl} type="video/mp4" />
-        </video>
+        {resolvedUrl ? (
+          <video
+            ref={videoRef}
+            controls
+            playsInline
+            preload="metadata"
+            poster={poster}
+            onTimeUpdate={handleTime}
+            onEnded={() => setActive(-1)}
+            className="aspect-video w-full bg-ink object-cover"
+          >
+            <source src={resolvedUrl} type="video/mp4" />
+          </video>
+        ) : (
+          <div className="flex aspect-video w-full items-center justify-center bg-ink px-6 text-center text-cream">
+            <div>
+              <PlayCircle className="mx-auto mb-3" size={42} />
+              <p className="text-sm font-bold">
+                {videoError || (videos ? "این کلیپ هنوز به Storage سایت متصل نشده است." : "در حال آماده‌سازی ویدیو…")}
+              </p>
+              {!videoError && videos && !dbVideo && (
+                <p className="mt-2 text-xs text-cream/70">مدیر سایت باید فایل این کلیپ را از پنل مدیریت آپلود کند.</p>
+              )}
+            </div>
+          </div>
+        )}
         <span className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-ink/90 px-3 py-1.5 text-[11px] font-bold text-cream shadow-md">
-          <PlayCircle size={14} /> Watch Free
+          <PlayCircle size={14} /> Watch
         </span>
       </div>
 
@@ -81,7 +141,8 @@ export function LessonClip({
                   lineRefs.current[i] = el;
                 }}
                 onClick={() => seek(i)}
-                className={`w-full rounded-lg border-r-2 pr-3.5 text-right transition-all duration-300 ${
+                disabled={!resolvedUrl}
+                className={`w-full rounded-lg border-r-2 pr-3.5 text-right transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${
                   isActive
                     ? "border-ink bg-blush-deep px-3 py-2 shadow-sm"
                     : "border-ink/25 px-0 py-1 hover:bg-blush-deep/50"
