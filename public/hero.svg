@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">English learning classroom</title>
+  <desc id="desc">A modern illustration of a young teacher writing English words on a chalkboard.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8e9e9"/><stop offset="1" stop-color="#e9d7d7"/>
+    </linearGradient>
+    <linearGradient id="board" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#243332"/><stop offset="1" stop-color="#101918"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="22" flood-opacity=".22"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1320" cy="160" r="210" fill="#fff" opacity=".34"/>
+  <rect x="150" y="120" width="1300" height="650" rx="38" fill="url(#board)" filter="url(#shadow)"/>
+  <rect x="185" y="155" width="1230" height="580" rx="24" fill="none" stroke="#b8aaa0" stroke-width="10" opacity=".7"/>
+  <g fill="#f8f4e8" font-family="Georgia,serif" font-weight="700">
+    <text x="260" y="280" font-size="74">LEARN</text>
+    <text x="260" y="390" font-size="74">ENGLISH</text>
+    <text x="260" y="500" font-size="46" opacity=".78">one clip at a time</text>
+  </g>
+  <g fill="none" stroke="#f8f4e8" stroke-width="8" stroke-linecap="round" opacity=".75">
+    <path d="M260 555 C430 520 590 585 760 545"/>
+    <path d="M260 600 C410 570 560 630 700 595"/>
+  </g>
+  <g transform="translate(1000 250)">
+    <ellipse cx="170" cy="490" rx="190" ry="42" fill="#000" opacity=".18"/>
+    <path d="M85 470 C70 390 88 300 135 260 L225 260 C270 305 282 390 265 470Z" fill="#ead8cf"/>
+    <path d="M120 270 C95 205 120 130 190 115 C260 130 278 205 245 275 C210 250 160 250 120 270Z" fill="#4b302d"/>
+    <circle cx="190" cy="190" r="66" fill="#e8c9ba"/>
+    <path d="M130 175 C145 125 225 115 258 170 C232 153 195 148 155 165Z" fill="#4b302d"/>
+    <circle cx="168" cy="194" r="6" fill="#34231f"/><circle cx="213" cy="194" r="6" fill="#34231f"/>
+    <path d="M174 225 Q190 235 206 225" fill="none" stroke="#8d5149" stroke-width="5" stroke-linecap="round"/>
+    <path d="M95 300 L20 400 L75 425 L150 340Z" fill="#d9a9a6"/>
+    <path d="M255 305 L345 375 L320 415 L235 350Z" fill="#d9a9a6"/>
+    <path d="M320 415 L405 350" stroke="#e8c9ba" stroke-width="24" stroke-linecap="round"/>
+    <path d="M405 350 L410 330" stroke="#f8f4e8" stroke-width="9" stroke-linecap="round"/>
+  </g>
+  <g fill="#f8f4e8" font-family="Arial,sans-serif" font-size="28" font-weight="600">
+    <text x="1040" y="690">Speak • Listen • Learn</text>
+  </g>
+</svg>
