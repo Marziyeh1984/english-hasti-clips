@@ -20,7 +20,20 @@ async function assertAdmin(context: { supabase: any; userId: string; claims?: an
     _user_id: context.userId,
     _role: "admin",
   });
-  if (data !== true && !isConfiguredAdmin(context.claims)) throw new Error("Forbidden");
+  if (data === true || isConfiguredAdmin(context.claims)) return;
+
+  // The auth JWT may not expose email in its claims. Fall back to the
+  // server-side profile, which is created for every signed-in user.
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: profile } = await supabaseAdmin
+    .from("profiles")
+    .select("email")
+    .eq("id", context.userId)
+    .maybeSingle();
+  const email = typeof profile?.email === "string" ? profile.email.trim().toLowerCase() : "";
+  if (email === "lak20ml@gmail.com") return;
+
+  throw new Error("Forbidden");
 }
 
 function str(v: unknown, max: number) {
