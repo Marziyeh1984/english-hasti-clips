@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { VideoRow } from "./account.functions";
+import { isConfiguredAdmin, type VideoRow } from "./account.functions";
 
 function publicClient() {
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
@@ -131,11 +131,22 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
     if (claimsErr || !claims?.claims?.sub) throw new Error("SUBSCRIPTION_REQUIRED");
     const userId = claims.claims.sub as string;
 
-    await supabaseAdmin.rpc("expire_subscriptions");
-    const { data: allowed } = await authed.rpc("has_active_subscription", {
+    // Administrators can preview and edit every premium lesson without a subscription.
+    // Keep the database role as the primary authorization source, with the configured
+    // bootstrap admin email as a fallback while the role migration is being applied.
+    const { data: adminRole } = await supabaseAdmin.rpc("has_role", {
       _user_id: userId,
-    } as any);
-    if (allowed !== true) throw new Error("SUBSCRIPTION_REQUIRED");
+      _role: "admin",
+    });
+    const isAdmin = adminRole === true || isConfiguredAdmin(claims.claims);
+
+    if (!isAdmin) {
+      await supabaseAdmin.rpc("expire_subscriptions");
+      const { data: allowed } = await authed.rpc("has_active_subscription", {
+        _user_id: userId,
+      } as any);
+      if (allowed !== true) throw new Error("SUBSCRIPTION_REQUIRED");
+    }
 
     if (video.video_url.startsWith("http")) {
       return { url: video.video_url, expiresIn: 0 };
