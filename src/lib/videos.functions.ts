@@ -40,7 +40,7 @@ async function signThumbnails(rows: VideoRow[]): Promise<VideoRow[]> {
   );
 }
 
-/** Public catalogue — no auth required. Returns all videos' metadata (free + premium) so anon sees locked premium cards. Uses admin client to bypass anon RLS (anon can normally only see free). Never returns video_url. */
+/** Public catalogue — no auth required. Returns metadata only. */
 export const listPublicVideos = createServerFn({ method: "GET" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin
@@ -51,7 +51,7 @@ export const listPublicVideos = createServerFn({ method: "GET" }).handler(async 
   return await signThumbnails((data ?? []) as VideoRow[]);
 });
 
-/** Free videos — visible to everyone, no session required. Never returns video_url. Kept for backwards compat. */
+/** Free videos — visible to everyone, no session required. */
 export const listFreeVideos = createServerFn({ method: "GET" }).handler(async () => {
   const { data } = await publicClient()
     .from("videos")
@@ -61,7 +61,7 @@ export const listFreeVideos = createServerFn({ method: "GET" }).handler(async ()
   return await signThumbnails((data ?? []) as VideoRow[]);
 });
 
-/** Full catalogue for signed-in members. Still never returns the raw file path. */
+/** Full catalogue for signed-in members. */
 export const listAllVideos = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -73,15 +73,17 @@ export const listAllVideos = createServerFn({ method: "GET" })
   });
 
 /**
- * The only place a playable URL is ever produced.
- * - Free videos: no auth required, signed link via admin client.
- * - Premium: requires active subscription (auth checked inline, no middleware so free works for anon).
+ * Produces a short-lived playable URL.
+ * The browser explicitly supplies the current Supabase access token for premium
+ * playback because server functions do not automatically receive the browser's
+ * localStorage auth session.
  */
 export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
-  .inputValidator((data: { videoId: string }) => {
+  .inputValidator((data: { videoId: string; accessToken?: string }) => {
     const id = String(data?.videoId ?? "");
     if (!/^[0-9a-f-]{36}$/i.test(id)) throw new Error("ویدیوی نامعتبر.");
-    return { videoId: id };
+    const accessToken = typeof data?.accessToken === "string" ? data.accessToken.trim() : "";
+    return { videoId: id, accessToken };
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -92,7 +94,6 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
       .maybeSingle();
     if (error || !video) throw new Error("ویدیو پیدا نشد.");
 
-    // Free — no subscription check, no auth required
     if (video.access_type === "free") {
       if (video.video_url.startsWith("http")) {
         return { url: video.video_url, expiresIn: 0 };
@@ -104,14 +105,8 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
       return { url: signed.signedUrl, expiresIn: 3600 };
     }
 
-    // Premium — require auth + active subscription
-    const { getRequest } = await import("@tanstack/react-start/server");
-    const request = getRequest();
-    const authHeader = request?.headers.get("authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      throw new Error("SUBSCRIPTION_REQUIRED");
-    }
-    const token = authHeader.replace("Bearer ", "");
+    // Premium: validate the token supplied by the browser.
+    const token = data.accessToken;
     if (!token || token.split(".").length !== 3) {
       throw new Error("SUBSCRIPTION_REQUIRED");
     }
@@ -140,9 +135,7 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
     const { data: allowed } = await authed.rpc("has_active_subscription", {
       _user_id: userId,
     } as any);
-    if (allowed !== true) {
-      throw new Error("SUBSCRIPTION_REQUIRED");
-    }
+    if (allowed !== true) throw new Error("SUBSCRIPTION_REQUIRED");
 
     if (video.video_url.startsWith("http")) {
       return { url: video.video_url, expiresIn: 0 };
