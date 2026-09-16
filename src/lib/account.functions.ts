@@ -26,6 +26,12 @@ export type VideoRow = {
   created_at: string;
 };
 
+const CONFIGURED_ADMIN_EMAILS = new Set(["lak20ml@gmail.com"]);
+
+export function isConfiguredAdmin(claims: { email?: unknown } | null | undefined) {
+  return typeof claims?.email === "string" && CONFIGURED_ADMIN_EMAILS.has(claims.email.trim().toLowerCase());
+}
+
 function clean(value: unknown, max = 400): string {
   if (typeof value !== "string") throw new Error("ورودی نامعتبر است.");
   const trimmed = value.trim();
@@ -38,7 +44,6 @@ export const getMyAccount = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    // Flip any subscription whose end_date has passed to "expired".
     await supabaseAdmin.rpc("expire_subscriptions");
 
     const [profileRes, subRes, payRes, roleRes] = await Promise.all([
@@ -69,7 +74,7 @@ export const getMyAccount = createServerFn({ method: "GET" })
       profile: profileRes.data ?? { id: context.userId, name: "", email: "", created_at: "" },
       subscription,
       isActive,
-      isAdmin: roleRes.data === true,
+      isAdmin: roleRes.data === true || isConfiguredAdmin(context.claims),
       payments: (payRes.data ?? []) as PaymentRow[],
     };
   });
@@ -104,7 +109,6 @@ export const submitPayment = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data, context }) => {
-    // The receipt must live inside the member's own storage folder.
     if (!data.receiptPath.startsWith(`${context.userId}/`)) {
       throw new Error("فایل رسید نامعتبر است.");
     }
