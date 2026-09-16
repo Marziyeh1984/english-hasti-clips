@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { PlayCircle } from "lucide-react";
 import { listPublicVideos, getVideoPlaybackUrl } from "@/lib/videos.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Dialogue = { en: string; fa: string; t: number };
 export type Vocab = { en: string; fa: string };
@@ -30,7 +31,7 @@ export function LessonClip({
 
   const fetchVideos = useServerFn(listPublicVideos);
   const playVideo = useServerFn(getVideoPlaybackUrl);
-  const { data: videos } = useQuery({
+  const { data: videos, error: catalogError } = useQuery({
     queryKey: ["lesson-video-catalog"],
     queryFn: () => fetchVideos(),
     staleTime: 5 * 60 * 1000,
@@ -42,14 +43,18 @@ export function LessonClip({
     let cancelled = false;
 
     async function resolveVideo() {
-      setVideoError("");
+      setVideoError(catalogError ? "اتصال به سرویس ویدیو برقرار نشد." : "");
       if (!dbVideo) {
         setResolvedUrl("");
         return;
       }
 
       try {
-        const result = await playVideo({ data: { videoId: dbVideo.id } });
+        let accessToken = "";
+        const { data: sessionData } = await supabase.auth.getSession();
+        accessToken = sessionData.session?.access_token ?? "";
+
+        const result = await playVideo({ data: { videoId: dbVideo.id, accessToken } });
         if (!cancelled) setResolvedUrl(result.url);
       } catch (error) {
         if (!cancelled) {
@@ -57,7 +62,7 @@ export function LessonClip({
           setVideoError(
             error instanceof Error && /SUBSCRIPTION_REQUIRED/.test(error.message)
               ? "برای پخش این کلیپ اشتراک فعال لازم است."
-              : "پخش ویدیو ممکن نشد.",
+              : "پخش ویدیو ممکن نشد. لطفاً دوباره صفحه را باز کنید.",
           );
         }
       }
@@ -67,7 +72,7 @@ export function LessonClip({
     return () => {
       cancelled = true;
     };
-  }, [dbVideo?.id, playVideo]);
+  }, [dbVideo?.id, playVideo, catalogError]);
 
   const handleTime = () => {
     const t = videoRef.current?.currentTime ?? 0;
@@ -125,9 +130,7 @@ export function LessonClip({
       </div>
 
       <div className="p-5">
-        <span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">
-          {badge}
-        </span>
+        <span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">{badge}</span>
         <h3 className="mb-4 mt-3 text-lg font-extrabold text-ink">{title}</h3>
 
         <div className="flex max-h-[340px] flex-col gap-1 overflow-y-auto pr-1">
@@ -143,18 +146,10 @@ export function LessonClip({
                 onClick={() => seek(i)}
                 disabled={!resolvedUrl}
                 className={`w-full rounded-lg border-r-2 pr-3.5 text-right transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${
-                  isActive
-                    ? "border-ink bg-blush-deep px-3 py-2 shadow-sm"
-                    : "border-ink/25 px-0 py-1 hover:bg-blush-deep/50"
+                  isActive ? "border-ink bg-blush-deep px-3 py-2 shadow-sm" : "border-ink/25 px-0 py-1 hover:bg-blush-deep/50"
                 }`}
               >
-                <p
-                  className={`mb-1 text-sm italic transition-colors ${
-                    isActive ? "font-bold text-ink" : "font-medium text-ink"
-                  }`}
-                >
-                  {d.en}
-                </p>
+                <p className={`mb-1 text-sm italic transition-colors ${isActive ? "font-bold text-ink" : "font-medium text-ink"}`}>{d.en}</p>
                 <p className="text-[13px] text-muted-foreground">{d.fa}</p>
               </button>
             );
@@ -165,20 +160,11 @@ export function LessonClip({
           <p className="mb-2.5 text-[11px] font-bold text-ink">💡 اصطلاحات این درس</p>
           <ol className="flex flex-col gap-2.5">
             {vocab.map((v, i) => (
-              <li
-                key={v.en}
-                className="flex items-start gap-2.5 rounded-xl border border-ink/15 bg-cream/60 px-3 py-2"
-              >
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-[10px] font-bold text-cream">
-                  {i + 1}
-                </span>
+              <li key={v.en} className="flex items-start gap-2.5 rounded-xl border border-ink/15 bg-cream/60 px-3 py-2">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-[10px] font-bold text-cream">{i + 1}</span>
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <span dir="ltr" className="text-right text-xs font-semibold text-ink">
-                    {v.en}
-                  </span>
-                  <span className="text-right text-[11px] leading-6 text-muted-foreground">
-                    {v.fa}
-                  </span>
+                  <span dir="ltr" className="text-right text-xs font-semibold text-ink">{v.en}</span>
+                  <span className="text-right text-[11px] leading-6 text-muted-foreground">{v.fa}</span>
                 </div>
               </li>
             ))}
