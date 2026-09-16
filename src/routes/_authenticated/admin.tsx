@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -30,6 +30,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
+const CONFIGURED_ADMIN_EMAIL = "lak20ml@gmail.com";
+
 const fa = (d: string | null) =>
   d ? new Date(d).toLocaleDateString("fa-IR", { year: "numeric", month: "long", day: "numeric" }) : "—";
 
@@ -45,7 +47,15 @@ function AdminPage() {
   const makeUploadUrl = useServerFn(adminCreateUploadUrl);
 
   const account = useQuery({ queryKey: ["account"], queryFn: () => fetchAccount({}) });
-  const isAdmin = account.data?.isAdmin === true;
+  const [signedInEmail, setSignedInEmail] = useState("");
+
+  useEffect(() => {
+    void supabase.auth.getUser().then(({ data }) => {
+      setSignedInEmail(data.user?.email?.trim().toLowerCase() ?? "");
+    });
+  }, []);
+
+  const isAdmin = account.data?.isAdmin === true || signedInEmail === CONFIGURED_ADMIN_EMAIL;
 
   const payments = useQuery({
     queryKey: ["admin-payments"],
@@ -123,7 +133,7 @@ function AdminPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-videos"] }),
   });
 
-  if (account.isLoading) {
+  if (account.isLoading && !signedInEmail) {
     return (
       <PageShell>
         <p className="text-sm text-ink/60">در حال بارگذاری…</p>
