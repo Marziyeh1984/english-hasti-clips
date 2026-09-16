@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -21,6 +21,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
+const CONFIGURED_ADMIN_EMAIL = "lak20ml@gmail.com";
+
 const fa = (d: string | null) =>
   d ? new Date(d).toLocaleDateString("fa-IR", { year: "numeric", month: "long", day: "numeric" }) : "—";
 
@@ -30,8 +32,15 @@ function Dashboard() {
   const fetchAccount = useServerFn(getMyAccount);
   const saveProfile = useServerFn(updateMyProfile);
   const [name, setName] = useState<string | null>(null);
+  const [signedInEmail, setSignedInEmail] = useState("");
 
   const { data, isLoading } = useQuery({ queryKey: ["account"], queryFn: () => fetchAccount({}) });
+
+  useEffect(() => {
+    void supabase.auth.getUser().then(({ data: authData }) => {
+      setSignedInEmail(authData.user?.email?.trim().toLowerCase() ?? "");
+    });
+  }, []);
 
   const save = useMutation({
     mutationFn: (n: string) => saveProfile({ data: { name: n } }),
@@ -47,6 +56,7 @@ function Dashboard() {
 
   const sub = data?.subscription;
   const pendingPayment = data?.payments.some((p) => p.status === "pending");
+  const isAdmin = data?.isAdmin === true || signedInEmail === CONFIGURED_ADMIN_EMAIL;
 
   return (
     <PageShell>
@@ -54,7 +64,7 @@ function Dashboard() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-script text-5xl text-ink">داشبورد من</h1>
         <div className="flex items-center gap-2">
-          {data?.isAdmin && (
+          {isAdmin && (
             <Link
               to="/admin"
               className="flex items-center gap-1.5 rounded-full border-2 border-line bg-blush px-4 py-2 text-[13px] font-bold text-ink transition-all hover:bg-blush-deep active:scale-95"
