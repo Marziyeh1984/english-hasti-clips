@@ -22,7 +22,8 @@ export const Route = createFileRoute("/auth")({
 
 type Mode = "signin" | "signup" | "reset";
 
-const APP_URL = import.meta.env.VITE_APP_URL?.replace(/\/$/, "") || "https://english-hasti-clips.vercel.app";
+const APP_URL = "https://english-hasti-clips.vercel.app";
+const LEGACY_APP_HOST = "reel-english-flow.lovable.app";
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -35,6 +36,14 @@ function AuthPage() {
   const [notice, setNotice] = useState("");
 
   useEffect(() => {
+    // Safety net for old verification links/configuration: if Supabase ever
+    // sends the browser to the retired Lovable domain, move the full auth
+    // callback (including hash/query tokens) to the production app.
+    if (window.location.hostname === LEGACY_APP_HOST) {
+      window.location.replace(`${APP_URL}${window.location.pathname}${window.location.search}${window.location.hash}`);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data }) => {
       if (data.session && data.session.user.email_confirmed_at) {
         navigate({ to: "/dashboard", replace: true });
