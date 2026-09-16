@@ -32,6 +32,10 @@ export function isConfiguredAdmin(claims: { email?: unknown } | null | undefined
   return typeof claims?.email === "string" && CONFIGURED_ADMIN_EMAILS.has(claims.email.trim().toLowerCase());
 }
 
+function isConfiguredAdminEmail(email: unknown) {
+  return typeof email === "string" && CONFIGURED_ADMIN_EMAILS.has(email.trim().toLowerCase());
+}
+
 function clean(value: unknown, max = 400): string {
   if (typeof value !== "string") throw new Error("ورودی نامعتبر است.");
   const trimmed = value.trim();
@@ -69,12 +73,16 @@ export const getMyAccount = createServerFn({ method: "GET" })
       subscription.status === "active" &&
       !!subscription.end_date &&
       new Date(subscription.end_date).getTime() > Date.now();
+    const profileEmail = profileRes.data?.email;
 
     return {
       profile: profileRes.data ?? { id: context.userId, name: "", email: "", created_at: "" },
       subscription,
       isActive,
-      isAdmin: roleRes.data === true || isConfiguredAdmin(context.claims),
+      isAdmin:
+        roleRes.data === true ||
+        isConfiguredAdmin(context.claims) ||
+        isConfiguredAdminEmail(profileEmail),
       payments: (payRes.data ?? []) as PaymentRow[],
     };
   });
