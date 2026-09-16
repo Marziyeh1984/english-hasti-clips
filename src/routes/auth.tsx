@@ -22,6 +22,8 @@ export const Route = createFileRoute("/auth")({
 
 type Mode = "signin" | "signup" | "reset";
 
+const APP_URL = import.meta.env.VITE_APP_URL?.replace(/\/$/, "") || "https://english-hasti-clips.vercel.app";
+
 function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("signin");
@@ -34,7 +36,9 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard", replace: true });
+      if (data.session && data.session.user.email_confirmed_at) {
+        navigate({ to: "/dashboard", replace: true });
+      }
     });
   }, [navigate]);
 
@@ -45,8 +49,13 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        if (!data.user.email_confirmed_at) {
+          await supabase.auth.signOut();
+          setNotice("ایمیل شما هنوز تأیید نشده است. ابتدا لینک تأیید داخل ایمیل را باز کنید.");
+          return;
+        }
         navigate({ to: "/dashboard", replace: true });
       } else if (mode === "signup") {
         if (password.length < 6) throw new Error("رمز عبور باید حداقل ۶ کاراکتر باشد.");
@@ -55,16 +64,14 @@ function AuthPage() {
           password,
           options: {
             data: { name },
-            emailRedirectTo: `${window.location.origin}/dashboard`,
+            emailRedirectTo: `${APP_URL}/dashboard`,
           },
         });
         if (error) throw error;
-        setNotice("حساب ساخته شد. اگر تأیید ایمیل فعال باشد، لینک تأیید برایتان ارسال شده است.");
-        const { data } = await supabase.auth.getSession();
-        if (data.session) navigate({ to: "/dashboard", replace: true });
+        setNotice("حساب ساخته شد. لینک تأیید را از ایمیل باز کنید؛ بعد از تأیید، به سایت جدید English Hasti برمی‌گردید.");
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/reset-password`,
+          redirectTo: `${APP_URL}/reset-password`,
         });
         if (error) throw error;
         setNotice("لینک بازیابی رمز عبور به ایمیل شما ارسال شد.");
