@@ -8,6 +8,14 @@ import { supabase } from "@/integrations/supabase/client";
 export type Dialogue = { en: string; fa: string; t: number };
 export type Vocab = { en: string; fa: string };
 
+const LOVABLE_ASSET_ORIGIN = "https://reel-english-flow.lovable.app";
+
+function normalizeLessonVideoUrl(url: string) {
+  if (!url) return "";
+  if (url.startsWith("/__l5e/")) return `${LOVABLE_ASSET_ORIGIN}${url}`;
+  return url;
+}
+
 export function LessonClip({
   videoUrl,
   poster,
@@ -44,26 +52,41 @@ export function LessonClip({
 
     async function resolveVideo() {
       setVideoError(catalogError ? "اتصال به سرویس ویدیو برقرار نشد." : "");
+
+      // The first sample clips were originally stored by Lovable and their
+      // asset metadata is still in the repository. On Vercel those relative
+      // /__l5e URLs do not exist, so use the original Lovable asset as a
+      // browser fallback when no Supabase catalog row exists.
+      const fallbackUrl = normalizeLessonVideoUrl(videoUrl);
       if (!dbVideo) {
-        setResolvedUrl("");
+        if (!cancelled && fallbackUrl) {
+          setResolvedUrl(fallbackUrl);
+          setVideoError("");
+        } else if (!cancelled) {
+          setResolvedUrl("");
+        }
         return;
       }
 
       try {
-        let accessToken = "";
         const { data: sessionData } = await supabase.auth.getSession();
-        accessToken = sessionData.session?.access_token ?? "";
-
+        const accessToken = sessionData.session?.access_token ?? "";
         const result = await playVideo({ data: { videoId: dbVideo.id, accessToken } });
         if (!cancelled) setResolvedUrl(result.url);
       } catch (error) {
         if (!cancelled) {
-          setResolvedUrl("");
-          setVideoError(
-            error instanceof Error && /SUBSCRIPTION_REQUIRED/.test(error.message)
-              ? "برای پخش این کلیپ اشتراک فعال لازم است."
-              : "پخش ویدیو ممکن نشد. لطفاً دوباره صفحه را باز کنید.",
-          );
+          // For a free sample, the original asset is still a safe fallback.
+          if (fallbackUrl && dbVideo.access_type === "free") {
+            setResolvedUrl(fallbackUrl);
+            setVideoError("");
+          } else {
+            setResolvedUrl("");
+            setVideoError(
+              error instanceof Error && /SUBSCRIPTION_REQUIRED/.test(error.message)
+                ? "برای پخش این کلیپ اشتراک فعال لازم است."
+                : "پخش ویدیو ممکن نشد. لطفاً دوباره صفحه را باز کنید.",
+            );
+          }
         }
       }
     }
@@ -72,7 +95,7 @@ export function LessonClip({
     return () => {
       cancelled = true;
     };
-  }, [dbVideo?.id, playVideo, catalogError]);
+  }, [dbVideo?.id, dbVideo?.access_type, playVideo, catalogError, videoUrl]);
 
   const handleTime = () => {
     const t = videoRef.current?.currentTime ?? 0;
@@ -107,6 +130,7 @@ export function LessonClip({
             poster={poster}
             onTimeUpdate={handleTime}
             onEnded={() => setActive(-1)}
+            onError={() => setVideoError("فایل ویدیو قابل دسترسی نیست. لطفاً دوباره تلاش کنید.")}
             className="aspect-video w-full bg-ink object-cover"
           >
             <source src={resolvedUrl} type="video/mp4" />
