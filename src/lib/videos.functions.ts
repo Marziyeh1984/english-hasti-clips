@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isConfiguredAdmin, type VideoRow } from "./account.functions";
+import { unpackLessonDescription } from "./video-lesson-meta";
 
 function publicClient() {
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
@@ -19,7 +20,24 @@ function publicClient() {
   });
 }
 
-const VIDEO_COLUMNS = "id, title, description, thumbnail, access_type, badge, dialogues, vocab, created_at";
+const VIDEO_COLUMNS = "id, title, description, thumbnail, access_type, created_at";
+
+function normalizeVideoRows(rows: Array<Record<string, unknown>>): VideoRow[] {
+  return rows.map((row) => {
+    const unpacked = unpackLessonDescription(row.description);
+    return {
+      id: String(row.id),
+      title: String(row.title ?? ""),
+      description: unpacked.description,
+      thumbnail: typeof row.thumbnail === "string" ? row.thumbnail : null,
+      access_type: row.access_type === "free" ? "free" : "premium",
+      created_at: String(row.created_at ?? ""),
+      badge: unpacked.meta.badge,
+      dialogues: unpacked.meta.dialogues,
+      vocab: unpacked.meta.vocab,
+    };
+  });
+}
 
 async function signThumbnails(rows: VideoRow[]): Promise<VideoRow[]> {
   const paths = rows
@@ -47,7 +65,7 @@ export const listPublicVideos = createServerFn({ method: "GET" }).handler(async 
     .select(VIDEO_COLUMNS)
     .order("created_at", { ascending: false });
   if (error) throw new Error("بارگذاری ویدیوها ممکن نشد.");
-  return await signThumbnails((data ?? []) as VideoRow[]);
+  return await signThumbnails(normalizeVideoRows((data ?? []) as Array<Record<string, unknown>>));
 });
 
 export const listFreeVideos = createServerFn({ method: "GET" }).handler(async () => {
@@ -56,7 +74,7 @@ export const listFreeVideos = createServerFn({ method: "GET" }).handler(async ()
     .select(VIDEO_COLUMNS)
     .eq("access_type", "free")
     .order("created_at", { ascending: false });
-  return await signThumbnails((data ?? []) as VideoRow[]);
+  return await signThumbnails(normalizeVideoRows((data ?? []) as Array<Record<string, unknown>>));
 });
 
 export const listAllVideos = createServerFn({ method: "GET" })
@@ -66,7 +84,7 @@ export const listAllVideos = createServerFn({ method: "GET" })
       .from("videos")
       .select(VIDEO_COLUMNS)
       .order("created_at", { ascending: false });
-    return await signThumbnails((data ?? []) as VideoRow[]);
+    return await signThumbnails(normalizeVideoRows((data ?? []) as Array<Record<string, unknown>>));
   });
 
 export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
