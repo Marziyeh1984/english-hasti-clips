@@ -1,9 +1,10 @@
-import type { AdminDialogue, AdminVocab } from "./admin.functions";
+export type LessonDialogue = { en: string; fa: string; t: number };
+export type LessonVocab = { en: string; fa: string };
 
 export type LessonMeta = {
   badge: string;
-  dialogues: AdminDialogue[];
-  vocab: AdminVocab[];
+  dialogues: LessonDialogue[];
+  vocab: LessonVocab[];
 };
 
 const MARKER = "\n\n__HASTI_LESSON_META_V1__\n";
@@ -30,6 +31,6 @@ export function unpackLessonDescription(raw: unknown): { description: string; me
       },
     };
   } catch {
-    return { description: value, meta: DEFAULT_META };
+    return { description, meta: DEFAULT_META };
   }
 }
