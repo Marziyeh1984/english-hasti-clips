@@ -17,6 +17,9 @@ export type PaymentRow = {
   created_at: string;
 };
 
+export type VideoDialogue = { en: string; fa: string; t: number };
+export type VideoVocab = { en: string; fa: string };
+
 export type VideoRow = {
   id: string;
   title: string;
@@ -24,6 +27,9 @@ export type VideoRow = {
   thumbnail: string | null;
   access_type: "free" | "premium";
   created_at: string;
+  badge: string;
+  dialogues: VideoDialogue[];
+  vocab: VideoVocab[];
 };
 
 const CONFIGURED_ADMIN_EMAILS = new Set(["lak20ml@gmail.com"]);
@@ -91,58 +97,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { name: string }) => ({ name: clean(data?.name, 80) }))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("profiles")
-      .update({ name: data.name })
-      .eq("id", context.userId);
+    const { error } = await context.supabase.from("profiles").update({ name: data.name }).eq("id", context.userId);
     if (error) throw new Error("ذخیره نام ممکن نشد.");
-    return { ok: true };
-  });
-
-/** Member submits proof of a manual (card-to-card) payment. */
-export const submitPayment = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: { amount: number; paymentDate: string; receiptPath: string; note?: string }) => {
-    const amount = Number(data?.amount);
-    if (!Number.isFinite(amount) || amount <= 0 || amount > 1_000_000_000) {
-      throw new Error("مبلغ نامعتبر است.");
-    }
-    const paymentDate = clean(data?.paymentDate, 20);
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(paymentDate)) throw new Error("تاریخ نامعتبر است.");
-    return {
-      amount: Math.round(amount),
-      paymentDate,
-      receiptPath: clean(data?.receiptPath, 300),
-      note: typeof data?.note === "string" ? data.note.slice(0, 300) : null,
-    };
-  })
-  .handler(async ({ data, context }) => {
-    if (!data.receiptPath.startsWith(`${context.userId}/`)) {
-      throw new Error("فایل رسید نامعتبر است.");
-    }
-
-    const { error } = await context.supabase.from("payments").insert({
-      user_id: context.userId,
-      amount: data.amount,
-      payment_date: data.paymentDate,
-      receipt_path: data.receiptPath,
-      note: data.note,
-      status: "pending",
-    });
-    if (error) throw new Error("ثبت درخواست پرداخت ممکن نشد.");
-
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: existing } = await supabaseAdmin
-      .from("subscriptions")
-      .select("id, status")
-      .eq("user_id", context.userId)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (!existing || existing.status === "expired") {
-      await supabaseAdmin.from("subscriptions").insert({ user_id: context.userId, status: "pending" });
-    }
-
     return { ok: true };
   });
