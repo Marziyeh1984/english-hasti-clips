@@ -19,9 +19,8 @@ function publicClient() {
   });
 }
 
-const VIDEO_COLUMNS = "id, title, description, thumbnail, access_type, created_at";
+const VIDEO_COLUMNS = "id, title, description, thumbnail, access_type, badge, dialogues, vocab, created_at";
 
-/** Covers live in a private bucket, so turn stored paths into short-lived links. */
 async function signThumbnails(rows: VideoRow[]): Promise<VideoRow[]> {
   const paths = rows
     .map((r) => r.thumbnail)
@@ -40,7 +39,7 @@ async function signThumbnails(rows: VideoRow[]): Promise<VideoRow[]> {
   );
 }
 
-/** Public catalogue — no auth required. Returns metadata only. */
+/** Public catalogue — lesson content is metadata only; playback remains protected. */
 export const listPublicVideos = createServerFn({ method: "GET" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin
@@ -51,7 +50,6 @@ export const listPublicVideos = createServerFn({ method: "GET" }).handler(async 
   return await signThumbnails((data ?? []) as VideoRow[]);
 });
 
-/** Free videos — visible to everyone, no session required. */
 export const listFreeVideos = createServerFn({ method: "GET" }).handler(async () => {
   const { data } = await publicClient()
     .from("videos")
@@ -61,7 +59,6 @@ export const listFreeVideos = createServerFn({ method: "GET" }).handler(async ()
   return await signThumbnails((data ?? []) as VideoRow[]);
 });
 
-/** Full catalogue for signed-in members. */
 export const listAllVideos = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -72,12 +69,6 @@ export const listAllVideos = createServerFn({ method: "GET" })
     return await signThumbnails((data ?? []) as VideoRow[]);
   });
 
-/**
- * Produces a short-lived playable URL.
- * The browser explicitly supplies the current Supabase access token for premium
- * playback because server functions do not automatically receive the browser's
- * localStorage auth session.
- */
 export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
   .inputValidator((data: { videoId: string; accessToken?: string }) => {
     const id = String(data?.videoId ?? "");
@@ -95,9 +86,7 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
     if (error || !video) throw new Error("ویدیو پیدا نشد.");
 
     if (video.access_type === "free") {
-      if (video.video_url.startsWith("http")) {
-        return { url: video.video_url, expiresIn: 0 };
-      }
+      if (video.video_url.startsWith("http")) return { url: video.video_url, expiresIn: 0 };
       const { data: signed, error: signErr } = await supabaseAdmin.storage
         .from("premium-videos")
         .createSignedUrl(video.video_url, 60 * 60);
@@ -105,11 +94,8 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
       return { url: signed.signedUrl, expiresIn: 3600 };
     }
 
-    // Premium: validate the token supplied by the browser.
     const token = data.accessToken;
-    if (!token || token.split(".").length !== 3) {
-      throw new Error("SUBSCRIPTION_REQUIRED");
-    }
+    if (!token || token.split(".").length !== 3) throw new Error("SUBSCRIPTION_REQUIRED");
 
     const SUPABASE_URL = process.env["SUPABASE_URL"]!;
     const SUPABASE_PUBLISHABLE_KEY = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
@@ -131,27 +117,16 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
     if (claimsErr || !claims?.claims?.sub) throw new Error("SUBSCRIPTION_REQUIRED");
     const userId = claims.claims.sub as string;
 
-    // Administrators can preview and edit every premium lesson without a subscription.
-    // Keep the database role as the primary authorization source, with the configured
-    // bootstrap admin email as a fallback while the role migration is being applied.
-    const { data: adminRole } = await supabaseAdmin.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
+    const { data: adminRole } = await supabaseAdmin.rpc("has_role", { _user_id: userId, _role: "admin" });
     const isAdmin = adminRole === true || isConfiguredAdmin(claims.claims);
 
     if (!isAdmin) {
       await supabaseAdmin.rpc("expire_subscriptions");
-      const { data: allowed } = await authed.rpc("has_active_subscription", {
-        _user_id: userId,
-      } as any);
+      const { data: allowed } = await authed.rpc("has_active_subscription", { _user_id: userId } as any);
       if (allowed !== true) throw new Error("SUBSCRIPTION_REQUIRED");
     }
 
-    if (video.video_url.startsWith("http")) {
-      return { url: video.video_url, expiresIn: 0 };
-    }
-
+    if (video.video_url.startsWith("http")) return { url: video.video_url, expiresIn: 0 };
     const { data: signed, error: signErr } = await supabaseAdmin.storage
       .from("premium-videos")
       .createSignedUrl(video.video_url, 60 * 60);
