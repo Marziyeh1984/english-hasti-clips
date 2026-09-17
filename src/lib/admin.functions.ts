@@ -213,6 +213,22 @@ export const adminCreateVideo = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const adminSetVideoAccess = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { videoId: string; accessType: "free" | "premium" }) => {
+    const videoId = String(data?.videoId ?? "");
+    if (!UUID.test(videoId)) throw new Error("ویدیوی نامعتبر.");
+    const accessType = data?.accessType === "free" ? ("free" as const) : ("premium" as const);
+    return { videoId, accessType };
+  })
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("videos").update({ access_type: data.accessType }).eq("id", data.videoId);
+    if (error) throw new Error("تغییر دسترسی ویدیو ممکن نشد.");
+    return { ok: true };
+  });
+
 export const adminDeleteVideo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { videoId: string }) => {
