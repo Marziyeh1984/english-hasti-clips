@@ -136,7 +136,12 @@ export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
     const userId = claims.claims.sub as string;
 
     const { data: adminRole } = await supabaseAdmin.rpc("has_role", { _user_id: userId, _role: "admin" });
-    const isAdmin = adminRole === true || isConfiguredAdmin(claims.claims);
+    let isAdmin = adminRole === true || isConfiguredAdmin(claims.claims);
+
+    if (!isAdmin) {
+      const { data: adminUser } = await supabaseAdmin.auth.admin.getUserById(userId);
+      isAdmin = isConfiguredAdmin(adminUser.user?.email ? { email: adminUser.user.email } : null);
+    }
 
     if (!isAdmin) {
       await supabaseAdmin.rpc("expire_subscriptions");
