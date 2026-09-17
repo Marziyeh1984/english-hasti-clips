@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isConfiguredAdmin } from "./account.functions";
+import { packLessonDescription, unpackLessonDescription } from "./video-lesson-meta";
 
 export type AdminPayment = {
   id: string;
@@ -46,7 +47,6 @@ function str(v: unknown, max: number) {
 
 function parseDialogues(value: unknown): AdminDialogue[] {
   if (!Array.isArray(value) || value.length > 1000) throw new Error("دیالوگ‌ها نامعتبر هستند.");
-
   const rows = value.filter((item) => {
     if (!item || typeof item !== "object") return true;
     const x = item as Record<string, unknown>;
@@ -56,7 +56,6 @@ function parseDialogues(value: unknown): AdminDialogue[] {
     const t = rawT === "" || rawT === null || rawT === undefined ? 0 : Number(rawT);
     return en !== "" || fa !== "" || t !== 0;
   });
-
   return rows.map((item, index) => {
     if (!item || typeof item !== "object") throw new Error(`دیالوگ ${index + 1} نامعتبر است.`);
     const x = item as Record<string, unknown>;
@@ -70,7 +69,6 @@ function parseDialogues(value: unknown): AdminDialogue[] {
 
 function parseVocab(value: unknown): AdminVocab[] {
   if (!Array.isArray(value) || value.length > 500) throw new Error("اصطلاحات نامعتبر هستند.");
-
   const rows = value.filter((item) => {
     if (!item || typeof item !== "object") return true;
     const x = item as Record<string, unknown>;
@@ -78,7 +76,6 @@ function parseVocab(value: unknown): AdminVocab[] {
     const fa = typeof x.fa === "string" ? x.fa.trim() : "";
     return en !== "" || fa !== "";
   });
-
   return rows.map((item, index) => {
     if (!item || typeof item !== "object") throw new Error(`اصطلاح ${index + 1} نامعتبر است.`);
     const x = item as Record<string, unknown>;
@@ -151,8 +148,11 @@ export const adminListVideos = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await supabaseAdmin.from("videos").select("id, title, description, thumbnail, video_url, access_type, badge, dialogues, vocab, created_at").order("created_at", { ascending: false });
-    return data ?? [];
+    const { data } = await supabaseAdmin.from("videos").select("id, title, description, thumbnail, video_url, access_type, created_at").order("created_at", { ascending: false });
+    return (data ?? []).map((row) => {
+      const unpacked = unpackLessonDescription(row.description);
+      return { ...row, description: unpacked.description, badge: unpacked.meta.badge, dialogues: unpacked.meta.dialogues, vocab: unpacked.meta.vocab };
+    });
   });
 
 export const adminCreateUploadUrl = createServerFn({ method: "POST" })
@@ -197,15 +197,17 @@ export const adminCreateVideo = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("videos").insert({
-      title: data.title,
-      description: data.description,
-      thumbnail: data.thumbnail,
-      video_url: data.videoUrl,
-      access_type: data.accessType,
+    const description = packLessonDescription(data.description, {
       badge: data.badge,
       dialogues: data.dialogues,
       vocab: data.vocab,
+    });
+    const { error } = await supabaseAdmin.from("videos").insert({
+      title: data.title,
+      description,
+      thumbnail: data.thumbnail,
+      video_url: data.videoUrl,
+      access_type: data.accessType,
     });
     if (error) throw new Error("ثبت ویدیو ممکن نشد.");
     return { ok: true };
