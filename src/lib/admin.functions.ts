@@ -15,6 +15,9 @@ export type AdminPayment = {
   receiptUrl: string | null;
 };
 
+export type AdminDialogue = { en: string; fa: string; t: number };
+export type AdminVocab = { en: string; fa: string };
+
 async function assertAdmin(context: { supabase: any; userId: string; claims?: any }) {
   const { data } = await context.supabase.rpc("has_role", {
     _user_id: context.userId,
@@ -22,8 +25,6 @@ async function assertAdmin(context: { supabase: any; userId: string; claims?: an
   });
   if (data === true || isConfiguredAdmin(context.claims)) return;
 
-  // The auth JWT may not expose email in its claims. Fall back to the
-  // server-side profile, which is created for every signed-in user.
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: profile } = await supabaseAdmin
     .from("profiles")
@@ -41,6 +42,28 @@ function str(v: unknown, max: number) {
   const t = v.trim();
   if (!t || t.length > max) throw new Error("ورودی نامعتبر است.");
   return t;
+}
+
+function parseDialogues(value: unknown): AdminDialogue[] {
+  if (!Array.isArray(value) || value.length > 1000) throw new Error("دیالوگ‌ها نامعتبر هستند.");
+  return value.map((item, index) => {
+    if (!item || typeof item !== "object") throw new Error(`دیالوگ ${index + 1} نامعتبر است.`);
+    const x = item as Record<string, unknown>;
+    const en = str(x.en, 1000);
+    const fa = str(x.fa, 2000);
+    const t = Number(x.t);
+    if (!Number.isFinite(t) || t < 0 || t > 86400) throw new Error(`زمان دیالوگ ${index + 1} نامعتبر است.`);
+    return { en, fa, t };
+  }).sort((a, b) => a.t - b.t);
+}
+
+function parseVocab(value: unknown): AdminVocab[] {
+  if (!Array.isArray(value) || value.length > 500) throw new Error("اصطلاحات نامعتبر هستند.");
+  return value.map((item, index) => {
+    if (!item || typeof item !== "object") throw new Error(`اصطلاح ${index + 1} نامعتبر است.`);
+    const x = item as Record<string, unknown>;
+    return { en: str(x.en, 300), fa: str(x.fa, 1000) };
+  });
 }
 
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -108,7 +131,7 @@ export const adminListVideos = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await supabaseAdmin.from("videos").select("id, title, description, thumbnail, video_url, access_type, created_at").order("created_at", { ascending: false });
+    const { data } = await supabaseAdmin.from("videos").select("id, title, description, thumbnail, video_url, access_type, badge, dialogues, vocab, created_at").order("created_at", { ascending: false });
     return data ?? [];
   });
 
@@ -132,17 +155,38 @@ export const adminCreateUploadUrl = createServerFn({ method: "POST" })
 
 export const adminCreateVideo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { title: string; description?: string; thumbnail?: string; videoUrl: string; accessType: "free" | "premium" }) => ({
+  .inputValidator((data: {
+    title: string;
+    description?: string;
+    thumbnail?: string;
+    videoUrl: string;
+    accessType: "free" | "premium";
+    badge?: string;
+    dialogues?: unknown;
+    vocab?: unknown;
+  }) => ({
     title: str(data?.title, 160),
     description: typeof data?.description === "string" ? data.description.slice(0, 2000) : "",
     thumbnail: typeof data?.thumbnail === "string" && data.thumbnail.trim() ? data.thumbnail.trim().slice(0, 500) : null,
     videoUrl: str(data?.videoUrl, 500),
     accessType: data?.accessType === "free" ? ("free" as const) : ("premium" as const),
+    badge: typeof data?.badge === "string" && data.badge.trim() ? data.badge.trim().slice(0, 80) : "درس جدید",
+    dialogues: parseDialogues(data?.dialogues ?? []),
+    vocab: parseVocab(data?.vocab ?? []),
   }))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("videos").insert({ title: data.title, description: data.description, thumbnail: data.thumbnail, video_url: data.videoUrl, access_type: data.accessType });
+    const { error } = await supabaseAdmin.from("videos").insert({
+      title: data.title,
+      description: data.description,
+      thumbnail: data.thumbnail,
+      video_url: data.videoUrl,
+      access_type: data.accessType,
+      badge: data.badge,
+      dialogues: data.dialogues,
+      vocab: data.vocab,
+    });
     if (error) throw new Error("ثبت ویدیو ممکن نشد.");
     return { ok: true };
   });
