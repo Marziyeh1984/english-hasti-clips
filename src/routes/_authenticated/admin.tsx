@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Plus, Trash2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyAccount } from "@/lib/account.functions";
-import { listPaymentRequests, approvePayment, rejectPayment, adminListVideos, adminCreateVideo, adminDeleteVideo, adminCreateUploadUrl } from "@/lib/admin.functions";
+import { listPaymentRequests, approvePayment, rejectPayment, adminListVideos, adminCreateVideo, adminDeleteVideo, adminCreateUploadUrl, adminSetVideoAccess } from "@/lib/admin.functions";
 import { PageShell, Card, Field, PrimaryButton, StatusPill, BackToHome } from "@/components/PageShell";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -29,6 +29,7 @@ function AdminPage() {
   const fetchVideos = useServerFn(adminListVideos);
   const createVideo = useServerFn(adminCreateVideo);
   const removeVideo = useServerFn(adminDeleteVideo);
+  const setVideoAccess = useServerFn(adminSetVideoAccess);
   const makeUploadUrl = useServerFn(adminCreateUploadUrl);
   const account = useQuery({ queryKey: ["account"], queryFn: () => fetchAccount({}) });
   const [signedInEmail, setSignedInEmail] = useState("");
@@ -56,6 +57,7 @@ function AdminPage() {
 
   const approveM = useMutation({ mutationFn: (v: { paymentId: string; days: number }) => approve({ data: v }), onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-payments"] }), onError: (e: unknown) => setError(e instanceof Error ? e.message : "خطا در تأیید.") });
   const rejectM = useMutation({ mutationFn: (paymentId: string) => reject({ data: { paymentId } }), onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-payments"] }) });
+  const accessM = useMutation({ mutationFn: (v: { videoId: string; accessType: "free" | "premium" }) => setVideoAccess({ data: v }), onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-videos"] }), onError: (e: unknown) => setError(e instanceof Error ? e.message : "تغییر دسترسی ویدیو ممکن نشد.") });
   const createM = useMutation({
     mutationFn: () => createVideo({ data: { ...form, dialogues, vocab } }),
     onSuccess: () => {
@@ -115,6 +117,6 @@ function AdminPage() {
       <PrimaryButton className="mt-5" onClick={() => { setError(""); createM.mutate(); }} disabled={createM.isPending || !form.title.trim() || !form.videoUrl.trim()}> {createM.isPending ? "در حال ثبت…" : "ثبت ویدیو و محتوای آموزشی"}</PrimaryButton>
     </Card>
 
-    <Card className="mt-6"><h2 className="text-lg font-bold text-ink">ویدیوها</h2><ul className="mt-3 divide-y divide-line/30">{videos.data?.map((v) => <li key={v.id} className="flex flex-wrap items-center justify-between gap-2 py-3"><div><p className="text-sm font-semibold text-ink">{v.title}</p><p className="text-[11px] text-ink/60">{v.dialogues?.length ?? 0} دیالوگ · {v.vocab?.length ?? 0} اصطلاح</p></div><div className="flex items-center gap-2"><StatusPill tone={v.access_type === "free" ? "muted" : "ok"}>{v.access_type === "free" ? "رایگان" : "ویژه"}</StatusPill><button onClick={() => deleteM.mutate(v.id)} disabled={deleteM.isPending} className="rounded-full border-2 border-red-300 p-2 text-red-700"><Trash2 size={15} /></button></div></li>)}</ul></Card>
+    <Card className="mt-6"><h2 className="text-lg font-bold text-ink">ویدیوها</h2><ul className="mt-3 divide-y divide-line/30">{videos.data?.map((v) => <li key={v.id} className="flex flex-wrap items-center justify-between gap-2 py-3"><div><p className="text-sm font-semibold text-ink">{v.title}</p><p className="text-[11px] text-ink/60">{v.dialogues?.length ?? 0} دیالوگ · {v.vocab?.length ?? 0} اصطلاح</p></div><div className="flex items-center gap-2"><select value={v.access_type} onChange={(e) => accessM.mutate({ videoId: v.id, accessType: e.target.value === "free" ? "free" : "premium" })} disabled={accessM.isPending} className="rounded-full border-2 border-line bg-cream px-3 py-2 text-[12px] font-bold text-ink"><option value="premium">🔒 ویژه (اشتراک)</option><option value="free">🔓 رایگان</option></select><button onClick={() => deleteM.mutate(v.id)} disabled={deleteM.isPending} className="rounded-full border-2 border-red-300 p-2 text-red-700"><Trash2 size={15} /></button></div></li>)}</ul></Card>
   </PageShell>;
 }
