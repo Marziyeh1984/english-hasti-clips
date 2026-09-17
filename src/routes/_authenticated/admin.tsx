@@ -14,9 +14,9 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 const CONFIGURED_ADMIN_EMAIL = "lak20ml@gmail.com";
-type Dialogue = { en: string; fa: string; t: number };
+type Dialogue = { en: string; fa: string; t: string };
 type Vocab = { en: string; fa: string };
-const emptyDialogue = (): Dialogue => ({ en: "", fa: "", t: 0 });
+const emptyDialogue = (): Dialogue => ({ en: "", fa: "", t: "0" });
 const emptyVocab = (): Vocab => ({ en: "", fa: "" });
 const faDate = (d: string | null) => d ? new Date(d).toLocaleDateString("fa-IR", { year: "numeric", month: "long", day: "numeric" }) : "—";
 
@@ -99,9 +99,9 @@ function AdminPage() {
       </div>
 
       <div className="mt-6 rounded-2xl border-2 border-line/60 bg-cream/50 p-4">
-        <div className="flex items-center justify-between gap-2"><div><h3 className="font-bold text-ink">دیالوگ‌ها و ترجمه</h3><p className="text-[11px] text-ink/60">زمان شروع هر جمله را وارد کن؛ فرمت ثانیه یا mm:ss.xx قابل استفاده است.</p></div><button type="button" onClick={() => setDialogues((d) => [...d, emptyDialogue()])} className="inline-flex items-center gap-1 rounded-full bg-ink px-3 py-2 text-[11px] font-bold text-cream"><Plus size={14} /> افزودن خط</button></div>
-        <div className="mt-3 flex flex-col gap-3">{dialogues.map((d, i) => <div key={i} className="grid gap-2 rounded-xl border border-line/40 bg-blush/50 p-3 lg:grid-cols-[100px_1fr_1fr_38px]">
-          <input value={d.t} onChange={(e) => setDialogues((a) => a.map((x, j) => j === i ? { ...x, t: Number(e.target.value) || 0 } : x))} type="number" min="0" step="0.01" placeholder="زمان (ثانیه)" className="rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink" />
+        <div className="flex items-center justify-between gap-2"><div><h3 className="font-bold text-ink">دیالوگ‌ها و ترجمه</h3><p className="text-[11px] text-ink/60">زمان را به‌صورت ثانیه (مثل 12.5) یا mm:ss.xx (مثل 01:12.50) وارد کن.</p></div><button type="button" onClick={() => setDialogues((d) => [...d, emptyDialogue()])} className="inline-flex items-center gap-1 rounded-full bg-ink px-3 py-2 text-[11px] font-bold text-cream"><Plus size={14} /> افزودن خط</button></div>
+        <div className="mt-3 flex flex-col gap-3">{dialogues.map((d, i) => <div key={i} className="grid gap-2 rounded-xl border border-line/40 bg-blush/50 p-3 lg:grid-cols-[130px_1fr_1fr_38px]">
+          <input value={d.t} onChange={(e) => setDialogues((a) => a.map((x, j) => j === i ? { ...x, t: e.target.value } : x))} inputMode="decimal" placeholder="مثلاً 01:12.50" className="rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink" />
           <input value={d.en} dir="ltr" onChange={(e) => setDialogues((a) => a.map((x, j) => j === i ? { ...x, en: e.target.value } : x))} placeholder="English dialogue" className="rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink" />
           <input value={d.fa} onChange={(e) => setDialogues((a) => a.map((x, j) => j === i ? { ...x, fa: e.target.value } : x))} placeholder="ترجمه فارسی" className="rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink" />
           <button type="button" onClick={() => setDialogues((a) => a.length > 1 ? a.filter((_, j) => j !== i) : a)} className="flex items-center justify-center rounded-lg border border-red-300 text-red-700"><Trash2 size={15} /></button>
