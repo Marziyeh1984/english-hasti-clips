@@ -17,6 +17,7 @@ function normalizeLessonVideoUrl(url: string) {
 }
 
 export function LessonClip({
+  videoId,
   videoUrl,
   poster,
   badge,
@@ -24,6 +25,7 @@ export function LessonClip({
   dialogues,
   vocab,
 }: {
+  videoId?: string;
   videoUrl: string;
   poster?: string;
   badge: string;
@@ -45,7 +47,9 @@ export function LessonClip({
     staleTime: 5 * 60 * 1000,
   });
 
-  const dbVideo = videos?.find((v) => v.title.trim().toLowerCase() === title.trim().toLowerCase());
+  const dbVideo = videoId
+    ? videos?.find((v) => v.id === videoId)
+    : videos?.find((v) => v.title.trim().toLowerCase() === title.trim().toLowerCase());
 
   useEffect(() => {
     let cancelled = false;
@@ -53,10 +57,6 @@ export function LessonClip({
     async function resolveVideo() {
       setVideoError(catalogError ? "اتصال به سرویس ویدیو برقرار نشد." : "");
 
-      // The first sample clips were originally stored by Lovable and their
-      // asset metadata is still in the repository. On Vercel those relative
-      // /__l5e URLs do not exist, so use the original Lovable asset as a
-      // browser fallback when no Supabase catalog row exists.
       const fallbackUrl = normalizeLessonVideoUrl(videoUrl);
       if (!dbVideo) {
         if (!cancelled && fallbackUrl) {
@@ -75,7 +75,6 @@ export function LessonClip({
         if (!cancelled) setResolvedUrl(result.url);
       } catch (error) {
         if (!cancelled) {
-          // For a free sample, the original asset is still a safe fallback.
           if (fallbackUrl && dbVideo.access_type === "free") {
             setResolvedUrl(fallbackUrl);
             setVideoError("");
@@ -95,7 +94,7 @@ export function LessonClip({
     return () => {
       cancelled = true;
     };
-  }, [dbVideo?.id, dbVideo?.access_type, playVideo, catalogError, videoUrl]);
+  }, [dbVideo?.id, dbVideo?.access_type, playVideo, catalogError, videoUrl, videoId]);
 
   const handleTime = () => {
     const t = videoRef.current?.currentTime ?? 0;
