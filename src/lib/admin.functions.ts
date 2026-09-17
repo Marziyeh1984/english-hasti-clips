@@ -46,7 +46,18 @@ function str(v: unknown, max: number) {
 
 function parseDialogues(value: unknown): AdminDialogue[] {
   if (!Array.isArray(value) || value.length > 1000) throw new Error("دیالوگ‌ها نامعتبر هستند.");
-  return value.map((item, index) => {
+
+  const rows = value.filter((item) => {
+    if (!item || typeof item !== "object") return true;
+    const x = item as Record<string, unknown>;
+    const en = typeof x.en === "string" ? x.en.trim() : "";
+    const fa = typeof x.fa === "string" ? x.fa.trim() : "";
+    const rawT = x.t;
+    const t = rawT === "" || rawT === null || rawT === undefined ? 0 : Number(rawT);
+    return en !== "" || fa !== "" || t !== 0;
+  });
+
+  return rows.map((item, index) => {
     if (!item || typeof item !== "object") throw new Error(`دیالوگ ${index + 1} نامعتبر است.`);
     const x = item as Record<string, unknown>;
     const en = str(x.en, 1000);
@@ -59,7 +70,16 @@ function parseDialogues(value: unknown): AdminDialogue[] {
 
 function parseVocab(value: unknown): AdminVocab[] {
   if (!Array.isArray(value) || value.length > 500) throw new Error("اصطلاحات نامعتبر هستند.");
-  return value.map((item, index) => {
+
+  const rows = value.filter((item) => {
+    if (!item || typeof item !== "object") return true;
+    const x = item as Record<string, unknown>;
+    const en = typeof x.en === "string" ? x.en.trim() : "";
+    const fa = typeof x.fa === "string" ? x.fa.trim() : "";
+    return en !== "" || fa !== "";
+  });
+
+  return rows.map((item, index) => {
     if (!item || typeof item !== "object") throw new Error(`اصطلاح ${index + 1} نامعتبر است.`);
     const x = item as Record<string, unknown>;
     return { en: str(x.en, 300), fa: str(x.fa, 1000) };
