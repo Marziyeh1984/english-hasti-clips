@@ -44,11 +44,21 @@ function AuthPage() {
       return;
     }
 
+    // Check for existing session
     supabase.auth.getSession().then(({ data }) => {
       if (data.session && data.session.user.email_confirmed_at) {
         navigate({ to: "/dashboard", replace: true });
       }
     });
+
+    // Listen for auth state changes (e.g., email verification callback)
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session && session.user.email_confirmed_at) {
+        navigate({ to: "/dashboard", replace: true });
+      }
+    });
+
+    return () => sub.subscription.unsubscribe();
   }, [navigate]);
 
   async function submit(e: React.FormEvent) {

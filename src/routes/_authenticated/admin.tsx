@@ -38,7 +38,7 @@ function AdminPage() {
   const payments = useQuery({ queryKey: ["admin-payments"], queryFn: () => fetchPayments({}), enabled: isAdmin });
   const videos = useQuery({ queryKey: ["admin-videos"], queryFn: () => fetchVideos({}), enabled: isAdmin });
   const [days, setDays] = useState<Record<string, string>>({});
-  const [form, setForm] = useState({ title: "", description: "", thumbnail: "", videoUrl: "", accessType: "premium" as "free" | "premium", badge: "درس جدید" });
+  const [form, setForm] = useState({ title: "", description: "", thumbnail: "", videoUrl: "", accessType: "free" as "free" | "premium", badge: "درس جدید" });
   const [dialogues, setDialogues] = useState<Dialogue[]>([emptyDialogue()]);
   const [vocab, setVocab] = useState<Vocab[]>([emptyVocab()]);
   const [error, setError] = useState("");
@@ -61,7 +61,7 @@ function AdminPage() {
   const createM = useMutation({
     mutationFn: () => createVideo({ data: { ...form, dialogues, vocab } }),
     onSuccess: () => {
-      setForm({ title: "", description: "", thumbnail: "", videoUrl: "", accessType: "premium", badge: "درس جدید" });
+      setForm({ title: "", description: "", thumbnail: "", videoUrl: "", accessType: "free", badge: "درس جدید" });
       setDialogues([emptyDialogue()]); setVocab([emptyVocab()]); setError(""); qc.invalidateQueries({ queryKey: ["admin-videos"] });
     },
     onError: (e: unknown) => setError(e instanceof Error ? e.message : "ثبت ویدیو ممکن نشد."),

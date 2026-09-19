@@ -24,6 +24,7 @@ function LessonsPage() {
   const { data: videos, isLoading } = useQuery({ queryKey: ["videos", "public"], queryFn: () => fetchVideos() });
   const { data: account } = useQuery({ queryKey: ["account", "lessons"], queryFn: async () => { try { return await fetchAccount({}); } catch { return null; } }, retry: false });
   const isActive = (account as any)?.isActive === true;
+  const isAdmin = (account as any)?.isAdmin === true;
   const hasDbVideos = !!videos && videos.length > 0;
 
   return <div className="min-h-screen pb-12">
@@ -42,7 +43,7 @@ function LessonsPage() {
         <div className="mt-2 flex items-center gap-2"><div className="h-px flex-1 bg-line" /><span className="rounded-full border border-ink/20 px-3 py-1 text-[11px] font-bold text-ink/70">ویدیوهای اضافه‌شده</span><div className="h-px flex-1 bg-line" /></div>
         <div className="grid gap-4 lg:grid-cols-2">
           {videos!.map((v) => {
-            const locked = v.access_type === "premium" && !isActive;
+            const locked = v.access_type === "premium" && !isActive && !isAdmin;
             return <Reveal key={v.id} className="rounded-[28px] border-2 border-line bg-blush p-4 sm:p-6">
               {locked ? <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream"><div className="relative flex aspect-video w-full items-center justify-center bg-ink"><div className="relative z-10 flex flex-col items-center gap-3 px-6 text-center text-cream"><div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-cream/30 bg-cream/10"><Lock size={26} /></div><span className="rounded-full bg-cream/10 px-3 py-1 text-[11px] font-bold">Premium</span><p className="text-sm font-bold">این کلیپ فقط برای اعضای فعال است</p></div></div><div className="p-5"><h3 className="text-lg font-extrabold text-ink">{v.title}</h3><p className="mt-2 text-[13px] leading-6 text-muted-foreground">برای مشاهده و پخش این درس، اشتراک فعال داشته باشید.</p><Link to="/subscribe" className="mt-4 flex items-center justify-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-bold text-cream"><Lock size={15} /> باز کردن با اشتراک</Link></div></div> : <LessonClip videoId={v.id} videoUrl="" poster={v.thumbnail ?? undefined} badge={v.badge} title={v.title} dialogues={v.dialogues} vocab={v.vocab} />}
             </Reveal>;
@@ -52,7 +53,7 @@ function LessonsPage() {
 
       <div className="mt-2 flex items-center gap-2"><div className="h-px flex-1 bg-line" /><span className="rounded-full border border-ink/20 px-3 py-1 text-[11px] font-bold text-ink/70">کلیپ‌های اصلی ۱ تا ۱۴</span><div className="h-px flex-1 bg-line" /></div>
       <div className="grid gap-4 lg:grid-cols-2">{LESSONS.map((l, i) => {
-        const locked = i >= 2 && !isActive;
+        const locked = i >= 2 && !isActive && !isAdmin;
         return <Reveal key={l.id} delay={i * 40} className="rounded-[28px] border-2 border-line bg-blush p-4 sm:p-6">
           {locked ? <div className="overflow-hidden rounded-3xl border-2 border-line bg-cream"><div className="relative flex aspect-video w-full items-center justify-center bg-ink"><div className="relative z-10 flex flex-col items-center gap-3 px-6 text-center text-cream"><div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-cream/30 bg-cream/10"><Lock size={26} /></div><span className="rounded-full bg-cream/10 px-3 py-1 text-[11px] font-bold">Premium</span><p className="text-sm font-bold">این کلیپ فقط برای اعضای فعال است</p></div></div><div className="p-5"><span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">{l.badge}</span><h3 className="mt-3 text-lg font-extrabold text-ink">{l.title}</h3><p className="mt-2 text-[13px] leading-6 text-muted-foreground">برای مشاهده و پخش این درس، اشتراک فعال داشته باشید.</p><Link to="/subscribe" className="mt-4 flex items-center justify-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-bold text-cream"><Lock size={15} /> باز کردن با اشتراک</Link></div></div> : <LessonClip videoUrl={l.videoUrl} badge={l.badge} title={l.title} dialogues={l.dialogues} vocab={l.vocab} />}
         </Reveal>;
