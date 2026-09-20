@@ -80,6 +80,7 @@ export const getMyAccount = createServerFn({ method: "GET" })
       !!subscription.end_date &&
       new Date(subscription.end_date).getTime() > Date.now();
     const profileEmail = profileRes.data?.email;
+    const claimsEmail = context.claims?.email;
 
     return {
       profile: profileRes.data ?? { id: context.userId, name: "", email: "", created_at: "" },
@@ -88,7 +89,8 @@ export const getMyAccount = createServerFn({ method: "GET" })
       isAdmin:
         roleRes.data === true ||
         isConfiguredAdmin(context.claims) ||
-        isConfiguredAdminEmail(profileEmail),
+        isConfiguredAdminEmail(profileEmail) ||
+        isConfiguredAdminEmail(claimsEmail),
       payments: (payRes.data ?? []) as PaymentRow[],
     };
   });

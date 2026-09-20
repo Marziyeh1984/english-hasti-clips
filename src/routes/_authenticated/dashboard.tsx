@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { LogOut, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyAccount, updateMyProfile } from "@/lib/account.functions";
+import { listPublicVideos } from "@/lib/videos.functions";
 import { PageShell, Card, Field, PrimaryButton, StatusPill, BackToHome } from "@/components/PageShell";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -31,10 +32,12 @@ function Dashboard() {
   const qc = useQueryClient();
   const fetchAccount = useServerFn(getMyAccount);
   const saveProfile = useServerFn(updateMyProfile);
+  const fetchVideos = useServerFn(listPublicVideos);
   const [name, setName] = useState<string | null>(null);
   const [signedInEmail, setSignedInEmail] = useState("");
 
   const { data, isLoading } = useQuery({ queryKey: ["account"], queryFn: () => fetchAccount({}) });
+  const { data: videos } = useQuery({ queryKey: ["videos", "public"], queryFn: () => fetchVideos() });
 
   useEffect(() => {
     void supabase.auth.getUser().then(({ data: authData }) => {

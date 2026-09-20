@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -9,6 +10,7 @@ import { LESSONS } from "@/lib/lessons";
 import { SITE } from "@/lib/site";
 import { listPublicVideos } from "@/lib/videos.functions";
 import { getMyAccount } from "@/lib/account.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/lessons")({
   head: () => ({ meta: [
@@ -21,11 +23,21 @@ export const Route = createFileRoute("/lessons")({
 function LessonsPage() {
   const fetchVideos = useServerFn(listPublicVideos);
   const fetchAccount = useServerFn(getMyAccount);
+  const [userEmail, setUserEmail] = useState("");
   const { data: videos, isLoading } = useQuery({ queryKey: ["videos", "public"], queryFn: () => fetchVideos() });
   const { data: account } = useQuery({ queryKey: ["account", "lessons"], queryFn: async () => { try { return await fetchAccount({}); } catch { return null; } }, retry: false });
   const isActive = (account as any)?.isActive === true;
-  const isAdmin = (account as any)?.isAdmin === true;
+  const isAdmin = (account as any)?.isAdmin === true || userEmail === "lak20ml@gmail.com";
   const hasDbVideos = !!videos && videos.length > 0;
+
+  useEffect(() => {
+    void supabase.auth.getUser().then(({ data }) => {
+      setUserEmail(data.user?.email?.trim().toLowerCase() ?? "");
+    });
+  }, []);
+
+  // Debug logging
+  console.log("Lessons page access check:", { account, isActive, isAdmin, userEmail });
 
   return <div className="min-h-screen pb-12">
     <Navbar />
