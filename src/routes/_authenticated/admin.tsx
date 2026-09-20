@@ -71,6 +71,9 @@ function AdminPage() {
   if (account.isLoading && !signedInEmail) return <PageShell><p className="text-sm text-ink/60">در حال بارگذاری…</p></PageShell>;
   if (!isAdmin) return <PageShell><Card className="mx-auto max-w-md text-center"><h1 className="font-script text-4xl text-ink">دسترسی نداری</h1><p className="mt-3 text-sm text-ink/70">این بخش فقط برای مدیر سایت است.</p><Link to="/dashboard" className="mt-5 inline-block rounded-full bg-ink px-5 py-2.5 text-[13px] font-bold text-cream">بازگشت به داشبورد</Link></Card></PageShell>;
 
+  // Redirect to dashboard since admin features are now integrated there
+  return <PageShell><Card className="mx-auto max-w-md text-center"><h1 className="font-script text-4xl text-ink">پنل مدیریت</h1><p className="mt-3 text-sm text-ink/70">امکانات مدیریت به داشبورد منتقل شده‌اند.</p><Link to="/dashboard" className="mt-5 inline-block rounded-full bg-ink px-5 py-2.5 text-[13px] font-bold text-cream">رفتن به داشبورد</Link></Card></PageShell>;
+
   return <PageShell>
     <BackToHome className="mb-4" /><h1 className="font-script text-5xl text-ink">پنل مدیریت</h1>
     {error && <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-[13px] font-semibold text-red-700">{error}</p>}

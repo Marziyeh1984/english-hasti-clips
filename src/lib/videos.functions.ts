@@ -88,7 +88,7 @@ export const listAllVideos = createServerFn({ method: "GET" })
   });
 
 export const getVideoPlaybackUrl = createServerFn({ method: "POST" })
-  .inputValidator((data: { videoId: string; accessToken?: string }) => {
+  .validator((data: { videoId: string; accessToken?: string }) => {
     const id = String(data?.videoId ?? "");
     if (!/^[0-9a-f-]{36}$/i.test(id)) throw new Error("ویدیوی نامعتبر.");
     const accessToken = typeof data?.accessToken === "string" ? data.accessToken.trim() : "";

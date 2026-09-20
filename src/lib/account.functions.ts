@@ -97,7 +97,7 @@ export const getMyAccount = createServerFn({ method: "GET" })
 
 export const updateMyProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { name: string }) => ({ name: clean(data?.name, 80) }))
+  .validator((data: { name: string }) => ({ name: clean(data?.name, 80) }))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("profiles").update({ name: data.name }).eq("id", context.userId);
     if (error) throw new Error("ذخیره نام ممکن نشد.");
@@ -106,7 +106,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
 
 export const submitPayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { amount: number; paymentDate: string; receiptPath: string; note?: string }) => {
+  .validator((data: { amount: number; paymentDate: string; receiptPath: string; note?: string }) => {
     const amount = Number(data?.amount);
     if (!Number.isFinite(amount) || amount <= 0) throw new Error("مبلغ نامعتبر است.");
     const paymentDate = clean(data?.paymentDate, 20);

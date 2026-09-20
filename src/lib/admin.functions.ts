@@ -106,7 +106,7 @@ export const listPaymentRequests = createServerFn({ method: "GET" })
 
 export const approvePayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { paymentId: string; days: number }) => {
+  .validator((data: { paymentId: string; days: number }) => {
     const paymentId = String(data?.paymentId ?? "");
     if (!UUID.test(paymentId)) throw new Error("درخواست نامعتبر.");
     const days = Number(data?.days);
@@ -131,7 +131,7 @@ export const approvePayment = createServerFn({ method: "POST" })
 
 export const rejectPayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { paymentId: string }) => {
+  .validator((data: { paymentId: string }) => {
     const paymentId = String(data?.paymentId ?? "");
     if (!UUID.test(paymentId)) throw new Error("درخواست نامعتبر.");
     return { paymentId };
@@ -157,7 +157,7 @@ export const adminListVideos = createServerFn({ method: "GET" })
 
 export const adminCreateUploadUrl = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { kind: "video" | "thumbnail"; fileName: string }) => {
+  .validator((data: { kind: "video" | "thumbnail"; fileName: string }) => {
     const kind = data?.kind === "thumbnail" ? ("thumbnail" as const) : ("video" as const);
     const name = str(data?.fileName, 200);
     const ext = (name.split(".").pop() || (kind === "video" ? "mp4" : "jpg")).toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5);
@@ -175,7 +175,7 @@ export const adminCreateUploadUrl = createServerFn({ method: "POST" })
 
 export const adminCreateVideo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: {
+  .validator((data: {
     title: string;
     description?: string;
     thumbnail?: string;
@@ -215,7 +215,7 @@ export const adminCreateVideo = createServerFn({ method: "POST" })
 
 export const adminSetVideoAccess = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { videoId: string; accessType: "free" | "premium" }) => {
+  .validator((data: { videoId: string; accessType: "free" | "premium" }) => {
     const videoId = String(data?.videoId ?? "");
     if (!UUID.test(videoId)) throw new Error("ویدیوی نامعتبر.");
     const accessType = data?.accessType === "free" ? ("free" as const) : ("premium" as const);
@@ -231,7 +231,7 @@ export const adminSetVideoAccess = createServerFn({ method: "POST" })
 
 export const adminDeleteVideo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { videoId: string }) => {
+  .validator((data: { videoId: string }) => {
     const videoId = String(data?.videoId ?? "");
     if (!UUID.test(videoId)) throw new Error("ویدیوی نامعتبر.");
     return { videoId };
@@ -241,4 +241,151 @@ export const adminDeleteVideo = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await supabaseAdmin.from("videos").delete().eq("id", data.videoId);
     return { ok: true };
+  });
+
+export type AdminUser = {
+  id: string;
+  name: string;
+  email: string;
+  created_at: string;
+  subscription: {
+    id: string;
+    status: "pending" | "active" | "expired";
+    start_date: string | null;
+    end_date: string | null;
+    payment_verified_at: string | null;
+  } | null;
+  isActive: boolean;
+  payments: Array<{
+    id: string;
+    amount: number;
+    payment_date: string;
+    status: "pending" | "approved" | "rejected";
+    created_at: string;
+  }>;
+};
+
+export const adminListUsers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.rpc("expire_subscriptions");
+
+    const { data: profiles } = await supabaseAdmin
+      .from("profiles")
+      .select("id, name, email, created_at")
+      .order("created_at", { ascending: false });
+
+    const userIds = (profiles ?? []).map((p) => p.id);
+
+    const [subscriptions, payments] = await Promise.all([
+      userIds.length
+        ? supabaseAdmin
+            .from("subscriptions")
+            .select("id, user_id, status, start_date, end_date, payment_verified_at")
+            .in("user_id", userIds)
+        : { data: [] as any[] },
+      userIds.length
+        ? supabaseAdmin
+            .from("payments")
+            .select("id, user_id, amount, payment_date, status, created_at")
+            .in("user_id", userIds)
+            .order("created_at", { ascending: false })
+        : { data: [] as any[] },
+    ]);
+
+    const subscriptionsByUser = new Map(
+      (subscriptions.data ?? []).map((s: any) => [s.user_id, s])
+    );
+    const paymentsByUser = new Map(
+      (payments.data ?? []).reduce((acc: any, p: any) => {
+        if (!acc.has(p.user_id)) acc.set(p.user_id, []);
+        acc.get(p.user_id).push(p);
+        return acc;
+      }, new Map())
+    );
+
+    const now = Date.now();
+
+    return (profiles ?? []).map((profile: any) => {
+      const sub = subscriptionsByUser.get(profile.id) as any;
+      const userPayments = (paymentsByUser.get(profile.id) ?? []) as any[];
+      const isActive =
+        sub &&
+        sub.status === "active" &&
+        sub.end_date &&
+        new Date(sub.end_date).getTime() > now;
+
+      return {
+        id: profile.id,
+        name: profile.name || "",
+        email: profile.email || "",
+        created_at: profile.created_at,
+        subscription: sub ?? null,
+        isActive,
+        payments: userPayments,
+      };
+    });
+  });
+
+export const adminGetUserDetails = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { userId: string }) => {
+    const userId = String(data?.userId ?? "");
+    if (!UUID.test(userId)) throw new Error("کاربر نامعتبر.");
+    return { userId };
+  })
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const [profile, subscription, payments] = await Promise.all([
+      supabaseAdmin
+        .from("profiles")
+        .select("id, name, email, created_at")
+        .eq("id", data.userId)
+        .maybeSingle(),
+      supabaseAdmin
+        .from("subscriptions")
+        .select("id, status, start_date, end_date, payment_verified_at")
+        .eq("user_id", data.userId)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+      supabaseAdmin
+        .from("payments")
+        .select("id, amount, payment_date, status, created_at, receipt_path")
+        .eq("user_id", data.userId)
+        .order("created_at", { ascending: false }),
+    ]);
+
+    if (!profile) throw new Error("کاربر پیدا نشد.");
+
+    const now = Date.now();
+    const isActive =
+      subscription &&
+      subscription.status === "active" &&
+      subscription.end_date &&
+      new Date(subscription.end_date).getTime() > now;
+
+    const paymentsWithUrls = await Promise.all(
+      (payments.data ?? []).map(async (p: any) => {
+        let receiptUrl = null;
+        if (p.receipt_path) {
+          const { data: signed } = await supabaseAdmin.storage
+            .from("receipts")
+            .createSignedUrl(p.receipt_path, 60 * 30);
+          receiptUrl = signed?.signedUrl ?? null;
+        }
+        return { ...p, receiptUrl };
+      })
+    );
+
+    return {
+      profile,
+      subscription: subscription ?? null,
+      isActive,
+      payments: paymentsWithUrls,
+    };
   });
