@@ -44,6 +44,18 @@ function AuthPage() {
       return;
     }
 
+    // Check for verification tokens in URL (Supabase sends access_token in hash)
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token')) {
+      console.log("Found verification token in URL hash");
+      // Let Supabase handle the verification session
+      supabase.auth.getSession().then(({ data }) => {
+        if (data.session && data.session.user.email_confirmed_at) {
+          navigate({ to: "/dashboard", replace: true });
+        }
+      });
+    }
+
     // Check for existing session
     supabase.auth.getSession().then(({ data }) => {
       if (data.session && data.session.user.email_confirmed_at) {
@@ -52,8 +64,14 @@ function AuthPage() {
     });
 
     // Listen for auth state changes (e.g., email verification callback)
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session && session.user.email_confirmed_at) {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state change:", event, session);
+      // Handle email verification
+      if (event === 'SIGNED_IN' && session && session.user.email_confirmed_at) {
+        navigate({ to: "/dashboard", replace: true });
+      }
+      // Handle email confirmation from verification link
+      if (event === 'USER_UPDATED' && session && session.user.email_confirmed_at) {
         navigate({ to: "/dashboard", replace: true });
       }
     });
@@ -83,7 +101,7 @@ function AuthPage() {
           password,
           options: {
             data: { name },
-            emailRedirectTo: `${APP_URL}/dashboard`,
+            emailRedirectTo: `${APP_URL}/auth`,
           },
         });
         if (error) throw error;
