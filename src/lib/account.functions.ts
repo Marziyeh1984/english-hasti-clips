@@ -103,3 +103,26 @@ export const updateMyProfile = createServerFn({ method: "POST" })
     if (error) throw new Error("ذخیره نام ممکن نشد.");
     return { ok: true };
   });
+
+export const submitPayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { amount: number; paymentDate: string; receiptPath: string; note?: string }) => {
+    const amount = Number(data?.amount);
+    if (!Number.isFinite(amount) || amount <= 0) throw new Error("مبلغ نامعتبر است.");
+    const paymentDate = clean(data?.paymentDate, 20);
+    const receiptPath = clean(data?.receiptPath, 500);
+    const note = typeof data?.note === "string" ? data.note.slice(0, 300) : null;
+    return { amount, paymentDate, receiptPath, note };
+  })
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.from("payments").insert({
+      user_id: context.userId,
+      amount: data.amount,
+      payment_date: data.paymentDate,
+      receipt_path: data.receiptPath,
+      note: data.note,
+      status: "pending",
+    });
+    if (error) throw new Error("ثبت پرداخت ممکن نشد.");
+    return { ok: true };
+  });
