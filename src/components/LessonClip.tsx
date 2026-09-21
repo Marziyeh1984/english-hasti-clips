@@ -39,6 +39,9 @@ export function LessonClip({
   const [resolvedUrl, setResolvedUrl] = useState("");
   const [videoError, setVideoError] = useState("");
 
+  // Debug logging
+  console.log("LessonClip props:", { videoId, title, dialogues, vocab });
+
   const fetchVideos = useServerFn(listPublicVideos);
   const playVideo = useServerFn(getVideoPlaybackUrl);
   const { data: videos, error: catalogError } = useQuery({

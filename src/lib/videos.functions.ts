@@ -25,6 +25,7 @@ const VIDEO_COLUMNS = "id, title, description, thumbnail, access_type, created_a
 function normalizeVideoRows(rows: Array<Record<string, unknown>>): VideoRow[] {
   return rows.map((row) => {
     const unpacked = unpackLessonDescription(row.description);
+    console.log("Normalized video row:", { id: row.id, title: row.title, unpacked });
     return {
       id: String(row.id),
       title: String(row.title ?? ""),
