@@ -38,8 +38,6 @@ function LessonsPage() {
 
   // Debug logging
   console.log("Lessons page access check:", { account, isActive, isAdmin, userEmail });
-  console.log("Videos data:", videos);
-  console.log("Has DB videos:", hasDbVideos);
 
   return <div className="min-h-screen pb-12">
     <Navbar />
