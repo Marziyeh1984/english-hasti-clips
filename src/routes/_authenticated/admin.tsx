@@ -33,6 +33,39 @@ function loadVideoForEdit(video: any) {
   setVocab(video.vocab || [emptyVocab()]);
 }
 
+function parseTranscript(text: string): Dialogue[] {
+  const lines = text.trim().split('\n').filter(line => line.trim());
+  const dialogues: Dialogue[] = [];
+  
+  for (const line of lines) {
+    // Pattern: time | English -> Persian
+    // Example: 0.0 | Something happened -> 今天发生了什么
+    const match = line.match(/^(\d+(?:\.\d+)?)\s*\|\s*(.+?)\s*->\s*(.+)$/);
+    if (match) {
+      const timeStr = match[1];
+      const english = match[2].trim();
+      const persian = match[3].trim();
+      
+      // Convert time to seconds (handle both decimal and MM:SS format)
+      let time = 0;
+      if (timeStr.includes(':')) {
+        const parts = timeStr.split(':');
+        if (parts.length === 2) {
+          time = parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
+        }
+      } else {
+        time = parseFloat(timeStr);
+      }
+      
+      if (english && persian && !isNaN(time)) {
+        dialogues.push({ en: english, fa: persian, t: String(time) });
+      }
+    }
+  }
+  
+  return dialogues;
+}
+
 function AdminPage() {
   const qc = useQueryClient();
   const fetchAccount = useServerFn(getMyAccount);
@@ -63,6 +96,9 @@ function AdminPage() {
   const [uploading, setUploading] = useState<"video" | "thumbnail" | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [editingVideoId, setEditingVideoId] = useState<string | null>(null);
+  const [showTranscriptModal, setShowTranscriptModal] = useState(false);
+  const [transcriptText, setTranscriptText] = useState("");
+  const [parsedDialogues, setParsedDialogues] = useState<Dialogue[]>([]);
   const userDetails = useQuery({ queryKey: ["admin-user-details", selectedUserId], queryFn: () => fetchUserDetails({ data: { userId: selectedUserId! } }), enabled: !!selectedUserId && isAdmin });
 
   async function uploadFile(kind: "video" | "thumbnail", file: File) {
@@ -225,7 +261,7 @@ function AdminPage() {
       </div>
 
       <div className="mt-6 rounded-2xl border-2 border-line/60 bg-cream/50 p-4">
-        <div className="flex items-center justify-between gap-2"><div><h3 className="font-bold text-ink">دیالوگ‌ها و ترجمه</h3><p className="text-[11px] text-ink/60">زمان را به‌صورت ثانیه (مثل 12.5) یا mm:ss.xx (مثل 01:12.50) وارد کن.</p></div><button type="button" onClick={() => setDialogues((d) => [...d, emptyDialogue()])} className="inline-flex items-center gap-1 rounded-full bg-ink px-3 py-2 text-[11px] font-bold text-cream"><Plus size={14} /> افزودن خط</button></div>
+        <div className="flex items-center justify-between gap-2"><div><h3 className="font-bold text-ink">دیالوگ‌ها و ترجمه</h3><p className="text-[11px] text-ink/60">زمان را به‌صورت ثانیه (مثل 12.5) یا mm:ss.xx (مثل 01:12.50) وارد کن.</p></div><div className="flex items-center gap-2"><button type="button" onClick={() => setDialogues((d) => [...d, emptyDialogue()])} className="inline-flex items-center gap-1 rounded-full bg-ink px-3 py-2 text-[11px] font-bold text-cream"><Plus size={14} /> افزودن خط</button><button type="button" onClick={() => setShowTranscriptModal(true)} className="inline-flex items-center gap-1 rounded-full border-2 border-line bg-blush px-3 py-2 text-[11px] font-bold text-ink transition-all hover:bg-blush-deep">📋 پیست متن کامل</button></div>
         <div className="mt-3 flex flex-col gap-3">{dialogues.map((d, i) => <div key={i} className="grid gap-2 rounded-xl border border-line/40 bg-blush/50 p-3 lg:grid-cols-[130px_1fr_1fr_38px]">
           <input value={d.t} onChange={(e) => setDialogues((a) => a.map((x, j) => j === i ? { ...x, t: e.target.value } : x))} inputMode="decimal" placeholder="مثلاً 01:12.50" className="rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink" />
           <input value={d.en} dir="ltr" onChange={(e) => setDialogues((a) => a.map((x, j) => j === i ? { ...x, en: e.target.value } : x))} placeholder="English dialogue" className="rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink" />
@@ -240,6 +276,72 @@ function AdminPage() {
       </div>
       <PrimaryButton className="mt-5" onClick={() => { setError(""); editingVideoId ? updateM.mutate() : createM.mutate(); }} disabled={createM.isPending || updateM.isPending || !form.title.trim() || !form.videoUrl.trim()}> {createM.isPending || updateM.isPending ? "در حال ذخیره…" : editingVideoId ? "ذخیره تغییرات" : "ثبت ویدیو و محتوای آموزشی"}</PrimaryButton>
     </Card>
+
+    {showTranscriptModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <Card className="max-h-[90vh] w-full max-w-2xl overflow-y-auto">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-ink">پیست متن کامل</h2>
+            <button onClick={() => { setShowTranscriptModal(false); setTranscriptText(""); setParsedDialogues([]); }} className="rounded-full p-2 text-ink/60 hover:bg-blush"><X size={20} /></button>
+          </div>
+          <div className="mt-4 space-y-4">
+            <div>
+              <h3 className="text-sm font-bold text-ink">الگوی فرمت:</h3>
+              <p className="mt-1 text-[11px] text-ink/70">زمان | متن انگلیسی -> متن فارسی</p>
+              <p className="text-[11px] text-ink/60">مثال: 0.0 | Something happened -> امروز发生了什么</p>
+            </div>
+            <textarea
+              value={transcriptText}
+              onChange={(e) => setTranscriptText(e.target.value)}
+              placeholder="متن کامل را اینجا پیست کنید..."
+              className="w-full h-64 rounded-xl border-2 border-line bg-cream p-4 text-sm text-ink font-mono"
+              dir="ltr"
+            />
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => {
+                  const parsed = parseTranscript(transcriptText);
+                  if (parsed.length === 0) {
+                    setError("هیچ خطی شناسایی نشد. فرمت صحیح نیست.");
+                  } else {
+                    setParsedDialogues(parsed);
+                    setError("");
+                  }
+                }}
+                className="rounded-full bg-ink px-4 py-2 text-sm font-bold text-cream transition-all hover:scale-105"
+              >
+                بررسی و استخراج
+              </button>
+              {parsedDialogues.length > 0 && (
+                <button
+                  onClick={() => {
+                    setDialogues(parsedDialogues);
+                    setShowTranscriptModal(false);
+                    setTranscriptText("");
+                    setParsedDialogues([]);
+                  }}
+                  className="rounded-full border-2 border-line bg-blush px-4 py-2 text-sm font-bold text-ink transition-all hover:bg-blush-deep"
+                >
+                  اعمال {parsedDialogues.length} خط
+                </button>
+              )}
+            </div>
+            {parsedDialogues.length > 0 && (
+              <div className="rounded-xl border border-line/40 bg-cream/50 p-3">
+                <h4 className="text-sm font-bold text-ink mb-2">پیش‌نمایش استخراج شده ({parsedDialogues.length} خط):</h4>
+                <div className="max-h-40 overflow-y-auto space-y-1">
+                  {parsedDialogues.map((d, i) => (
+                    <div key={i} className="text-xs text-ink/70 font-mono">
+                      {d.t} | {d.en.substring(0, 30)}{d.en.length > 30 ? '...' : ''} -> {d.fa.substring(0, 30)}{d.fa.length > 30 ? '...' : ''}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+      </div>
+    )}
 
     <Card className="mt-6"><h2 className="text-lg font-bold text-ink">ویدیوها</h2><ul className="mt-3 divide-y divide-line/30">{videos.data?.map((v) => <li key={v.id} className="flex flex-wrap items-center justify-between gap-2 py-3"><div><p className="text-sm font-semibold text-ink">{v.title}</p><p className="text-[11px] text-ink/60">{v.dialogues?.length ?? 0} دیالوگ · {v.vocab?.length ?? 0} اصطلاح</p></div><div className="flex items-center gap-2"><select value={v.access_type} onChange={(e) => accessM.mutate({ videoId: v.id, accessType: e.target.value === "free" ? "free" : "premium" })} disabled={accessM.isPending} className="rounded-full border-2 border-line bg-cream px-3 py-2 text-[12px] font-bold text-ink"><option value="premium">🔒 ویژه (اشتراک)</option><option value="free">🔓 رایگان</option></select><button onClick={() => { setEditingVideoId(v.id); loadVideoForEdit(v); window.scrollTo({ top: 0, behavior: "smooth" }); }} disabled={editingVideoId !== null} className="rounded-full border-2 border-line bg-blush px-3 py-2 text-[12px] font-bold text-ink transition-all hover:bg-blush-deep"><Edit size={15} /></button><button onClick={() => deleteM.mutate(v.id)} disabled={deleteM.isPending} className="rounded-full border-2 border-red-300 p-2 text-red-700"><Trash2 size={15} /></button></div></li>)}</ul></Card>
   </PageShell>;
