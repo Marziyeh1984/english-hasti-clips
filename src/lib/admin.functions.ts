@@ -270,7 +270,12 @@ export const adminListUsers = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await supabaseAdmin.rpc("expire_subscriptions");
+    // Try to expire subscriptions, but don't fail if function doesn't exist
+    try {
+      await supabaseAdmin.rpc("expire_subscriptions");
+    } catch (e) {
+      console.warn("expire_subscriptions function not available:", e);
+    }
 
     const { data: profiles } = await supabaseAdmin
       .from("profiles")

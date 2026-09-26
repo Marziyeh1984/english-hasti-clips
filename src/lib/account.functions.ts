@@ -54,7 +54,13 @@ export const getMyAccount = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await supabaseAdmin.rpc("expire_subscriptions");
+    // Try to expire subscriptions, but don't fail if function doesn't exist
+    try {
+      await supabaseAdmin.rpc("expire_subscriptions");
+    } catch (e) {
+      // Function might not exist yet, continue anyway
+      console.warn("expire_subscriptions function not available:", e);
+    }
 
     const [profileRes, subRes, payRes, roleRes] = await Promise.all([
       context.supabase.from("profiles").select("id, name, email, created_at").eq("id", context.userId).maybeSingle(),
