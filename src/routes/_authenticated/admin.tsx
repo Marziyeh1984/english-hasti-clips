@@ -39,7 +39,8 @@ function AdminPage() {
   const isAdmin = account.data?.isAdmin === true || signedInEmail === CONFIGURED_ADMIN_EMAIL;
   const payments = useQuery({ queryKey: ["admin-payments"], queryFn: () => fetchPayments({}), enabled: isAdmin });
   const videos = useQuery({ queryKey: ["admin-videos"], queryFn: () => fetchVideos({}), enabled: isAdmin });
-  const users = useQuery({ queryKey: ["admin-users"], queryFn: () => fetchUsers({}), enabled: isAdmin });
+  const users = useQuery({ queryKey: ["admin-users"], queryFn: () => fetchUsers({}), enabled: isAdmin, retry: false });
+  const nonAdminUsers = users.data?.filter(u => u.email.toLowerCase() !== CONFIGURED_ADMIN_EMAIL) || [];
   const [days, setDays] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ title: "", description: "", thumbnail: "", videoUrl: "", accessType: "free" as "free" | "premium", badge: "درس جدید" });
   const [dialogues, setDialogues] = useState<Dialogue[]>([emptyDialogue()]);
@@ -93,9 +94,9 @@ function AdminPage() {
     </Card>
 
     <Card className="mt-6">
-      <h2 className="text-lg font-bold text-ink">اشتراک‌های فعال</h2>
-      {users.data?.filter(u => u.isActive).length === 0 && <p className="mt-3 text-[13px] text-ink/60">اشتراک فعالی ندارد.</p>}
-      <div className="mt-4 space-y-3">{users.data?.filter(u => u.isActive).map((u) => <div key={u.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-4">
+      <h2 className="text-lg font-bold text-ink">اشتراک‌های فعال کاربران</h2>
+      {nonAdminUsers.filter(u => u.isActive).length === 0 && <p className="mt-3 text-[13px] text-ink/60">کاربری با اشتراک فعال ندارد.</p>}
+      <div className="mt-4 space-y-3">{nonAdminUsers.filter(u => u.isActive).map((u) => <div key={u.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-4">
         <div className="flex-1">
           <p className="text-sm font-bold text-ink">{u.name || "بدون نام"}</p>
           <p dir="ltr" className="text-[12px] text-ink/60">{u.email}</p>
@@ -111,8 +112,8 @@ function AdminPage() {
 
     <Card className="mt-6">
       <h2 className="text-lg font-bold text-ink">همه کاربران</h2>
-      {users.data?.length === 0 && <p className="mt-3 text-[13px] text-ink/60">کاربری ثبت نشده است.</p>}
-      <div className="mt-4 space-y-3">{users.data?.map((u) => <div key={u.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-line/50 bg-cream/60 p-4">
+      {nonAdminUsers.length === 0 && <p className="mt-3 text-[13px] text-ink/60">کاربری ثبت نشده است.</p>}
+      <div className="mt-4 space-y-3">{nonAdminUsers.map((u) => <div key={u.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-line/50 bg-cream/60 p-4">
         <div className="flex-1">
           <p className="text-sm font-bold text-ink">{u.name || "بدون نام"}</p>
           <p dir="ltr" className="text-[12px] text-ink/60">{u.email}</p>
