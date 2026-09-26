@@ -41,6 +41,14 @@ function AdminPage() {
   const videos = useQuery({ queryKey: ["admin-videos"], queryFn: () => fetchVideos({}), enabled: isAdmin });
   const users = useQuery({ queryKey: ["admin-users"], queryFn: () => fetchUsers({}), enabled: isAdmin, retry: false });
   const nonAdminUsers = users.data?.filter(u => u.email.toLowerCase() !== CONFIGURED_ADMIN_EMAIL) || [];
+
+  // Log for debugging
+  useEffect(() => {
+    console.log("Admin check:", { isAdmin, signedInEmail, accountData: account.data });
+    console.log("Users data:", users.data);
+    console.log("Users error:", users.error);
+    console.log("Non-admin users:", nonAdminUsers);
+  }, [isAdmin, signedInEmail, account.data, users.data, users.error, nonAdminUsers]);
   const [days, setDays] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ title: "", description: "", thumbnail: "", videoUrl: "", accessType: "free" as "free" | "premium", badge: "درس جدید" });
   const [dialogues, setDialogues] = useState<Dialogue[]>([emptyDialogue()]);
