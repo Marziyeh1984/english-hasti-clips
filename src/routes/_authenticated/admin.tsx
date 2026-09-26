@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Trash2, Upload } from "lucide-react";
+import { Plus, Trash2, Upload, User, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyAccount } from "@/lib/account.functions";
-import { listPaymentRequests, approvePayment, rejectPayment, adminListVideos, adminCreateVideo, adminDeleteVideo, adminCreateUploadUrl, adminSetVideoAccess } from "@/lib/admin.functions";
+import { listPaymentRequests, approvePayment, rejectPayment, adminListVideos, adminCreateVideo, adminDeleteVideo, adminCreateUploadUrl, adminSetVideoAccess, adminListUsers, adminGetUserDetails } from "@/lib/admin.functions";
 import { PageShell, Card, Field, PrimaryButton, StatusPill, BackToHome } from "@/components/PageShell";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -31,18 +31,23 @@ function AdminPage() {
   const removeVideo = useServerFn(adminDeleteVideo);
   const setVideoAccess = useServerFn(adminSetVideoAccess);
   const makeUploadUrl = useServerFn(adminCreateUploadUrl);
+  const fetchUsers = useServerFn(adminListUsers);
+  const fetchUserDetails = useServerFn(adminGetUserDetails);
   const account = useQuery({ queryKey: ["account"], queryFn: () => fetchAccount({}) });
   const [signedInEmail, setSignedInEmail] = useState("");
   useEffect(() => { void supabase.auth.getUser().then(({ data }) => setSignedInEmail(data.user?.email?.trim().toLowerCase() ?? "")); }, []);
   const isAdmin = account.data?.isAdmin === true || signedInEmail === CONFIGURED_ADMIN_EMAIL;
   const payments = useQuery({ queryKey: ["admin-payments"], queryFn: () => fetchPayments({}), enabled: isAdmin });
   const videos = useQuery({ queryKey: ["admin-videos"], queryFn: () => fetchVideos({}), enabled: isAdmin });
+  const users = useQuery({ queryKey: ["admin-users"], queryFn: () => fetchUsers({}), enabled: isAdmin });
   const [days, setDays] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ title: "", description: "", thumbnail: "", videoUrl: "", accessType: "free" as "free" | "premium", badge: "درس جدید" });
   const [dialogues, setDialogues] = useState<Dialogue[]>([emptyDialogue()]);
   const [vocab, setVocab] = useState<Vocab[]>([emptyVocab()]);
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState<"video" | "thumbnail" | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const userDetails = useQuery({ queryKey: ["admin-user-details", selectedUserId], queryFn: () => fetchUserDetails({ data: { userId: selectedUserId! } }), enabled: !!selectedUserId && isAdmin });
 
   async function uploadFile(kind: "video" | "thumbnail", file: File) {
     setError(""); setUploading(kind);
@@ -86,6 +91,97 @@ function AdminPage() {
         {p.status === "pending" && <div className="mt-3 flex flex-wrap items-center gap-2"><input type="number" min={1} max={3650} value={days[p.id] ?? "30"} onChange={(e) => setDays((d) => ({ ...d, [p.id]: e.target.value }))} className="w-24 rounded-full border-2 border-line bg-cream px-3 py-2 text-center text-[13px] text-ink" /><span className="text-[12px] text-ink/60">روز</span><PrimaryButton onClick={() => approveM.mutate({ paymentId: p.id, days: Number(days[p.id] ?? 30) })} disabled={approveM.isPending}>تأیید و فعال‌سازی</PrimaryButton><button onClick={() => rejectM.mutate(p.id)} className="rounded-full border-2 border-red-300 px-4 py-2 text-[12px] font-bold text-red-700">رد کردن</button></div>}
       </div>)}</div>
     </Card>
+
+    <Card className="mt-6">
+      <h2 className="text-lg font-bold text-ink">اشتراک‌های فعال</h2>
+      {users.data?.filter(u => u.isActive).length === 0 && <p className="mt-3 text-[13px] text-ink/60">اشتراک فعالی ندارد.</p>}
+      <div className="mt-4 space-y-3">{users.data?.filter(u => u.isActive).map((u) => <div key={u.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-4">
+        <div className="flex-1">
+          <p className="text-sm font-bold text-ink">{u.name || "بدون نام"}</p>
+          <p dir="ltr" className="text-[12px] text-ink/60">{u.email}</p>
+          <div className="mt-1 flex items-center gap-2 text-[11px] text-ink/70">
+            <span>شروع: {faDate(u.subscription?.start_date)}</span>
+            <span>•</span>
+            <span>پایان: {faDate(u.subscription?.end_date)}</span>
+          </div>
+        </div>
+        <button onClick={() => setSelectedUserId(u.id)} className="flex items-center gap-1.5 rounded-full border-2 border-emerald-300 bg-emerald-100 px-3 py-2 text-[12px] font-bold text-emerald-800 transition-all hover:bg-emerald-200"><User size={14} /> جزئیات</button>
+      </div>)}</div>
+    </Card>
+
+    <Card className="mt-6">
+      <h2 className="text-lg font-bold text-ink">همه کاربران</h2>
+      {users.data?.length === 0 && <p className="mt-3 text-[13px] text-ink/60">کاربری ثبت نشده است.</p>}
+      <div className="mt-4 space-y-3">{users.data?.map((u) => <div key={u.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-line/50 bg-cream/60 p-4">
+        <div className="flex-1">
+          <p className="text-sm font-bold text-ink">{u.name || "بدون نام"}</p>
+          <p dir="ltr" className="text-[12px] text-ink/60">{u.email}</p>
+          <div className="mt-1 flex items-center gap-2">
+            <StatusPill tone={u.isActive ? "ok" : u.subscription?.status === "pending" ? "warn" : "muted"}>{u.isActive ? "اشتراک فعال" : u.subscription?.status === "pending" ? "در انتظار" : "بدون اشتراک"}</StatusPill>
+            {u.subscription?.end_date && <span className="text-[11px] text-ink/60">انقضا: {faDate(u.subscription.end_date)}</span>}
+          </div>
+        </div>
+        <button onClick={() => setSelectedUserId(u.id)} className="flex items-center gap-1.5 rounded-full border-2 border-line bg-blush px-3 py-2 text-[12px] font-bold text-ink transition-all hover:bg-blush-deep"><User size={14} /> جزئیات</button>
+      </div>)}</div>
+    </Card>
+
+    {selectedUserId && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <Card className="max-h-[90vh] w-full max-w-lg overflow-y-auto">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-ink">جزئیات کاربر</h2>
+            <button onClick={() => setSelectedUserId(null)} className="rounded-full p-2 text-ink/60 hover:bg-blush"><X size={20} /></button>
+          </div>
+          {userDetails.isLoading && <p className="mt-4 text-sm text-ink/60">در حال بارگذاری…</p>}
+          {userDetails.data && (
+            <div className="mt-4 space-y-4">
+              <div>
+                <h3 className="text-sm font-bold text-ink">اطلاعات شخصی</h3>
+                <div className="mt-2 space-y-1 text-[13px] text-ink/70">
+                  <p>نام: {userDetails.data.profile.name || "بدون نام"}</p>
+                  <p dir="ltr">ایمیل: {userDetails.data.profile.email}</p>
+                  <p>تاریخ ثبت‌نام: {faDate(userDetails.data.profile.created_at)}</p>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-ink">وضعیت اشتراک</h3>
+                {userDetails.data.subscription ? (
+                  <div className="mt-2 space-y-1 text-[13px] text-ink/70">
+                    <p>وضعیت: <StatusPill tone={userDetails.data.isActive ? "ok" : userDetails.data.subscription.status === "pending" ? "warn" : "muted"}>{userDetails.data.isActive ? "فعال" : userDetails.data.subscription.status === "pending" ? "در انتظار" : "منقضی"}</StatusPill></p>
+                    <p>شروع: {faDate(userDetails.data.subscription.start_date)}</p>
+                    <p>پایان: {faDate(userDetails.data.subscription.end_date)}</p>
+                    {userDetails.data.subscription.payment_verified_at && <p>تاریخ تأیید پرداخت: {faDate(userDetails.data.subscription.payment_verified_at)}</p>}
+                  </div>
+                ) : (
+                  <p className="mt-2 text-[13px] text-ink/60">اشتراکی ندارد</p>
+                )}
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-ink">تاریخچه پرداخت</h3>
+                {userDetails.data.payments.length === 0 ? (
+                  <p className="mt-2 text-[13px] text-ink/60">پرداختی ثبت نشده است</p>
+                ) : (
+                  <ul className="mt-2 space-y-2">
+                    {userDetails.data.payments.map((p) => (
+                      <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-line/40 bg-cream/50 p-3">
+                        <div>
+                          <p className="text-sm font-semibold text-ink">{p.amount.toLocaleString("fa-IR")} تومان</p>
+                          <p className="text-[11px] text-ink/60">{faDate(p.payment_date)}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <StatusPill tone={p.status === "approved" ? "ok" : p.status === "pending" ? "warn" : "bad"}>{p.status === "approved" ? "تأیید شده" : p.status === "pending" ? "در انتظار" : "رد شده"}</StatusPill>
+                          {p.receiptUrl && <a href={p.receiptUrl} target="_blank" rel="noopener noreferrer" className="rounded-full border-2 border-line bg-blush px-2 py-1 text-[11px] font-bold text-ink transition-all hover:bg-blush-deep">رسید</a>}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          )}
+        </Card>
+      </div>
+    )}
 
     <Card className="mt-6">
       <h2 className="text-lg font-bold text-ink">افزودن ویدیو آموزشی</h2>
