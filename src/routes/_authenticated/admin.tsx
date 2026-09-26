@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Trash2, Upload, User, X } from "lucide-react";
+import { Plus, Trash2, Upload, User, X, Edit } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyAccount } from "@/lib/account.functions";
-import { listPaymentRequests, approvePayment, rejectPayment, adminListVideos, adminCreateVideo, adminDeleteVideo, adminCreateUploadUrl, adminSetVideoAccess, adminListUsers, adminGetUserDetails } from "@/lib/admin.functions";
+import { listPaymentRequests, approvePayment, rejectPayment, adminListVideos, adminCreateVideo, adminDeleteVideo, adminCreateUploadUrl, adminSetVideoAccess, adminListUsers, adminGetUserDetails, adminUpdateVideo } from "@/lib/admin.functions";
 import { PageShell, Card, Field, PrimaryButton, StatusPill, BackToHome } from "@/components/PageShell";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -20,6 +20,19 @@ const emptyDialogue = (): Dialogue => ({ en: "", fa: "", t: "0" });
 const emptyVocab = (): Vocab => ({ en: "", fa: "" });
 const faDate = (d: string | null) => d ? new Date(d).toLocaleDateString("fa-IR", { year: "numeric", month: "long", day: "numeric" }) : "—";
 
+function loadVideoForEdit(video: any) {
+  setForm({
+    title: video.title,
+    description: video.description,
+    thumbnail: video.thumbnail || "",
+    videoUrl: video.video_url,
+    accessType: video.access_type,
+    badge: video.badge
+  });
+  setDialogues(video.dialogues?.map((d: any) => ({ en: d.en, fa: d.fa, t: String(d.t) })) || [emptyDialogue()]);
+  setVocab(video.vocab || [emptyVocab()]);
+}
+
 function AdminPage() {
   const qc = useQueryClient();
   const fetchAccount = useServerFn(getMyAccount);
@@ -29,6 +42,7 @@ function AdminPage() {
   const fetchVideos = useServerFn(adminListVideos);
   const createVideo = useServerFn(adminCreateVideo);
   const removeVideo = useServerFn(adminDeleteVideo);
+  const updateVideo = useServerFn(adminUpdateVideo);
   const setVideoAccess = useServerFn(adminSetVideoAccess);
   const makeUploadUrl = useServerFn(adminCreateUploadUrl);
   const fetchUsers = useServerFn(adminListUsers);
@@ -48,6 +62,7 @@ function AdminPage() {
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState<"video" | "thumbnail" | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [editingVideoId, setEditingVideoId] = useState<string | null>(null);
   const userDetails = useQuery({ queryKey: ["admin-user-details", selectedUserId], queryFn: () => fetchUserDetails({ data: { userId: selectedUserId! } }), enabled: !!selectedUserId && isAdmin });
 
   async function uploadFile(kind: "video" | "thumbnail", file: File) {
@@ -71,6 +86,14 @@ function AdminPage() {
       setDialogues([emptyDialogue()]); setVocab([emptyVocab()]); setError(""); qc.invalidateQueries({ queryKey: ["admin-videos"] });
     },
     onError: (e: unknown) => setError(e instanceof Error ? e.message : "ثبت ویدیو ممکن نشد."),
+  });
+  const updateM = useMutation({
+    mutationFn: () => updateVideo({ data: { ...form, dialogues, vocab, videoId: editingVideoId! } }),
+    onSuccess: () => {
+      setForm({ title: "", description: "", thumbnail: "", videoUrl: "", accessType: "free", badge: "درس جدید" });
+      setDialogues([emptyDialogue()]); setVocab([emptyVocab()]); setError(""); setEditingVideoId(null); qc.invalidateQueries({ queryKey: ["admin-videos"] });
+    },
+    onError: (e: unknown) => setError(e instanceof Error ? e.message : "ویرایش ویدیو ممکن نشد."),
   });
   const deleteM = useMutation({ mutationFn: (videoId: string) => removeVideo({ data: { videoId } }), onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-videos"] }) });
 
@@ -187,7 +210,8 @@ function AdminPage() {
     )}
 
     <Card className="mt-6">
-      <h2 className="text-lg font-bold text-ink">افزودن ویدیو آموزشی</h2>
+      <h2 className="text-lg font-bold text-ink">{editingVideoId ? "ویرایش ویدیو آموزشی" : "افزودن ویدیو آموزشی"}</h2>
+      {editingVideoId && <button onClick={() => { setEditingVideoId(null); setForm({ title: "", description: "", thumbnail: "", videoUrl: "", accessType: "free", badge: "درس جدید" }); setDialogues([emptyDialogue()]); setVocab([emptyVocab()]); }} className="mb-3 text-[12px] text-ink/60 hover:text-ink">لغو ویرایش</button>}
       <p className="mt-1 text-[12px] leading-6 text-muted-foreground">ویدیوهای جدید دقیقاً با ساختار درس‌های فعلی ذخیره می‌شوند: دیالوگ زمان‌بندی‌شده، ترجمه فارسی و اصطلاحات.</p>
       <div className="mt-4 grid gap-3 lg:grid-cols-2">
         <Field label="عنوان" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
@@ -214,9 +238,9 @@ function AdminPage() {
         <div className="flex items-center justify-between gap-2"><div><h3 className="font-bold text-ink">اصطلاحات درس</h3><p className="text-[11px] text-ink/60">دقیقاً همان ساختار Vocabulary درس‌های فعلی.</p></div><button type="button" onClick={() => setVocab((v) => [...v, emptyVocab()])} className="inline-flex items-center gap-1 rounded-full bg-ink px-3 py-2 text-[11px] font-bold text-cream"><Plus size={14} /> افزودن اصطلاح</button></div>
         <div className="mt-3 flex flex-col gap-2">{vocab.map((v, i) => <div key={i} className="grid gap-2 lg:grid-cols-[1fr_1fr_38px]"><input value={v.en} dir="ltr" onChange={(e) => setVocab((a) => a.map((x, j) => j === i ? { ...x, en: e.target.value } : x))} placeholder="English phrase" className="rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink" /><input value={v.fa} onChange={(e) => setVocab((a) => a.map((x, j) => j === i ? { ...x, fa: e.target.value } : x))} placeholder="معنی و توضیح فارسی" className="rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink" /><button type="button" onClick={() => setVocab((a) => a.length > 1 ? a.filter((_, j) => j !== i) : a)} className="flex items-center justify-center rounded-lg border border-red-300 text-red-700"><Trash2 size={15} /></button></div>)}</div>
       </div>
-      <PrimaryButton className="mt-5" onClick={() => { setError(""); createM.mutate(); }} disabled={createM.isPending || !form.title.trim() || !form.videoUrl.trim()}> {createM.isPending ? "در حال ثبت…" : "ثبت ویدیو و محتوای آموزشی"}</PrimaryButton>
+      <PrimaryButton className="mt-5" onClick={() => { setError(""); editingVideoId ? updateM.mutate() : createM.mutate(); }} disabled={createM.isPending || updateM.isPending || !form.title.trim() || !form.videoUrl.trim()}> {createM.isPending || updateM.isPending ? "در حال ذخیره…" : editingVideoId ? "ذخیره تغییرات" : "ثبت ویدیو و محتوای آموزشی"}</PrimaryButton>
     </Card>
 
-    <Card className="mt-6"><h2 className="text-lg font-bold text-ink">ویدیوها</h2><ul className="mt-3 divide-y divide-line/30">{videos.data?.map((v) => <li key={v.id} className="flex flex-wrap items-center justify-between gap-2 py-3"><div><p className="text-sm font-semibold text-ink">{v.title}</p><p className="text-[11px] text-ink/60">{v.dialogues?.length ?? 0} دیالوگ · {v.vocab?.length ?? 0} اصطلاح</p></div><div className="flex items-center gap-2"><select value={v.access_type} onChange={(e) => accessM.mutate({ videoId: v.id, accessType: e.target.value === "free" ? "free" : "premium" })} disabled={accessM.isPending} className="rounded-full border-2 border-line bg-cream px-3 py-2 text-[12px] font-bold text-ink"><option value="premium">🔒 ویژه (اشتراک)</option><option value="free">🔓 رایگان</option></select><button onClick={() => deleteM.mutate(v.id)} disabled={deleteM.isPending} className="rounded-full border-2 border-red-300 p-2 text-red-700"><Trash2 size={15} /></button></div></li>)}</ul></Card>
+    <Card className="mt-6"><h2 className="text-lg font-bold text-ink">ویدیوها</h2><ul className="mt-3 divide-y divide-line/30">{videos.data?.map((v) => <li key={v.id} className="flex flex-wrap items-center justify-between gap-2 py-3"><div><p className="text-sm font-semibold text-ink">{v.title}</p><p className="text-[11px] text-ink/60">{v.dialogues?.length ?? 0} دیالوگ · {v.vocab?.length ?? 0} اصطلاح</p></div><div className="flex items-center gap-2"><select value={v.access_type} onChange={(e) => accessM.mutate({ videoId: v.id, accessType: e.target.value === "free" ? "free" : "premium" })} disabled={accessM.isPending} className="rounded-full border-2 border-line bg-cream px-3 py-2 text-[12px] font-bold text-ink"><option value="premium">🔒 ویژه (اشتراک)</option><option value="free">🔓 رایگان</option></select><button onClick={() => { setEditingVideoId(v.id); loadVideoForEdit(v); window.scrollTo({ top: 0, behavior: "smooth" }); }} disabled={editingVideoId !== null} className="rounded-full border-2 border-line bg-blush px-3 py-2 text-[12px] font-bold text-ink transition-all hover:bg-blush-deep"><Edit size={15} /></button><button onClick={() => deleteM.mutate(v.id)} disabled={deleteM.isPending} className="rounded-full border-2 border-red-300 p-2 text-red-700"><Trash2 size={15} /></button></div></li>)}</ul></Card>
   </PageShell>;
 }

@@ -243,6 +243,48 @@ export const adminDeleteVideo = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const adminUpdateVideo = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: {
+    videoId: string;
+    title: string;
+    description?: string;
+    thumbnail?: string;
+    videoUrl: string;
+    accessType: "free" | "premium";
+    badge?: string;
+    dialogues?: unknown;
+    vocab?: unknown;
+  }) => ({
+    videoId: String(data?.videoId ?? ""),
+    title: str(data?.title, 160),
+    description: typeof data?.description === "string" ? data.description.slice(0, 2000) : "",
+    thumbnail: typeof data?.thumbnail === "string" && data.thumbnail.trim() ? data.thumbnail.trim().slice(0, 500) : null,
+    videoUrl: str(data?.videoUrl, 500),
+    accessType: data?.accessType === "free" ? ("free" as const) : ("premium" as const),
+    badge: typeof data?.badge === "string" && data.badge.trim() ? data.badge.trim().slice(0, 80) : "درس جدید",
+    dialogues: parseDialogues(data?.dialogues ?? []),
+    vocab: parseVocab(data?.vocab ?? []),
+  }))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const description = packLessonDescription(data.description, {
+      badge: data.badge,
+      dialogues: data.dialogues,
+      vocab: data.vocab,
+    });
+    const { error } = await supabaseAdmin.from("videos").update({
+      title: data.title,
+      description,
+      thumbnail: data.thumbnail,
+      video_url: data.videoUrl,
+      access_type: data.accessType,
+    }).eq("id", data.videoId);
+    if (error) throw new Error("ویرایش ویدیو ممکن نشد.");
+    return { ok: true };
+  });
+
 export type AdminUser = {
   id: string;
   name: string;
