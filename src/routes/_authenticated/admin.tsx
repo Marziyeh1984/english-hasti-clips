@@ -41,14 +41,6 @@ function AdminPage() {
   const videos = useQuery({ queryKey: ["admin-videos"], queryFn: () => fetchVideos({}), enabled: isAdmin });
   const users = useQuery({ queryKey: ["admin-users"], queryFn: () => fetchUsers({}), enabled: isAdmin, retry: false });
   const nonAdminUsers = users.data?.filter(u => u.email.toLowerCase() !== CONFIGURED_ADMIN_EMAIL) || [];
-
-  // Log for debugging
-  useEffect(() => {
-    console.log("Admin check:", { isAdmin, signedInEmail, accountData: account.data });
-    console.log("Users data:", users.data);
-    console.log("Users error:", users.error);
-    console.log("Non-admin users:", nonAdminUsers);
-  }, [isAdmin, signedInEmail, account.data, users.data, users.error, nonAdminUsers]);
   const [days, setDays] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ title: "", description: "", thumbnail: "", videoUrl: "", accessType: "free" as "free" | "premium", badge: "درس جدید" });
   const [dialogues, setDialogues] = useState<Dialogue[]>([emptyDialogue()]);
@@ -103,7 +95,8 @@ function AdminPage() {
 
     <Card className="mt-6">
       <h2 className="text-lg font-bold text-ink">اشتراک‌های فعال کاربران</h2>
-      {nonAdminUsers.filter(u => u.isActive).length === 0 && <p className="mt-3 text-[13px] text-ink/60">کاربری با اشتراک فعال ندارد.</p>}
+      {users.isLoading && <p className="mt-3 text-[13px] text-ink/60">در حال بارگذاری…</p>}
+      {!users.isLoading && nonAdminUsers.filter(u => u.isActive).length === 0 && <p className="mt-3 text-[13px] text-ink/60">کاربری با اشتراک فعال ندارد. هنوز کاربری ثبت‌نام نکرده است.</p>}
       <div className="mt-4 space-y-3">{nonAdminUsers.filter(u => u.isActive).map((u) => <div key={u.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-4">
         <div className="flex-1">
           <p className="text-sm font-bold text-ink">{u.name || "بدون نام"}</p>
@@ -120,7 +113,8 @@ function AdminPage() {
 
     <Card className="mt-6">
       <h2 className="text-lg font-bold text-ink">همه کاربران</h2>
-      {nonAdminUsers.length === 0 && <p className="mt-3 text-[13px] text-ink/60">کاربری ثبت نشده است.</p>}
+      {users.isLoading && <p className="mt-3 text-[13px] text-ink/60">در حال بارگذاری…</p>}
+      {!users.isLoading && nonAdminUsers.length === 0 && <p className="mt-3 text-[13px] text-ink/60">کاربری ثبت نشده است. هنوز کاربری ثبت‌نام نکرده است.</p>}
       <div className="mt-4 space-y-3">{nonAdminUsers.map((u) => <div key={u.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-line/50 bg-cream/60 p-4">
         <div className="flex-1">
           <p className="text-sm font-bold text-ink">{u.name || "بدون نام"}</p>

@@ -277,11 +277,17 @@ export const adminListUsers = createServerFn({ method: "GET" })
       console.warn("expire_subscriptions function not available:", e);
     }
 
-    const { data: profiles } = await supabaseAdmin
+    const { data: profiles, error: profilesError } = await supabaseAdmin
       .from("profiles")
       .select("id, name, email, created_at")
       .order("created_at", { ascending: false });
 
+    if (profilesError) {
+      console.error("Error fetching profiles:", profilesError);
+      throw new Error("خطا در بارگذاری کاربران");
+    }
+
+    console.log("Profiles fetched:", profiles);
     const userIds = (profiles ?? []).map((p) => p.id);
 
     const [subscriptions, payments] = await Promise.all([
