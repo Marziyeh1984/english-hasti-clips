@@ -148,7 +148,7 @@ export const adminListVideos = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await supabaseAdmin.from("videos").select("id, title, description, thumbnail, video_url, access_type, created_at").order("created_at", { ascending: false });
+    const { data } = await supabaseAdmin.from("videos").select("id, title, description, thumbnail, video_url, access_type, created_at").order("created_at", { ascending: true });
     return (data ?? []).map((row) => {
       const unpacked = unpackLessonDescription(row.description);
       return { ...row, description: unpacked.description, badge: unpacked.meta.badge, dialogues: unpacked.meta.dialogues, vocab: unpacked.meta.vocab };

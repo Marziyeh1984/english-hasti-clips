@@ -63,7 +63,7 @@ export const listPublicVideos = createServerFn({ method: "GET" }).handler(async 
   const { data, error } = await supabaseAdmin
     .from("videos")
     .select(VIDEO_COLUMNS)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: true });
   if (error) throw new Error("بارگذاری ویدیوها ممکن نشد.");
   return await signThumbnails(normalizeVideoRows((data ?? []) as Array<Record<string, unknown>>));
 });
@@ -73,7 +73,7 @@ export const listFreeVideos = createServerFn({ method: "GET" }).handler(async ()
     .from("videos")
     .select(VIDEO_COLUMNS)
     .eq("access_type", "free")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: true });
   return await signThumbnails(normalizeVideoRows((data ?? []) as Array<Record<string, unknown>>));
 });
 

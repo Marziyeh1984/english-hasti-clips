@@ -96,7 +96,7 @@ function AuthPage() {
         navigate({ to: "/dashboard", replace: true });
       } else if (mode === "signup") {
         if (password.length < 6) throw new Error("رمز عبور باید حداقل ۶ کاراکتر باشد.");
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -105,6 +105,7 @@ function AuthPage() {
           },
         });
         if (error) throw error;
+        console.log("Signup successful:", data);
         setNotice("حساب ساخته شد. لینک تأیید را از ایمیل باز کنید؛ بعد از تأیید، به سایت جدید English Hasti برمی‌گردید.");
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
