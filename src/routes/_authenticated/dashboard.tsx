@@ -133,12 +133,14 @@ function Dashboard() {
                     : "برای دیدن درس‌های ویژه، اشتراک تهیه کن."}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Link
-                to="/subscribe"
-                className="rounded-full bg-ink px-5 py-2.5 text-[13px] font-bold text-cream transition-all hover:scale-105 active:scale-95"
-              >
-                {data.isActive ? "تمدید اشتراک" : "خرید اشتراک"}
-              </Link>
+              {!isAdmin && (
+                <Link
+                  to="/subscribe"
+                  className="rounded-full bg-ink px-5 py-2.5 text-[13px] font-bold text-cream transition-all hover:scale-105 active:scale-95"
+                >
+                  {data.isActive ? "تمدید اشتراک" : "خرید اشتراک"}
+                </Link>
+              )}
               <Link
                 to="/lessons"
                 className="rounded-full border-2 border-line px-5 py-2.5 text-[13px] font-bold text-ink transition-all hover:bg-blush active:scale-95"
@@ -159,7 +161,7 @@ function Dashboard() {
               <div className="text-right">
                 <span className="mb-1.5 block text-[13px] font-semibold text-ink">ایمیل</span>
                 <p dir="ltr" className="rounded-full border-2 border-line/40 bg-cream/60 px-4 py-2.5 text-left text-sm text-ink/70">
-                  {data.profile.email}
+                  {data.profile.email || signedInEmail || "ایمیل موجود نیست"}
                 </p>
               </div>
               <PrimaryButton
