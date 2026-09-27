@@ -96,7 +96,9 @@ function AdminPage() {
         }
         
         if (english && persian && !isNaN(time)) {
-          dialogues.push({ en: english, fa: persian, t: String(time) });
+          // Preserve original time string format if it was decimal, otherwise use converted value
+          const displayTime = timeStr.includes('.') ? timeStr : String(time);
+          dialogues.push({ en: english, fa: persian, t: displayTime });
         }
       }
     }
@@ -335,7 +337,7 @@ function AdminPage() {
                 <div className="max-h-40 overflow-y-auto space-y-1">
                   {parsedDialogues.map((d, i) => (
                     <div key={i} className="text-xs text-ink/70 font-mono">
-                      {d.t} | {d.en.substring(0, 30)}{d.en.length > 30 ? '...' : ''} {">-"} {d.fa.substring(0, 30)}{d.fa.length > 30 ? '...' : ''}
+                      {d.t} | {d.en.substring(0, 40)}{d.en.length > 40 ? '...' : ''} {">-"} {d.fa.substring(0, 50)}{d.fa.length > 50 ? '...' : ''}
                     </div>
                   ))}
                 </div>
