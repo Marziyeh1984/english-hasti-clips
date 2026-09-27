@@ -73,9 +73,12 @@ function AdminPage() {
     const dialogues: Dialogue[] = [];
     
     for (const line of lines) {
+      // Remove common prefixes that AI might add (##, -, *, etc.)
+      const cleanLine = line.replace(/^(##?\s*|-\s*|\*\s*|\d+\.\s*)/, '').trim();
+      
       // Pattern: time | English -> Persian
       // Example: 0.0 | Something happened {">-"} 今天发生了什么
-      const match = line.match(/^(\d+(?:\.\d+)?)\s*\|\s*(.+?)\s*->\s*(.+)$/);
+      const match = cleanLine.match(/^(\d+(?:\.\d+)?)\s*\|\s*(.+?)\s*->\s*(.+)$/);
       if (match) {
         const timeStr = match[1];
         const english = match[2].trim();
