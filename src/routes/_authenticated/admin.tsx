@@ -20,52 +20,6 @@ const emptyDialogue = (): Dialogue => ({ en: "", fa: "", t: "0" });
 const emptyVocab = (): Vocab => ({ en: "", fa: "" });
 const faDate = (d: string | null) => d ? new Date(d).toLocaleDateString("fa-IR", { year: "numeric", month: "long", day: "numeric" }) : "—";
 
-function loadVideoForEdit(video: any) {
-  setForm({
-    title: video.title,
-    description: video.description,
-    thumbnail: video.thumbnail || "",
-    videoUrl: video.video_url,
-    accessType: video.access_type,
-    badge: video.badge
-  });
-  setDialogues(video.dialogues?.map((d: any) => ({ en: d.en, fa: d.fa, t: String(d.t) })) || [emptyDialogue()]);
-  setVocab(video.vocab || [emptyVocab()]);
-}
-
-function parseTranscript(text: string): Dialogue[] {
-  const lines = text.trim().split('\n').filter(line => line.trim());
-  const dialogues: Dialogue[] = [];
-  
-  for (const line of lines) {
-    // Pattern: time | English -> Persian
-    // Example: 0.0 | Something happened -> 今天发生了什么
-    const match = line.match(/^(\d+(?:\.\d+)?)\s*\|\s*(.+?)\s*->\s*(.+)$/);
-    if (match) {
-      const timeStr = match[1];
-      const english = match[2].trim();
-      const persian = match[3].trim();
-      
-      // Convert time to seconds (handle both decimal and MM:SS format)
-      let time = 0;
-      if (timeStr.includes(':')) {
-        const parts = timeStr.split(':');
-        if (parts.length === 2) {
-          time = parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
-        }
-      } else {
-        time = parseFloat(timeStr);
-      }
-      
-      if (english && persian && !isNaN(time)) {
-        dialogues.push({ en: english, fa: persian, t: String(time) });
-      }
-    }
-  }
-  
-  return dialogues;
-}
-
 function AdminPage() {
   const qc = useQueryClient();
   const fetchAccount = useServerFn(getMyAccount);
@@ -100,6 +54,52 @@ function AdminPage() {
   const [transcriptText, setTranscriptText] = useState("");
   const [parsedDialogues, setParsedDialogues] = useState<Dialogue[]>([]);
   const userDetails = useQuery({ queryKey: ["admin-user-details", selectedUserId], queryFn: () => fetchUserDetails({ data: { userId: selectedUserId! } }), enabled: !!selectedUserId && isAdmin });
+
+  function loadVideoForEdit(video: any) {
+    setForm({
+      title: video.title,
+      description: video.description,
+      thumbnail: video.thumbnail || "",
+      videoUrl: video.video_url,
+      accessType: video.access_type,
+      badge: video.badge
+    });
+    setDialogues(video.dialogues?.map((d: any) => ({ en: d.en, fa: d.fa, t: String(d.t) })) || [emptyDialogue()]);
+    setVocab(video.vocab || [emptyVocab()]);
+  }
+
+  function parseTranscript(text: string): Dialogue[] {
+    const lines = text.trim().split('\n').filter(line => line.trim());
+    const dialogues: Dialogue[] = [];
+    
+    for (const line of lines) {
+      // Pattern: time | English -> Persian
+      // Example: 0.0 | Something happened -> 今天发生了什么
+      const match = line.match(/^(\d+(?:\.\d+)?)\s*\|\s*(.+?)\s*->\s*(.+)$/);
+      if (match) {
+        const timeStr = match[1];
+        const english = match[2].trim();
+        const persian = match[3].trim();
+        
+        // Convert time to seconds (handle both decimal and MM:SS format)
+        let time = 0;
+        if (timeStr.includes(':')) {
+          const parts = timeStr.split(':');
+          if (parts.length === 2) {
+            time = parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
+          }
+        } else {
+          time = parseFloat(timeStr);
+        }
+        
+        if (english && persian && !isNaN(time)) {
+          dialogues.push({ en: english, fa: persian, t: String(time) });
+        }
+      }
+    }
+    
+    return dialogues;
+  }
 
   async function uploadFile(kind: "video" | "thumbnail", file: File) {
     setError(""); setUploading(kind);
