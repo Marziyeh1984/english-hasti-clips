@@ -100,7 +100,7 @@ export function LessonClip({
     const t = videoRef.current?.currentTime ?? 0;
     let idx = -1;
     for (let i = 0; i < dialogues.length; i++) {
-      if (dialogues[i].t <= t + 0.15) idx = i;
+      if (parseFloat(dialogues[i].t) <= t + 0.15) idx = i;
       else break;
     }
     if (idx !== active) {
@@ -113,7 +113,7 @@ export function LessonClip({
   const seek = (i: number) => {
     const v = videoRef.current;
     if (!v) return;
-    v.currentTime = dialogues[i].t + 0.01;
+    v.currentTime = parseFloat(dialogues[i].t) + 0.01;
     v.play().catch(() => {});
   };
 
