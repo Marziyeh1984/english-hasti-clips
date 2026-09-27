@@ -45,6 +45,14 @@ TRANSLATION GUIDELINES:
 - Don't use literal word-for-word translation
 - Keep the Persian text on the same line as English
 
+CRITICAL CONTENT REQUIREMENTS:
+- Transcribe EVERYTHING from the video including conversational fillers (Okay, Uh, Um, etc.)
+- Do NOT skip or summarize any dialogue
+- Include repeated words and stutters (e.g., "it was—it was awful")
+- Start from the very first sound in the video
+- If someone says "Okay. Uh, something happened," include "Okay. Uh,"
+- Capture the COMPLETE, EXACT dialogue as spoken
+
 OUTPUT REQUIREMENTS:
 - Output ONLY the dialogue lines
 - Each line on its own line
@@ -129,6 +137,10 @@ IMPORTANT: The first line must start with "0.0 |" - NOT "## 0.0 |" or any other 
 - Ask the AI to "Use more precise timing"
 - You can manually adjust the times in the parsed preview before applying
 
+### If the AI skips dialogue (missing "Okay. Uh," etc.):
+- Tell the AI: "You missed the beginning of the dialogue. Include ALL spoken words including fillers like Okay, Uh, Um."
+- The updated prompt above now explicitly instructs to include conversational fillers
+
 ---
 
 ## Quick Reference:
@@ -137,6 +149,45 @@ IMPORTANT: The first line must start with "0.0 |" - NOT "## 0.0 |" or any other 
 ❌ WRONG: `0.0 Hello -> سلام` (missing |)
 ❌ WRONG: `0.0 | Hello → سلام` (using arrow symbol instead of ->)
 ❌ WRONG: `00:05 | Hello -> سلام` (using minutes:seconds instead of decimal)
+❌ WRONG: `0.0 | Hello world -> سلام دنیا` (skipping "Okay. Uh," at the beginning)
+
+---
+
+## Manual Transcription Template
+
+If you prefer to transcribe manually or if the AI misses parts, use this template:
+
+```
+0.0 | English dialogue line 1 -> Persian translation 1
+5.5 | English dialogue line 2 -> Persian translation 2
+7.0 | English dialogue line 3 -> Persian translation 3
+8.5 | English dialogue line 4 -> Persian translation 4
+13.4 | English dialogue line 5 -> Persian translation 5
+---
+English phrase 1 -> Persian meaning 1
+English phrase 2 -> Persian meaning 2
+```
+
+### Your Current Video Template:
+Based on your video, here's a template you can fill in:
+
+```
+0.0 | Okay. Uh, something happened out on Poor Farm Road today. Something pretty bad. A girl got herself killed. -> باشه. اوه، توی جاده‌ی پور فارم یه اتفاقی افتاده. یه اتفاق خیلی بد. یه دختر جونش رو از دست داد.
+5.5 | I know. I saw her. -> می‌دونم. من دیدمش.
+7.0 | What? -> چی؟
+8.5 | We had her in ER. Beyond saving. I mean, it was—it was awful. -> ما توی اورژانس آوردیمش. دیگه قابل نجات نبود. یعنی واقعاً وحشتناک بود.
+13.4 | That's what I was going to tell you when I came in. -> همون چیزی بود که می‌خواستم وقتی اومدم بهت بگم.
+---
+Okay -> باشه / اوکی
+Uh -> اوه
+Poor Farm Road -> جاده‌ی پور فارم
+get oneself killed -> باعث مرگ خود شدن / جونش رو از دست دادن
+ER (Emergency Room) -> اورژانس
+beyond saving -> دیگه قابل نجات نبود
+awful -> وحشتناک / افتضاح
+```
+
+Copy this template, fill in or adjust the Persian translations as needed, then paste it into the "پیست متن کامل" section.
 
 ---
 
