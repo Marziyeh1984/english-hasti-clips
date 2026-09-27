@@ -18,7 +18,7 @@ Each line must follow this exact pattern:
 Where:
 - `time` = time in seconds (decimal format like 0.0, 5.5, 10.0)
 - `|` = vertical bar separator
-- `->` = arrow separator between English and Persian
+- `->` = arrow separator between English and Persian (two characters: hyphen and greater-than)
 - English dialogue = the English text spoken in the video
 - Persian translation = the Persian/Farsi translation
 
@@ -29,6 +29,8 @@ Where:
 7.0 | What? -> چی؟
 8.5 | We had her in ER. Beyond saving. I mean, it was awful. -> ما توی اورژانس آوردیمش. دیگه کاری از دستمون برنمی‌اومد. یعنی واقعاً وحشتناک بود.
 ```
+
+IMPORTANT: The `->` separator must be exactly two characters: a hyphen (`-`) followed by a greater-than sign (`>`). Do not use any other arrow symbol.
 
 ### Guidelines:
 1. **Accurate Timing**: Watch the video carefully and note the exact time when each line is spoken
@@ -45,6 +47,8 @@ After the dialogue, also provide a vocabulary list in this format:
 ```
 English phrase -> Persian meaning/explanation
 ```
+
+IMPORTANT: The `->` separator must be exactly two characters: a hyphen (`-`) followed by a greater-than sign (`>`).
 
 Include important words, phrases, idioms, or expressions from the dialogue that would be useful for learners.
 
@@ -67,6 +71,8 @@ ER (Emergency Room) -> اورژانس
 beyond saving -> دیگه قابل نجات نبود / کاری از دست کسی برنمی‌اومد
 awful -> وحشتناک / واقعاً افتضاح بود
 ```
+
+IMPORTANT: The `->` separator must be exactly two characters: a hyphen (`-`) followed by a greater-than sign (`>`).
 
 Please analyze the video and provide the transcript in this exact format.
 ```
@@ -97,7 +103,7 @@ Please analyze the video and provide the transcript in this exact format.
 
 If the parser doesn't recognize your lines:
 - Check that you're using `|` (vertical bar) not `l` (letter L)
-- Check that you're using `->` (two characters, hyphen + greater than) not a single arrow
+- Check that you're using `->` (two characters: hyphen `-` followed by greater-than `>`) not a single arrow or other symbol
 - Make sure there are no extra spaces around the separators
 - Ensure the time is in decimal format (0.0, 5.5) not minutes:seconds
 

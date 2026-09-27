@@ -74,7 +74,7 @@ function AdminPage() {
     
     for (const line of lines) {
       // Pattern: time | English -> Persian
-      // Example: 0.0 | Something happened -> 今天发生了什么
+      // Example: 0.0 | Something happened {">-"} 今天发生了什么
       const match = line.match(/^(\d+(?:\.\d+)?)\s*\|\s*(.+?)\s*->\s*(.+)$/);
       if (match) {
         const timeStr = match[1];
@@ -287,8 +287,8 @@ function AdminPage() {
           <div className="mt-4 space-y-4">
             <div>
               <h3 className="text-sm font-bold text-ink">الگوی فرمت:</h3>
-              <p className="mt-1 text-[11px] text-ink/70">زمان | متن انگلیسی -> متن فارسی</p>
-              <p className="text-[11px] text-ink/60">مثال: 0.0 | Something happened -> امروز发生了什么</p>
+              <p className="mt-1 text-[11px] text-ink/70">زمان | متن انگلیسی {">-"} متن فارسی</p>
+              <p className="text-[11px] text-ink/60">مثال: 0.0 | Something happened {">-"} امروز发生了什么</p>
             </div>
             <textarea
               value={transcriptText}
@@ -332,7 +332,7 @@ function AdminPage() {
                 <div className="max-h-40 overflow-y-auto space-y-1">
                   {parsedDialogues.map((d, i) => (
                     <div key={i} className="text-xs text-ink/70 font-mono">
-                      {d.t} | {d.en.substring(0, 30)}{d.en.length > 30 ? '...' : ''} -> {d.fa.substring(0, 30)}{d.fa.length > 30 ? '...' : ''}
+                      {d.t} | {d.en.substring(0, 30)}{d.en.length > 30 ? '...' : ''} {">-"} {d.fa.substring(0, 30)}{d.fa.length > 30 ? '...' : ''}
                     </div>
                   ))}
                 </div>
