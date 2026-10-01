@@ -13,6 +13,8 @@ import clipVideo11 from "@/assets/clip11.mp4.asset.json";
 import clipVideo12 from "@/assets/clip12.mp4.asset.json";
 import clipVideo13 from "@/assets/clip13.mp4.asset.json";
 import clipVideo14 from "@/assets/clip14.mp4.asset.json";
+import clipVideo15 from "@/assets/clip15.mp4.asset.json";
+import clipVideo16 from "@/assets/clip16.mp4.asset.json";
 
 
 export type Lesson = {
@@ -20,6 +22,7 @@ export type Lesson = {
   videoUrl: string;
   badge: string;
   title: string;
+  accessType: "free" | "premium";
   dialogues: Dialogue[];
   vocab: Vocab[];
 };
@@ -349,117 +352,204 @@ const CLIP14_VOCAB: Vocab[] = [
   { en: "I got you a little something", fa: "یه هدیه کوچیک برات گرفتم — معمولاً برای کادوی غیرمنتظره یا کوچک." },
 ];
 
+const CLIP15_DIALOGUES: Dialogue[] = [
+  {
+    en: "Something happened out on Poor Farm Road today. Something pretty bad. A girl got herself killed.",
+    fa: "امروز توی جاده‌ی «پور فارم» یه اتفاقی افتاده. یه اتفاق خیلی بد. یه دختر جونش رو از دست داده.",
+    t: 0.35,
+  },
+  { en: "I know. I saw her.", fa: "می‌دونم. من دیدمش.", t: 6.6 },
+  { en: "What?", fa: "چی؟", t: 7.45 },
+  {
+    en: "We had her in ER. Beyond saving. I mean, it was awful.",
+    fa: "ما توی اورژانس آوردیمش. دیگه کاری از دستمون برنمی‌اومد. یعنی واقعاً وحشتناک بود.",
+    t: 9.3,
+  },
+];
+
+const CLIP15_VOCAB: Vocab[] = [
+  { en: "Out on Poor Farm Road", fa: "توی جاده‌ی پور فارم / در حوالی جاده‌ی پور فارم." },
+  { en: "Something pretty bad", fa: "یه اتفاق خیلی بد." },
+  { en: "Get oneself killed", fa: "باعث مرگ خود شدن / جونش رو از دست دادن." },
+  { en: "ER (Emergency Room)", fa: "اورژانس." },
+  { en: "Have someone in ER", fa: "کسی را در اورژانس داشتن / کسی را به اورژانس آوردن." },
+  { en: "Beyond saving", fa: "دیگه قابل نجات نبود / کاری از دست کسی برنمی‌اومد." },
+  { en: "It was awful", fa: "خیلی وحشتناک بود / واقعاً افتضاح بود." },
+];
+
+const CLIP16_DIALOGUES: Dialogue[] = [
+  {
+    en: "That's what I was going to tell you when I came in.",
+    fa: "همین رو می‌خواستم وقتی اومدم اینجا بهت بگم.",
+    t: 0.55,
+  },
+  { en: "God.", fa: "خدای من.", t: 4.75 },
+  { en: "What does that have to do with Jacob?", fa: "این چه ربطی به جیکوب داره؟", t: 6.85 },
+  {
+    en: "Oh. I don't want to have to tell you this. I really don't.",
+    fa: "اوه... دلم نمی‌خواد اینو بهت بگم. واقعاً نمی‌خوام.",
+    t: 9.95,
+  },
+  { en: "Jacob was seen with the girl.", fa: "جیکوب رو با اون دختر دیده بودن.", t: 10.85 },
+  {
+    en: "He picked her up from work.",
+    fa: "اون از سر کار دنبالش رفت / اون رو از محل کارش سوار کرد.",
+    t: 13.15,
+  },
+];
+
+const CLIP16_VOCAB: Vocab[] = [
+  { en: "I was going to...", fa: "می‌خواستم / قصد داشتم." },
+  { en: "Have to do with", fa: "ربط داشتن به." },
+  { en: "Have to", fa: "مجبور بودن / ناچار بودن." },
+  { en: "Be seen with someone", fa: "با کسی دیده شدن." },
+  { en: "Pick someone up", fa: "دنبال کسی رفتن و سوارش کردن." },
+  { en: "From work", fa: "از محل کار / سر کار." },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
     videoUrl: clipVideo.url,
-    badge: "Clip 01 · Drama",
+    badge: "Clip 01",
     title: "Loan Sharks",
+    accessType: "free",
     dialogues: CLIP1_DIALOGUES,
     vocab: CLIP1_VOCAB,
   },
   {
     id: "clip02",
     videoUrl: clipVideo2.url,
-    badge: "Clip 02 · Drama",
+    badge: "Clip 02",
     title: "The Locket",
+    accessType: "free",
     dialogues: CLIP2_DIALOGUES,
     vocab: CLIP2_VOCAB,
   },
   {
     id: "clip03",
     videoUrl: clipVideo3.url,
-    badge: "Clip 03 · Drama",
+    badge: "Clip 03",
     title: "The Affair",
+    accessType: "premium",
     dialogues: CLIP3_DIALOGUES,
     vocab: CLIP3_VOCAB,
   },
   {
     id: "clip04",
     videoUrl: clipVideo4.url,
-    badge: "Clip 04 · Family",
+    badge: "Clip 04",
     title: "Bye, Sweetie",
+    accessType: "premium",
     dialogues: CLIP4_DIALOGUES,
     vocab: CLIP4_VOCAB,
   },
   {
     id: "clip05",
     videoUrl: clipVideo5.url,
-    badge: "Clip 05 · Daily Life",
+    badge: "Clip 05",
     title: "At the Supermarket",
+    accessType: "premium",
     dialogues: CLIP5_DIALOGUES,
     vocab: CLIP5_VOCAB,
   },
   {
     id: "clip06",
     videoUrl: clipVideo6.url,
-    badge: "Clip 06 · Drama",
+    badge: "Clip 06",
     title: "Too Much Work",
+    accessType: "premium",
     dialogues: CLIP6_DIALOGUES,
     vocab: CLIP6_VOCAB,
   },
   {
     id: "clip07",
     videoUrl: clipVideo7.url,
-    badge: "Clip 07 · Drama",
+    badge: "Clip 07",
     title: "Who Is Sasha?",
+    accessType: "premium",
     dialogues: CLIP7_DIALOGUES,
     vocab: CLIP7_VOCAB,
   },
   {
     id: "clip08",
     videoUrl: clipVideo8.url,
-    badge: "Clip 08 · Drama",
+    badge: "Clip 08",
     title: "Do You Recognize Me?",
+    accessType: "premium",
     dialogues: CLIP8_DIALOGUES,
     vocab: CLIP8_VOCAB,
   },
   {
     id: "clip09",
     videoUrl: clipVideo9.url,
-    badge: "Clip 09 · Drama",
+    badge: "Clip 09",
     title: "You Kidnapped My Child",
+    accessType: "premium",
     dialogues: CLIP9_DIALOGUES,
     vocab: CLIP9_VOCAB,
   },
   {
     id: "clip10",
     videoUrl: clipVideo10.url,
-    badge: "Clip 10 · Family",
+    badge: "Clip 10",
     title: "Meet the Sister",
+    accessType: "premium",
     dialogues: CLIP10_DIALOGUES,
     vocab: CLIP10_VOCAB,
   },
   {
     id: "clip11",
     videoUrl: clipVideo11.url,
-    badge: "Clip 11 · Family",
+    badge: "Clip 11",
     title: "The House Tour",
+    accessType: "premium",
     dialogues: CLIP11_DIALOGUES,
     vocab: CLIP11_VOCAB,
   },
   {
     id: "clip12",
     videoUrl: clipVideo12.url,
-    badge: "Clip 12 · Medical",
+    badge: "Clip 12",
     title: "Nuchal Cord",
+    accessType: "premium",
     dialogues: CLIP12_DIALOGUES,
     vocab: CLIP12_VOCAB,
   },
   {
     id: "clip13",
     videoUrl: clipVideo13.url,
-    badge: "Clip 13 · Medical",
+    badge: "Clip 13",
     title: "Your Midwife",
+    accessType: "premium",
     dialogues: CLIP13_DIALOGUES,
     vocab: CLIP13_VOCAB,
   },
   {
     id: "clip14",
     videoUrl: clipVideo14.url,
-    badge: "Clip 14 · Family",
+    badge: "Clip 14",
     title: "So Cute",
+    accessType: "premium",
     dialogues: CLIP14_DIALOGUES,
     vocab: CLIP14_VOCAB,
+  },
+  {
+    id: "clip15",
+    videoUrl: clipVideo15.url,
+    badge: "Clip 15",
+    title: "Clip 15",
+    accessType: "free",
+    dialogues: CLIP15_DIALOGUES,
+    vocab: CLIP15_VOCAB,
+  },
+  {
+    id: "clip16",
+    videoUrl: clipVideo16.url,
+    badge: "Clip 16",
+    title: "Clip 16",
+    accessType: "free",
+    dialogues: CLIP16_DIALOGUES,
+    vocab: CLIP16_VOCAB,
   },
 ];

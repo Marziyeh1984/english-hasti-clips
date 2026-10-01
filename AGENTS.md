@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Static lesson access is declared per lesson with `accessType`, so free and premium clips can be changed independently without relying on their array position.

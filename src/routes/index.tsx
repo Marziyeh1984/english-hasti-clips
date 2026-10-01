@@ -28,6 +28,8 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:image", content: heroAsset.url },
       { name: "twitter:image", content: heroAsset.url },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,

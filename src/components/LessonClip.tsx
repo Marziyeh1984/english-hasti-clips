@@ -100,7 +100,7 @@ export function LessonClip({
     const t = videoRef.current?.currentTime ?? 0;
     let idx = -1;
     for (let i = 0; i < dialogues.length; i++) {
-      if (parseFloat(dialogues[i].t) <= t + 0.15) idx = i;
+      if (dialogues[i].t <= t + 0.15) idx = i;
       else break;
     }
     if (idx !== active) {
@@ -113,7 +113,7 @@ export function LessonClip({
   const seek = (i: number) => {
     const v = videoRef.current;
     if (!v) return;
-    v.currentTime = parseFloat(dialogues[i].t) + 0.01;
+    v.currentTime = dialogues[i].t + 0.01;
     v.play().catch(() => {});
   };
 
@@ -154,7 +154,7 @@ export function LessonClip({
 
       <div className="p-5">
         <span className="rounded-full border border-ink/30 px-2.5 py-1 text-[11px] text-ink">{badge}</span>
-        <h3 className="mb-4 mt-3 text-lg font-extrabold text-ink">{title}</h3>
+        <h3 className="sr-only">{title}</h3>
 
         <div className="flex max-h-[340px] flex-col gap-1 overflow-y-auto pr-1">
           {dialogues.map((d, i) => {
