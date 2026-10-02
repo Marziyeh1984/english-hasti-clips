@@ -426,7 +426,7 @@ export const adminGetUserDetails = createServerFn({ method: "GET" })
     );
 
     const paymentsWithUrls = await Promise.all(
-      (payments.data ?? []).map(async (p: any) => {
+      (payments.data ?? []).map(async (p) => {
         let receiptUrl = null;
         if (p.receipt_path) {
           const { data: signed } = await supabaseAdmin.storage
