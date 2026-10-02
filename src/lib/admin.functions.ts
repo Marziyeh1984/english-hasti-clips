@@ -393,7 +393,7 @@ export const adminGetUserDetails = createServerFn({ method: "GET" })
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const [profile, subscription, payments] = await Promise.all([
+    const [profileRes, subscriptionRes, payments] = await Promise.all([
       supabaseAdmin
         .from("profiles")
         .select("id, name, email, created_at")
@@ -413,17 +413,20 @@ export const adminGetUserDetails = createServerFn({ method: "GET" })
         .order("created_at", { ascending: false }),
     ]);
 
+    const profile = profileRes.data;
+    const subscription = subscriptionRes.data;
     if (!profile) throw new Error("کاربر پیدا نشد.");
 
     const now = Date.now();
-    const isActive =
+    const isActive = !!(
       subscription &&
       subscription.status === "active" &&
       subscription.end_date &&
-      new Date(subscription.end_date).getTime() > now;
+      new Date(subscription.end_date).getTime() > now
+    );
 
     const paymentsWithUrls = await Promise.all(
-      (payments.data ?? []).map(async (p: any) => {
+      (payments.data ?? []).map(async (p) => {
         let receiptUrl = null;
         if (p.receipt_path) {
           const { data: signed } = await supabaseAdmin.storage
