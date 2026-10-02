@@ -15,7 +15,10 @@ import clipVideo13 from "@/assets/clip13.mp4.asset.json";
 import clipVideo14 from "@/assets/clip14.mp4.asset.json";
 import clipVideo15 from "@/assets/clip15.mp4.asset.json";
 import clipVideo16 from "@/assets/clip16.mp4.asset.json";
-
+import clipVideo17 from "@/assets/clip17.mp4.asset.json";
+import clipVideo18 from "@/assets/clip18.mp4.asset.json";
+import clipVideo19 from "@/assets/clip19.mp4.asset.json";
+import clipVideo20 from "@/assets/clip20.mp4.asset.json";
 
 export type Lesson = {
   id: string;
@@ -34,8 +37,8 @@ const CLIP1_DIALOGUES: Dialogue[] = [
   { en: "So you owe them $10,000.", fa: "پس ۱۰ هزار دلار بهشون بدهکاری؟", t: 5.94 },
   { en: "Couldn't get the money anywhere else.", fa: "از هیچ جای دیگه‌ای نتونستم پول جور کنم.", t: 10.1 },
   {
-    en: "I didn't know any black folks invest in their house music,",
-    fa: "هیچ آدم سیاه‌پوستی رو نمی‌شناختم که حاضر باشه روی خانه موسیقی سرمایه‌گذاری کنه،",
+    en: "I didn't know any black folks invest in their house music.",
+    fa: "هیچ آدم سیاه‌پوستی رو نمی‌شناختم که حاضر باشه روی خانه موسیقی سرمایه‌گذاری کنه.",
     t: 11.9,
   },
   {
@@ -63,7 +66,7 @@ const CLIP2_DIALOGUES: Dialogue[] = [
   { en: "Kelly, it's been a week. I was starting to worry.", fa: "کلی، یه هفته‌ست خبری ازت نبود. داشتم نگران می‌شدم.", t: 1.9 },
   { en: "No, I'm okay.", fa: "نه، خوبم.", t: 4.76 },
   { en: "My gallbladder was giving me trouble.", fa: "کیسه صفرا‌م اذیتم می‌کرد.", t: 5.8 },
-  { en: "Oh.", fa: "اوه…", t: 8.88 },
+  { en: "Oh.", fa: "اوه...", t: 8.88 },
   { en: "How'd the little one like the locket?", fa: "اون کوچولوهه از اون گردنبند (گردنبندِ قاب‌دار) خوشش اومد؟", t: 9.5 },
   { en: "Oh, I'm saving it for her birthday.", fa: "نه، گذاشتم برای تولدش / نگهش داشتم برای تولدش.", t: 12.36 },
   { en: "She'll love that. How much?", fa: "خیلی خوشحال میشه. چقدر شد؟", t: 15.1 },
@@ -91,7 +94,7 @@ const CLIP3_DIALOGUES: Dialogue[] = [
   { en: "I saw him with her. They were kissing in the street.", fa: "دیدمش با اون زن. داشتن تو خیابون همدیگه رو می‌بوسیدن.", t: 7.32 },
   { en: "It wasn't a friendly kiss.", fa: "اون یه بوسه‌ی دوستانه نبود.", t: 10.5 },
   { en: "So, it's okay for you, but not for him.", fa: "پس یعنی برای تو اوکیه، ولی برای اون نه؟", t: 13.32 },
-  { en: "I know what Sam's about, but this thing with Nick…", fa: "من می‌دونم سم چه آدمیه و داستانش چیه، ولی این قضیه‌ی نیک…", t: 17.24 },
+  { en: "I know what Sam's about, but this thing with Nick...", fa: "من می‌دونم سم چه آدمیه و داستانش چیه، ولی این قضیه‌ی نیک...", t: 17.24 },
 ];
 
 const CLIP3_VOCAB: Vocab[] = [
@@ -127,7 +130,7 @@ const CLIP5_DIALOGUES: Dialogue[] = [
   { en: "Hello.", fa: "سلام.", t: 14.24 },
   { en: "Hello.", fa: "سلام.", t: 14.78 },
   { en: "Yeah, I think we got everything here.", fa: "آره، فکر کنم همه‌چیز رو گرفتیم.", t: 16.82 },
-  { en: "592, please.", fa: "۵۹۲ لطفاً.", t: 19.26 },
+  { en: "592, please.", fa: "۵۹۲، لطفاً.", t: 19.26 },
   { en: "With pleasure.", fa: "با کمال میل. / خوشحال می‌شوم.", t: 21.28 },
 ];
 
@@ -407,6 +410,107 @@ const CLIP16_VOCAB: Vocab[] = [
   { en: "From work", fa: "از محل کار / سر کار." },
 ];
 
+const CLIP17_DIALOGUES: Dialogue[] = [
+  { en: "What are you doing, Ben?", fa: "بن، داری چی کار می‌کنی؟", t: 2 },
+  { en: "Having a look at my car.", fa: "دارم یه نگاهی به ماشینم می‌اندازم.", t: 4.2 },
+  { en: "Do I have a right to be in my own garage?", fa: "مگه حق ندارم توی گاراژ خودم باشم؟", t: 13 },
+  { en: "How long you been out here?", fa: "چند وقته اینجایی؟", t: 17 },
+  { en: "Couple of minutes.", fa: "یکی دو دقیقه‌ای می‌شه.", t: 18.4 },
+  {
+    en: "All I did was look around, and I sure didn't see anything wrong either.",
+    fa: "من فقط یه نگاهی اطراف انداختم و مطمئنم هیچ چیز مشکوک یا غیرعادی‌ای هم ندیدم.",
+    t: 21.5,
+  },
+];
+
+const CLIP17_VOCAB: Vocab[] = [
+  { en: "Have a look at", fa: "یه نگاهی به چیزی انداختن." },
+  { en: "Have a right to", fa: "حقِ انجام کاری را داشتن." },
+  {
+    en: "How long have you been...?",
+    fa: "چند وقته که...؟ در مکالمه معمولاً have حذف می‌شود: How long you been out here?",
+  },
+  { en: "A couple of minutes", fa: "یکی دو دقیقه / چند دقیقه." },
+  { en: "All I did was...", fa: "کاری که کردم فقط این بود که... / من فقط..." },
+  { en: "Look around", fa: "اطراف را نگاه کردن / یه نگاهی دور و بر انداختن." },
+];
+
+const CLIP18_DIALOGUES: Dialogue[] = [
+  { en: "What have we got to decide?", fa: "مگه دیگه چی برای تصمیم گرفتن مونده؟", t: 1 },
+  { en: "Nothing's going to bring that girl back.", fa: "هیچ چیزی اون دختر رو برنمی‌گردونه.", t: 2.3 },
+  { en: "I'm sorry, but it's too late.", fa: "متأسفم، ولی دیگه خیلی دیره.", t: 5.5 },
+  { en: "We've got to think of Jacob.", fa: "باید به فکر جیکوب باشیم.", t: 6.8 },
+  { en: "But Jacob's innocent.", fa: "ولی جیکوب بی‌گناهه.", t: 8 },
+  { en: "Jacob's not a killer.", fa: "جیکوب قاتل نیست.", t: 9.4 },
+  { en: "If anything, he's in danger himself.", fa: "اتفاقاً اگه بخوای برعکسش رو بگی، خودش در خطره.", t: 10.5 },
+];
+
+const CLIP18_VOCAB: Vocab[] = [
+  { en: "What have we got to...?", fa: "ما باید چی کار کنیم؟" },
+  { en: "Bring someone back", fa: "کسی را برگرداندن؛ اینجا یعنی زنده کردن / دوباره برگرداندن." },
+  { en: "It's too late", fa: "دیگه خیلی دیره." },
+  { en: "Have got to", fa: "باید / مجبور بودن." },
+  { en: "Think of someone", fa: "به فکر کسی بودن." },
+  { en: "Innocent", fa: "بی‌گناه." },
+  { en: "Killer", fa: "قاتل." },
+  { en: "If anything", fa: "اتفاقاً / اگر بخواهیم چیزی بگوییم." },
+  { en: "Be in danger", fa: "در خطر بودن." },
+];
+
+const CLIP19_DIALOGUES: Dialogue[] = [
+  { en: "Oh, thank God you're safe.", fa: "اوه، خدایا شکرت که سالمی.", t: 3 },
+  { en: "How are you, son?", fa: "پسرم، حالت چطوره؟", t: 14 },
+  { en: "Where were you?", fa: "کجا بودی؟", t: 19 },
+  {
+    en: "Jake, first off, your sister. She wanted us to ask you, um, the postcards.",
+    fa: "جیک، اول از همه، خواهرت... از ما خواست درباره‌ی اون کارت‌پستال‌ها ازت بپرسیم.",
+    t: 20.5,
+  },
+  { en: "Were you really in all those places, Jake?", fa: "جیک، واقعاً توی همه‌ی اون مکان‌ها بودی؟", t: 27.2 },
+  {
+    en: "Or were you here the whole time in your friend Darren's apartment?",
+    fa: "یا تمام این مدت همین‌جا، توی آپارتمان دوستت دارن بودی؟",
+    t: 31.5,
+  },
+  { en: "Your dad asked you a question.", fa: "بابات ازت یه سؤال پرسید.", t: 42.5 },
+];
+
+const CLIP19_VOCAB: Vocab[] = [
+  { en: "Thank God!", fa: "خدایا شکرت!" },
+  { en: "Safe", fa: "سالم / در امان." },
+  { en: "Son", fa: "پسرم." },
+  { en: "Where were you?", fa: "کجا بودی؟" },
+  { en: "First off", fa: "اول از همه / قبل از هر چیز." },
+  { en: "Postcard", fa: "کارت‌پستال." },
+  { en: "All those places", fa: "همه‌ی اون جاها." },
+  { en: "The whole time", fa: "تمام این مدت." },
+  { en: "Your dad asked you a question", fa: "بابات ازت سؤال پرسید." },
+  { en: "Honey", fa: "عزیزم / جانم." },
+];
+
+const CLIP20_DIALOGUES: Dialogue[] = [
+  { en: "Miss Tisdale?", fa: "خانم تیزدیل؟", t: 3.5 },
+  {
+    en: "Not now. I've got to be in Winchester's office in two minutes.",
+    fa: "الان نه. من باید تا دو دقیقه‌ی دیگه توی دفتر وینچستر باشم.",
+    t: 4,
+  },
+  { en: "It's your sister. She says it's urgent.", fa: "خواهرتونه. می‌گه موضوع فوریه.", t: 7.5 },
+  { en: "Lily, I actually can't talk right now.", fa: "لیلی، واقعاً الان نمی‌تونم صحبت کنم.", t: 14 },
+  { en: "I'm right in the...", fa: "من درست وسطِ... هستم.", t: 17 },
+  { en: "Are you joking?", fa: "شوخی می‌کنی؟", t: 22 },
+];
+
+const CLIP20_VOCAB: Vocab[] = [
+  { en: "I've got to be", fa: "باید باشم / مجبورم باشم." },
+  { en: "In Winchester's office", fa: "در دفتر وینچستر." },
+  { en: "It's your sister", fa: "خواهرت است / خواهرت پشت خط است." },
+  { en: "Urgent", fa: "فوری / ضروری / اضطراری." },
+  { en: "Actually", fa: "در اینجا برای تأکید استفاده شده است." },
+  { en: "I'm right in the...", fa: "دقیقاً وسطِ... هستم / مشغولِ... هستم." },
+  { en: "Are you joking?", fa: "شوخی می‌کنی؟ برای نشان دادن تعجب یا ناباوری استفاده می‌شود." },
+];
+
 export const LESSONS: Lesson[] = [
   {
     id: "clip01",
@@ -551,5 +655,41 @@ export const LESSONS: Lesson[] = [
     accessType: "free",
     dialogues: CLIP16_DIALOGUES,
     vocab: CLIP16_VOCAB,
+  },
+  {
+    id: "clip17",
+    videoUrl: clipVideo17.url,
+    badge: "Clip 17",
+    title: "Clip 17",
+    accessType: "premium",
+    dialogues: CLIP17_DIALOGUES,
+    vocab: CLIP17_VOCAB,
+  },
+  {
+    id: "clip18",
+    videoUrl: clipVideo18.url,
+    badge: "Clip 18",
+    title: "Clip 18",
+    accessType: "premium",
+    dialogues: CLIP18_DIALOGUES,
+    vocab: CLIP18_VOCAB,
+  },
+  {
+    id: "clip19",
+    videoUrl: clipVideo19.url,
+    badge: "Clip 19",
+    title: "Clip 19",
+    accessType: "premium",
+    dialogues: CLIP19_DIALOGUES,
+    vocab: CLIP19_VOCAB,
+  },
+  {
+    id: "clip20",
+    videoUrl: clipVideo20.url,
+    badge: "Clip 20",
+    title: "Clip 20",
+    accessType: "premium",
+    dialogues: CLIP20_DIALOGUES,
+    vocab: CLIP20_VOCAB,
   },
 ];
