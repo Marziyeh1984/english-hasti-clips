@@ -10,7 +10,7 @@ import { LessonClip } from "@/components/LessonClip";
 import { LESSONS } from "@/lib/lessons";
 import { SITE } from "@/lib/site";
 import { listPublicVideos, getVideoPlaybackUrl } from "@/lib/videos.functions";
-import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
+import heroAsset from "@/assets/hero-watching-movie.jpeg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
