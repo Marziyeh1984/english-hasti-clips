@@ -126,7 +126,7 @@ function Index() {
           <div className="relative mt-6 overflow-hidden rounded-[22px] border-2 border-line">
             <img
               src={heroAsset.url}
-              alt="نوشتن کلمه family با گچ روی تخته سیاه"
+              alt="دختری در حال تماشای فیلم با زیرنویس انگلیسی روی لپ‌تاپ"
               className="h-[280px] w-full object-cover"
             />
           </div>
