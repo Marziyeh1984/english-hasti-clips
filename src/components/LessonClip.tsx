@@ -8,7 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 export type Dialogue = { en: string; fa: string; t: number };
 export type Vocab = { en: string; fa: string };
 
-const LOVABLE_ASSET_ORIGIN = "https://reel-english-flow.lovable.app";
+// Absolute origin so lesson videos also play when the site is hosted elsewhere (e.g. Vercel).
+const LOVABLE_ASSET_ORIGIN = "https://https-english-hasti-clips.lovable.app";
 
 function normalizeLessonVideoUrl(url: string) {
   if (!url) return "";
