@@ -10,7 +10,7 @@ import { LessonClip } from "@/components/LessonClip";
 import { LESSONS } from "@/lib/lessons";
 import { SITE } from "@/lib/site";
 import { listPublicVideos, getVideoPlaybackUrl } from "@/lib/videos.functions";
-import heroAsset from "@/assets/hero-chalkboard.jpeg.asset.json";
+import heroAsset from "@/assets/hero-watching-movie.jpeg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -126,7 +126,7 @@ function Index() {
           <div className="relative mt-6 overflow-hidden rounded-[22px] border-2 border-line">
             <img
               src={heroAsset.url}
-              alt="نوشتن کلمه family با گچ روی تخته سیاه"
+              alt="دختری در حال تماشای فیلم با زیرنویس انگلیسی روی لپ‌تاپ"
               className="h-[280px] w-full object-cover"
             />
           </div>
